@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM — Flowers House Varna</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0b09;
+    --surface: #141210;
+    --card: #1a1714;
+    --border: #2a2520;
+    --accent: #c8973a;
+    --accent2: #8fbc5a;
+    --accent3: #6eb8d4;
+    --accent4: #d4756b;
+    --text: #e8e0d4;
+    --muted: #7a7068;
+    --supplier: #c8973a;
+    --inventory: #8fbc5a;
+    --client: #6eb8d4;
+    --order: #d4756b;
+    --florist: #b87db8;
+    --delivery: #7eb8a8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  header .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  header h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+  header .subtitle {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 24px;
+    margin-bottom: 56px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── DIAGRAM WRAPPER ── */
+  .diagram {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    gap: 0;
+  }
+
+  /* ── LANE SYSTEM ── */
+  .lane-header {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+  .lane-label {
+    padding: 10px 16px;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-top: 2px solid;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .lane-label.supplier { border-color: var(--supplier); color: var(--supplier); background: rgba(200,151,58,0.05);}
+  .lane-label.store    { border-color: var(--inventory); color: var(--inventory); background: rgba(143,188,90,0.05);}
+  .lane-label.client   { border-color: var(--client);    color: var(--client);    background: rgba(110,184,212,0.05);}
+  .lane-label.delivery { border-color: var(--delivery);  color: var(--delivery);  background: rgba(126,184,168,0.05);}
+
+  /* ── FLOW CANVAS ── */
+  .flow-canvas {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-left: 2px solid var(--border);
+    padding-left: 12px;
+    margin-bottom: 24px;
+  }
+
+  /* ── NODES ── */
+  .flow-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .flow-row.center { justify-content: center; }
+
+  .node {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    background: var(--card);
+    min-width: 160px;
+    max-width: 220px;
+    flex-shrink: 0;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .node:hover {
+    box-shadow: 0 0 20px rgba(200,151,58,0.12);
+    border-color: rgba(200,151,58,0.3);
+  }
+  .node .node-tag {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    font-family: 'DM Mono', monospace;
+  }
+  .node .node-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+  .node .node-desc {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .node .node-badge {
+    display: inline-block;
+    font-size: 8px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-top: 6px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* color variants */
+  .node.supplier { border-left: 3px solid var(--supplier); }
+  .node.supplier .node-tag { color: var(--supplier); }
+  .node.inventory { border-left: 3px solid var(--inventory); }
+  .node.inventory .node-tag { color: var(--inventory); }
+  .node.client { border-left: 3px solid var(--client); }
+  .node.client .node-tag { color: var(--client); }
+  .node.order { border-left: 3px solid var(--order); }
+  .node.order .node-tag { color: var(--order); }
+  .node.florist { border-left: 3px solid var(--florist); }
+  .node.florist .node-tag { color: var(--florist); }
+  .node.delivery { border-left: 3px solid var(--delivery); }
+  .node.delivery .node-tag { color: var(--delivery); }
+  .node.system { border-left: 3px solid var(--accent3); }
+  .node.system .node-tag { color: var(--accent3); }
+
+  /* decision diamond */
+  .diamond {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .diamond-inner {
+    width: 88px;
+    height: 88px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    transform: rotate(45deg);
+    position: absolute;
+    transition: border-color 0.2s;
+  }
+  .diamond:hover .diamond-inner { border-color: rgba(200,151,58,0.4); }
+  .diamond-text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 0 8px;
+    color: var(--accent);
+  }
+
+  /* connectors */
+  .arrow {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    padding: 0 4px;
+    color: var(--border);
+    font-size: 18px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .arrow.down {
+    display: flex;
+    justify-content: center;
+    padding: 4px 0;
+    font-size: 16px;
+    width: 100%;
+  }
+  .arrow .arrow-label {
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    position: absolute;
+    top: -10px;
+    white-space: nowrap;
+  }
+  .arrow-line {
+    height: 1px;
+    background: var(--border);
+    flex: 1;
+    min-width: 20px;
+  }
+  .arrow-head { color: var(--muted); font-size: 14px; }
+
+  /* ── GRID LAYOUT for main flow ── */
+  .grid-flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 16px;
+    align-items: start;
+    margin-bottom: 12px;
+  }
+  .grid-flow .col-arrow {
+    display: flex;
+    align-items: center;
+    padding-top: 30px;
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  /* ── VERTICAL FLOW ── */
+  .vflow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .vflow .v-arrow {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+    position: relative;
+  }
+  .vflow .v-arrow::after {
+    content: '▼';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font-size: 10px;
+  }
+  .vflow .v-label {
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 2px 0;
+  }
+
+  /* ── SPLIT PATH ── */
+  .split-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .split-branches {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    width: 100%;
+    max-width: 700px;
+    gap: 0;
+  }
+  .split-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .split-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 4px 0;
+    font-family: 'DM Mono', monospace;
+  }
+  .split-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--muted);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    padding-top: 20px;
+    gap: 4px;
+    color: var(--muted);
+  }
+  .join-line {
+    height: 1px;
+    background: var(--border);
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ── HORIZONTAL SCROLL TABLE ── */
+  .feature-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+  .feature-table th {
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+  .feature-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    vertical-align: top;
+  }
+  .feature-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge {
+    display: inline-block;
+    font-size: 8px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+  .badge.green { background: rgba(143,188,90,0.15); color: var(--inventory); }
+  .badge.blue  { background: rgba(110,184,212,0.15); color: var(--client); }
+  .badge.orange{ background: rgba(200,151,58,0.15);  color: var(--supplier); }
+  .badge.red   { background: rgba(212,117,107,0.15); color: var(--order); }
+  .badge.purple{ background: rgba(184,125,184,0.15); color: var(--florist); }
+  .badge.teal  { background: rgba(126,184,168,0.15); color: var(--delivery); }
+
+  /* ── SVG CONNECTOR ── */
+  .svg-connector {
+    width: 100%;
+    overflow: visible;
+    display: block;
+  }
+
+  /* ── PHASE ── */
+  .phase-band {
+    background: linear-gradient(90deg, rgba(200,151,58,0.08), transparent);
+    border-left: 2px solid var(--accent);
+    padding: 6px 16px;
+    margin-bottom: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .phase-num {
+    font-size: 10px;
+    font-style: normal;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-right: 8px;
+  }
+
+  /* ── FULL FLOW DIAGRAM ── */
+  .full-flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+  }
+  .flow-step {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    max-width: 1100px;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+  .flow-col {
+    flex: 1;
+    min-height: 80px;
+    padding: 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .flow-col.active {
+    border-color: var(--border);
+    background: var(--card);
+  }
+  .flow-col.active:hover { background: #1e1c18; }
+  .flow-col.inactive {
+    background: transparent;
+    border-color: transparent;
+  }
+  .flow-col .col-label {
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+  .flow-col .col-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.2;
+  }
+  .flow-col .col-detail {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .flow-col.supplier .col-label { color: var(--supplier); }
+  .flow-col.supplier .col-title { color: var(--text); border-left: 2px solid var(--supplier); padding-left: 8px; }
+  .flow-col.inventory .col-label { color: var(--inventory); }
+  .flow-col.inventory .col-title { color: var(--text); border-left: 2px solid var(--inventory); padding-left: 8px; }
+  .flow-col.client .col-label { color: var(--client); }
+  .flow-col.client .col-title { color: var(--text); border-left: 2px solid var(--client); padding-left: 8px; }
+  .flow-col.delivery .col-label { color: var(--delivery); }
+  .flow-col.delivery .col-title { color: var(--text); border-left: 2px solid var(--delivery); padding-left: 8px; }
+  .flow-col.system .col-label { color: var(--accent3); }
+  .flow-col.system .col-title { color: var(--text); border-left: 2px solid var(--accent3); padding-left: 8px; }
+  .flow-col.florist .col-label { color: var(--florist); }
+  .flow-col.florist .col-title { color: var(--text); border-left: 2px solid var(--florist); padding-left: 8px; }
+
+  .step-connector {
+    width: 100%;
+    max-width: 1100px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+  .step-connector .conn-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .step-connector .conn-arrow {
+    color: var(--muted);
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+  .step-connector .conn-label {
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 8px;
+    white-space: nowrap;
+  }
+
+  /* decision block */
+  .decision-block {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 0;
+    margin-bottom: 2px;
+    gap: 16px;
+  }
+  .decision-shape {
+    background: var(--card);
+    border: 1px solid var(--accent);
+    padding: 10px 24px;
+    transform: skew(-12deg);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--accent);
+    box-shadow: 0 0 24px rgba(200,151,58,0.1);
+  }
+  .decision-shape span { display: block; transform: skew(12deg); }
+  .decision-paths {
+    display: flex;
+    gap: 20px;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .decision-path {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+  }
+  .decision-path .path-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* timeline */
+  .timeline {
+    width: 100%;
+    max-width: 1100px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+  .timeline-header {
+    display: grid;
+    grid-template-columns: 120px repeat(5, 1fr);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-header > div {
+    padding: 8px 12px;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+  }
+  .timeline-header > div:last-child { border-right: none; }
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 120px repeat(5, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-row:last-child { border-bottom: none; }
+  .timeline-row > div {
+    padding: 10px 12px;
+    font-size: 11px;
+    border-right: 1px solid var(--border);
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .timeline-row > div:last-child { border-right: none; }
+  .timeline-row > div:first-child {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cell-active {
+    background: rgba(200,151,58,0.06);
+    position: relative;
+  }
+  .cell-active::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px; height: 100%;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+
+  /* pages list */
+  .pages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .page-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    background: var(--card);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .page-card:hover {
+    border-color: rgba(200,151,58,0.3);
+    transform: translateY(-2px);
+  }
+  .page-card .page-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  .page-card .page-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    margin-bottom: 4px;
+  }
+  .page-card .page-role {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .page-card .page-features {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .page-card .page-features li {
+    list-style: none;
+    padding-left: 12px;
+    position: relative;
+  }
+  .page-card .page-features li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--border);
+  }
+
+  /* divider */
+  hr.section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+    position: relative;
+  }
+  hr.section-divider::after {
+    content: '◆';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    padding: 0 16px;
+    color: var(--border);
+    font-size: 10px;
+  }
+
+  /* animate in */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate { animation: fadeUp 0.6s ease both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
+<header class="animate">
+  <div class="eyebrow">CRM Architecture · Flowers House Varna</div>
+  <h1>Схема <em>CRM-системы</em><br>для цветочного магазина</h1>
+  <div class="subtitle">Варна, Болгария · Кастомные букеты · Онлайн + Физический магазин</div>
+</header>
+
+<!-- ═══════════════════════════════ LEGEND ══════════════════════════════ -->
+<div class="legend animate delay-1">
+  <div class="legend-item"><span class="legend-dot" style="background:var(--supplier)"></span> Поставщик</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--inventory)"></span> Склад / Магазин</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--client)"></span> Клиент</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--order)"></span> Заказ</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--florist)"></span> Флорист</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--delivery)"></span> Доставка</div>
+  <div class="legend-item"><span class="legend-dot" style="background:var(--accent3)"></span> CRM-система</div>
+</div>
+
+<div class="diagram">
+
+  <!-- ═══ SECTION 1: ОБЩИЙ БИЗНЕС-ПРОЦЕСС ═══ -->
+  <div class="section animate delay-2">
+    <div class="section-title">01 — Главный бизнес-процесс</div>
+
+    <div class="phase-band"><span class="phase-num">ФАЗА 01</span> Поставка цветов</div>
+    <div class="full-flow">
+      <div class="flow-step">
+        <div class="flow-col active supplier">
+          <div class="col-label">Поставщик</div>
+          <div class="col-title">Еженедельная поставка</div>
+          <div class="col-detail">Разные цветы каждую неделю.<br>Нет фиксированного ассортимента</div>
+        </div>
+        <div class="flow-col active system">
+          <div class="col-label">CRM-система</div>
+          <div class="col-title">Приём накладной</div>
+          <div class="col-detail">Цветы вносятся в систему. Кол-во, тип, свежесть, цена закупки</div>
+        </div>
+        <div class="flow-col active inventory">
+          <div class="col-label">Склад</div>
+          <div class="col-title">Обновление остатков</div>
+          <div class="col-detail">Автоматический пересчёт доступных позиций для конструктора</div>
+        </div>
+        <div class="flow-col inactive"></div>
+      </div>
+    </div>
+
+    <div class="phase-band" style="margin-top:32px"><span class="phase-num">ФАЗА 02</span> Клиент — точка входа</div>
+
+    <!-- DECISION -->
+    <div class="decision-block" style="flex-direction:column; gap:12px;">
+      <div class="decision-shape"><span>Как пришёл клиент?</span></div>
+      <div class="decision-paths">
+        <div class="decision-path">
+          <span class="path-dot" style="background:var(--client)"></span>
+          <span>Онлайн-заказ</span>
+        </div>
+        <div class="decision-path">
+          <span class="path-dot" style="background:var(--inventory)"></span>
+          <span>Физический магазин</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TWO BRANCHES -->
+    <div style="display:grid; grid-template-columns:1fr 1px 1fr; gap:20px; max-width:1100px; margin:0 auto;">
+      <!-- ONLINE -->
+      <div class="vflow">
+        <div class="node client" style="width:100%">
+          <div class="node-tag">Онлайн-канал</div>
+          <div class="node-title">Клиент открывает сайт</div>
+          <div class="node-desc">Просматривает актуальный ассортимент из CRM. Видит только то, что есть в наличии</div>
+        </div>
+        <div class="v-arrow"></div>
+        <div class="node system" style="width:100%">
+          <div class="node-tag">Конструктор</div>
+          <div class="node-title">Сборка букета онлайн</div>
+          <div class="node-desc">Выбирает цветы, цвета, упаковку, ленты. Видит цену в реальном времени</div>
+          <span class="node-badge" style="background:rgba(110,184,212,0.15);color:var(--client)">Live preview</span>
+        </div>
+        <div class="v-arrow"></div>
+        <div class="node order" style="width:100%">
+          <div class="node-tag">Оформление</div>
+          <div class="node-title">Заказ + оплата</div>
+          <div class="node-desc">Выбирает самовывоз или доставку. Указывает дату, время, адрес. Оплата онлайн</div>
+        </div>
+      </div>
+
+      <!-- DIVIDER -->
+      <div style="background:var(--border); width:1px;"></div>
+
+      <!-- OFFLINE -->
+      <div class="vflow">
+        <div class="node inventory" style="width:100%">
+          <div class="node-tag">Физический магазин</div>
+          <div class="node-title">Клиент приходит лично</div>
+          <div class="node-desc">Видит живые цветы, консультируется с флористом. Сразу выбирает</div>
+        </div>
+        <div class="v-arrow"></div>
+        <div class="node florist" style="width:100%">
+          <div class="node-tag">Планшет флориста</div>
+          <div class="node-title">Флорист вводит заказ</div>
+          <div class="node-desc">Открывает тот же конструктор на планшете. Собирает букет вместе с клиентом</div>
+          <span class="node-badge" style="background:rgba(184,125,184,0.15);color:var(--florist)">POS-интерфейс</span>
+        </div>
+        <div class="v-arrow"></div>
+        <div class="node order" style="width:100%">
+          <div class="node-tag">Касса</div>
+          <div class="node-title">Оплата на месте</div>
+          <div class="node-desc">Наличные / карта. Чек автоматически создаётся в CRM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="join-line" style="margin-top:20px;"></div>
+
+    <div class="phase-band" style="margin-top:32px"><span class="phase-num">ФАЗА 03</span> Обработка и сборка</div>
+    <div class="full-flow">
+      <div class="flow-step">
+        <div class="flow-col active system">
+          <div class="col-label">CRM</div>
+          <div class="col-title">Новый заказ в очереди</div>
+          <div class="col-detail">Флорист получает push-уведомление. Статус: Новый</div>
+        </div>
+        <div class="flow-col active florist">
+          <div class="col-label">Флорист</div>
+          <div class="col-title">Сборка букета</div>
+          <div class="col-detail">Открывает карточку заказа, видит схему состава, собирает</div>
+        </div>
+        <div class="flow-col active inventory">
+          <div class="col-label">Склад</div>
+          <div class="col-title">Списание остатков</div>
+          <div class="col-detail">При отметке "Собран" — остатки автоматически списываются</div>
+        </div>
+        <div class="flow-col active system">
+          <div class="col-label">CRM</div>
+          <div class="col-title">Статус: Готов</div>
+          <div class="col-detail">SMS/Push клиенту. Если доставка — передаётся курьеру</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-band" style="margin-top:32px"><span class="phase-num">ФАЗА 04</span> Передача клиенту</div>
+    <div style="display:grid; grid-template-columns:1fr 1px 1fr; gap:20px; max-width:1100px; margin:0 auto;">
+      <div class="vflow">
+        <div class="node delivery" style="width:100%">
+          <div class="node-tag">Доставка</div>
+          <div class="node-title">Курьер забирает заказ</div>
+          <div class="node-desc">Адрес, время, контакты — всё в приложении курьера</div>
+        </div>
+        <div class="v-arrow"></div>
+        <div class="node delivery" style="width:100%">
+          <div class="node-tag">Доставлен</div>
+          <div class="node-title">Фото + подтверждение</div>
+          <div class="node-desc">Курьер делает фото, клиент получает уведомление. Статус закрыт</div>
+        </div>
+      </div>
+      <div style="background:var(--border); width:1px;"></div>
+      <div class="vflow">
+        <div class="node inventory" style="width:100%">
+          <div class="node-tag">Самовывоз</div>
+          <div class="node-title">Клиент забирает букет</div>
+          <div class="node-desc">Флорист сканирует QR-код заказа или находит по номеру телефона</div>
+        </div>
+        <div class="v-arrow"></div>
+        <div class="node system" style="width:100%">
+          <div class="node-tag">Завершён</div>
+          <div class="node-title">Заказ закрыт</div>
+          <div class="node-desc">CRM записывает в историю клиента. Запускается сбор отзыва</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- ═══ SECTION 2: СТРАНИЦЫ И МОДУЛИ ═══ -->
+  <div class="section animate delay-3">
+    <div class="section-title">02 — Модули и экраны системы</div>
+
+    <div class="pages-grid">
+
+      <div class="page-card">
+        <div class="page-icon">🌸</div>
+        <div class="page-name">Конструктор букета</div>
+        <div class="page-role" style="color:var(--client)">Клиент + Флорист</div>
+        <ul class="page-features">
+          <li>Выбор цветов из актуального стока</li>
+          <li>Перетаскивание / слайдер количества</li>
+          <li>Выбор упаковки, ленты, открытки</li>
+          <li>Live 3D/иллюстрация букета</li>
+          <li>Цена пересчитывается в реальном времени</li>
+          <li>Сохранить как шаблон</li>
+        </ul>
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge blue">Веб</span>
+          <span class="badge purple">Планшет</span>
+        </div>
+      </div>
+
+      <div class="page-card">
+        <div class="page-icon">📦</div>
+        <div class="page-name">Управление стоком</div>
+        <div class="page-role" style="color:var(--inventory)">Администратор</div>
+        <ul class="page-features">
+          <li>Приём поставки — ввод позиций</li>
+          <li>Текущие остатки по видам цветов</li>
+          <li>Срок годности / дата поставки</li>
+          <li>Авто-скрытие закончившихся позиций</li>
+          <li>Алёрты при критически малом остатке</li>
+          <li>История поставок и расхода</li>
+        </ul>
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge green">Внутренний</span>
+        </div>
+      </div>
+
+      <div class="page-card">
+        <div class="page-icon">📋</div>
+        <div class="page-name">Очередь заказов</div>
+        <div class="page-role" style="color:var(--florist)">Флорист</div>
+        <ul class="page-features">
+          <li>Список заказов с приоритетом по времени</li>
+          <li>Карточка заказа с составом букета</li>
+          <li>Статусы: Новый → В работе → Готов</li>
+          <li>Печать ярлыка / карточки заказа</li>
+          <li>Срочные заказы — визуальный акцент</li>
+        </ul>
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge purple">Планшет</span>
+          <span class="badge green">Десктоп</span>
+        </div>
+      </div>
+
+      <div class="page-card">
+        <div class="page-icon">🚚</div>
+        <div class="page-name">Доставка</div>
+        <div class="page-role" style="color:var(--delivery)">Курьер</div>
+        <ul class="page-features">
+          <li>Список доставок на сегодня</li>
+          <li>Навигация по адресу</li>
+          <li>Фото при вручении</li>
+          <li>Смена статуса одним тапом</li>
+          <li>Связь с клиентом в один клик</li>
+        </ul>
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge teal">Мобильное приложение</span>
+        </div>
+      </div>
+
+      <div class="page-card">
+        <div class="page-icon">👥</div>
+        <div class="page-name">База клиентов</div>
+        <div class="page-role" style="color:var(--accent3)">CRM-ядро</div>
+        <ul class="page-features">
+          <li>История заказов каждого клиента</li>
+          <li>Любимые цветы и предпочтения</li>
+          <li>Дни рождения → авто-напоминания</li>
+          <li>Теги: VIP, Постоянный, Корпоратив</li>
+          <li>Сегментация для рассылок</li>
+        </ul>
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge blue">CRM</span>
+        </div>
+      </div>
+
+      <div class="page-card">
+        <div class="page-icon">📊</div>
+        <div class="page-name">Аналитика</div>
+        <div class="page-role" style="color:var(--accent)">Владелец</div>
+        <ul class="page-features">
+          <li>Продажи по дням / неделям / месяцам</li>
+          <li>Топ-цветы по спросу</li>
+          <li>Средний чек и динамика</li>
+          <li>Эффективность доставки</li>
+          <li>Остатки vs расход — прогноз заказа</li>
+        </ul>
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge orange">Дашборд</span>
+        </div>
+      </div>
+
+      <div class="page-card">
+        <div class="page-icon">💬</div>
+        <div class="page-name">Уведомления</div>
+        <div class="page-role" style="color:var(--client)">Клиент</div>
+        <ul class="page-features">
+          <li>SMS / WhatsApp при смене статуса</li>
+          <li>Push: «Ваш букет готов»</li>
+          <li>Напоминание за день до даты доставки</li>
+          <li>Запрос отзыва после получения</li>
+          <li>Авто-купон на следующий заказ</li>
+        </ul>
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge blue">Авто</span>
+          <span class="badge teal">WhatsApp</span>
+        </div>
+      </div>
+
+      <div class="page-card">
+        <div class="page-icon">💳</div>
+        <div class="page-name">Оплата и касса</div>
+        <div class="page-role" style="color:var(--order)">Единая точка</div>
+        <ul class="page-features">
+          <li>Онлайн: карта, PayPal, Revolut</li>
+          <li>Оффлайн: наличные / терминал</li>
+          <li>Депозит / предоплата при заказе</li>
+          <li>Автоматические чеки на email</li>
+          <li>Возврат — в 2 клика</li>
+        </ul>
+        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge red">Финансы</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- ═══ SECTION 3: ТЕХНИЧЕСКИЙ СТЕК ═══ -->
+  <div class="section animate delay-4">
+    <div class="section-title">03 — Технический стек и интеграции</div>
+
+    <table class="feature-table">
+      <thead>
+        <tr>
+          <th>Слой</th>
+          <th>Технология</th>
+          <th>Назначение</th>
+          <th>Приоритет</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--client)">Frontend (клиент)</td>
+          <td>React + Next.js</td>
+          <td>Сайт + конструктор букета + ЛК клиента</td>
+          <td><span class="badge red">Критичный</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--florist)">Frontend (флорист)</td>
+          <td>React PWA / iPad app</td>
+          <td>Планшетный POS-интерфейс, очередь заказов</td>
+          <td><span class="badge red">Критичный</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--delivery)">Мобайл (курьер)</td>
+          <td>React Native / Expo</td>
+          <td>Список доставок, навигация, статусы</td>
+          <td><span class="badge orange">Высокий</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent3)">Backend / API</td>
+          <td>Node.js + Fastify</td>
+          <td>REST API, бизнес-логика, очереди задач</td>
+          <td><span class="badge red">Критичный</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--inventory)">База данных</td>
+          <td>PostgreSQL + Redis</td>
+          <td>Основные данные + кэш остатков в реальном времени</td>
+          <td><span class="badge red">Критичный</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--accent)">Хранилище</td>
+          <td>S3 / Cloudflare R2</td>
+          <td>Фото цветов, фото доставки, иллюстрации букетов</td>
+          <td><span class="badge orange">Высокий</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--client)">Уведомления</td>
+          <td>Twilio / WhatsApp API</td>
+          <td>SMS, WhatsApp Business: статусы заказов</td>
+          <td><span class="badge orange">Высокий</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--order)">Оплата</td>
+          <td>Stripe / Revolut Business</td>
+          <td>Онлайн-оплата, рефанды, POS-терминал</td>
+          <td><span class="badge red">Критичный</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted)">Аналитика</td>
+          <td>Metabase / Recharts</td>
+          <td>Дашборд владельца, отчёты, прогнозы</td>
+          <td><span class="badge green">Средний</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted)">Авторизация</td>
+          <td>Clerk / Auth.js</td>
+          <td>Роли: клиент, флорист, курьер, админ</td>
+          <td><span class="badge orange">Высокий</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- ═══ SECTION 4: РОЛИ ═══ -->
+  <div class="section">
+    <div class="section-title">04 — Роли в системе</div>
+    <div class="pages-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+
+      <div class="page-card" style="border-left:3px solid var(--client)">
+        <div class="page-name" style="color:var(--client)">Клиент</div>
+        <ul class="page-features" style="margin-top:8px">
+          <li>Регистрация / вход</li>
+          <li>Конструктор букета</li>
+          <li>Оформление заказа</li>
+          <li>Отслеживание статуса</li>
+          <li>История заказов</li>
+          <li>Повторный заказ в 1 клик</li>
+        </ul>
+      </div>
+
+      <div class="page-card" style="border-left:3px solid var(--florist)">
+        <div class="page-name" style="color:var(--florist)">Флорист</div>
+        <ul class="page-features" style="margin-top:8px">
+          <li>Очередь заказов (планшет)</li>
+          <li>Конструктор + ввод заказа с клиента</li>
+          <li>Смена статуса сборки</li>
+          <li>Приём поставки в сток</li>
+          <li>Управление остатками</li>
+        </ul>
+      </div>
+
+      <div class="page-card" style="border-left:3px solid var(--delivery)">
+        <div class="page-name" style="color:var(--delivery)">Курьер</div>
+        <ul class="page-features" style="margin-top:8px">
+          <li>Список доставок на день</li>
+          <li>Навигация и связь с клиентом</li>
+          <li>Фото при вручении</li>
+          <li>Статусы доставки</li>
+        </ul>
+      </div>
+
+      <div class="page-card" style="border-left:3px solid var(--accent)">
+        <div class="page-name" style="color:var(--accent)">Владелец / Адм.</div>
+        <ul class="page-features" style="margin-top:8px">
+          <li>Полная аналитика</li>
+          <li>Управление ценами и меню</li>
+          <li>База клиентов</li>
+          <li>Управление командой</li>
+          <li>Настройка уведомлений</li>
+          <li>Финансовые отчёты</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- footer -->
+<div style="text-align:center; padding:40px 0 0; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted);">
+  Flowers House Varna · CRM Architecture · 2026
+</div>
+
+</body>
+</html>

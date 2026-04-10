@@ -1,0 +1,4240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowers House Varna — CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* ── Flowers House Palette · Blushing Bakery System ── */
+  --berry:       #7A4E73;   /* Berry Primary  */
+  --berry-dark:  #5C3457;   /* sidebar bg     */
+  --berry-mid:   #9B6B94;   /* hover accents  */
+  --berry-dim:   rgba(122,78,115,0.12);
+  --peach:       #F1BBA4;   /* Peach Brand    */
+  --peach-dim:   rgba(241,187,164,0.25);
+  --rose:        #F0A8C6;   /* Rose Soft      */
+  --rose-deep:   #C4607A;   /* Rose action    */
+  --rose-dim:    rgba(240,168,198,0.2);
+  --blush:       #FCEEF6;   /* Card Blush     */
+  --dough:       #FAF7F5;   /* Dough Base     */
+  --choco:       #303838;   /* Chocolate text */
+
+  /* ── Functional UI colours ── */
+  --bg:          #FAF7F5;
+  --surface:     #FFFFFF;
+  --card:        #FFFFFF;
+  --card-hover:  #FDF5FB;
+  --border:      #EDD8E8;
+  --border-light:#F5ECF4;
+  --gold:        var(--berry);    /* alias – keeps old refs working */
+  --gold-dim:    var(--berry-dim);
+  --green:       #5A9E6A;
+  --green-dim:   rgba(90,158,106,0.12);
+  --blue:        #5AAAC8;
+  --blue-dim:    rgba(90,170,200,0.12);
+  --purple:      #9B6BB8;
+  --purple-dim:  rgba(155,107,184,0.12);
+  --teal:        #6BAAA0;
+  --teal-dim:    rgba(107,170,160,0.12);
+  --coral:       #C47A6B;
+  --text:        #303838;
+  --text-dim:    #7A6878;
+  --text-muted:  #B0A0B0;
+  --sidebar-w:   230px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  display: flex;
+}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--berry-dark);
+  border-right: none;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+.sidebar::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: -40px;
+  width: 160px; height: 160px;
+  background: rgba(240,168,198,0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.sidebar-brand {
+  padding: 24px 20px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.brand-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.1;
+}
+.brand-mark em { color: var(--rose); font-style: italic; }
+.brand-sub {
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-top: 5px;
+}
+
+.nav-group { padding: 14px 0 4px; }
+.nav-group-label {
+  font-size: 7.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  padding: 0 20px 8px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  color: rgba(255,255,255,0.55);
+  position: relative;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+.nav-item.active {
+  color: #fff;
+  background: rgba(240,168,198,0.18);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--rose);
+  border-radius: 0 2px 2px 0;
+}
+.nav-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.nav-count {
+  margin-left: auto;
+  font-size: 9px;
+  background: rgba(255,255,255,0.1);
+  padding: 2px 6px;
+  border-radius: 10px;
+  color: var(--text-dim);
+}
+.nav-item.active .nav-count { background: var(--berry-dim); color: var(--berry); }
+
+.sidebar-user {
+  margin-top: auto;
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.user-av {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: rgba(240,168,198,0.2);
+  border: 1px solid rgba(240,168,198,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  color: var(--rose);
+  flex-shrink: 0;
+}
+.user-name { font-size: 11px; color: rgba(255,255,255,0.85); font-weight: 500; }
+.user-role { font-size: 9px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+
+/* ═══ MAIN LAYOUT ═══ */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.topbar {
+  height: 54px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--choco);
+  flex: 1;
+}
+.topbar-title em { color: var(--berry); font-style: italic; font-weight: 400; }
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--dough);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 7px 14px;
+  width: 260px;
+}
+.search-wrap input {
+  background: none; border: none; outline: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--text);
+  width: 100%;
+}
+.search-wrap input::placeholder { color: var(--text-muted); }
+
+.topbar-btn {
+  background: var(--berry);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+.topbar-btn:hover { background: var(--berry-dark); box-shadow: 0 4px 12px rgba(122,78,115,0.3); }
+
+.topbar-icon-btn {
+  width: 34px; height: 34px;
+  background: var(--dough);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  transition: border-color 0.15s;
+  position: relative;
+}
+.topbar-icon-btn:hover { border-color: var(--berry); }
+.notif-pip {
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 6px; height: 6px;
+  background: var(--rose);
+  border-radius: 50%;
+}
+
+/* ═══ CONTENT AREA ═══ */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ═══ VIEWS ═══ */
+.view { display: none; animation: fadeUp 0.25s ease; }
+.view.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ DASHBOARD ═══ */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.kpi {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 1px 4px rgba(122,78,115,0.06);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: var(--berry); }
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.kpi { border-radius: 12px; }
+.kpi.gold::before { background: var(--berry); }
+.kpi.rose::before { background: var(--rose-deep); }
+.kpi.green::before { background: var(--green); }
+.kpi.blue::before { background: var(--blue); }
+.kpi.purple::before { background: var(--purple); }
+
+.kpi-label {
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.kpi-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--choco);
+  line-height: 1;
+}
+.kpi-value.gold { color: var(--berry); }
+.kpi-trend {
+  font-size: 9px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.trend-up { color: var(--green); }
+.trend-dn { color: var(--coral); }
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 300px;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.dash-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(122,78,115,0.06);
+}
+.panel-head {
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panel-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--choco);
+}
+.panel-link {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--berry);
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+}
+.panel-link:hover { text-decoration: underline; }
+.panel-body { padding: 14px 18px; }
+
+/* mini bar chart */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 70px;
+}
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: var(--blush);
+  border: 1px solid var(--rose);
+  border-bottom: none;
+  transition: background 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.bar:hover { background: var(--rose-dim); }
+.bar-label { font-size: 8px; color: var(--text-muted); font-weight: 500; }
+
+/* table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.data-table th {
+  text-align: left;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 8px 10px 6px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+}
+.data-table td {
+  padding: 10px 10px;
+  font-size: 11px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-dim);
+  vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tbody tr {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.data-table tbody tr:hover td { background: var(--card-hover); color: var(--text); }
+
+.td-bold { color: var(--text) !important; font-weight: 500; }
+.td-gold { color: var(--berry) !important; }
+.td-berry { color: var(--berry) !important; }
+.td-rose { color: var(--rose) !important; }
+.td-green { color: var(--green) !important; }
+.td-blue { color: var(--blue) !important; }
+.td-purple { color: var(--purple) !important; }
+.td-teal { color: var(--teal) !important; }
+
+/* badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.badge { border-radius: 20px; font-weight: 600; }
+.badge-pending  { background: rgba(241,187,164,0.35); color: #A0502A; border: 1px solid rgba(241,187,164,0.7); }
+.badge-confirm  { background: rgba(90,170,200,0.15); color: #3A7EA0; border: 1px solid rgba(90,170,200,0.4); }
+.badge-prep     { background: rgba(155,107,184,0.12); color: var(--purple); border: 1px solid rgba(155,107,184,0.3); }
+.badge-delivery { background: rgba(196,122,107,0.12); color: var(--coral); border: 1px solid rgba(196,122,107,0.3); }
+.badge-done     { background: rgba(90,158,106,0.12); color: #2E7A40; border: 1px solid rgba(90,158,106,0.35); }
+.badge-cancel   { background: #F5ECF4; color: var(--text-muted); border: 1px solid var(--border); }
+.badge-vip      { background: rgba(122,78,115,0.12); color: var(--berry); border: 1px solid rgba(122,78,115,0.3); }
+.badge-new      { background: rgba(90,170,200,0.12); color: #3A7EA0; border: 1px solid rgba(90,170,200,0.3); }
+.badge-regular  { background: var(--blush); color: var(--berry); border: 1px solid var(--border); }
+.badge-low      { background: rgba(196,122,107,0.12); color: var(--coral); border: 1px solid rgba(196,122,107,0.3); }
+.badge-in       { background: rgba(90,158,106,0.12); color: #2E7A40; border: 1px solid rgba(90,158,106,0.35); }
+.badge-out      { background: rgba(90,82,72,0.3); color: var(--text-dim); border: 1px solid var(--border); }
+
+/* activity feed */
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.activity-item:last-child { border-bottom: none; }
+.act-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.act-text { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+.act-text strong { color: var(--text); }
+.act-time { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+
+/* pipeline */
+.pipeline {
+  display: flex;
+  gap: 0;
+}
+.pipe-stage {
+  flex: 1;
+  padding: 12px 10px;
+  text-align: center;
+  border-right: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.pipe-stage:last-child { border-right: none; }
+.pipe-stage:hover { background: var(--card-hover); }
+.pipe-count {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+}
+.pipe-name {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 600;
+}
+.pipe-bar {
+  height: 2px;
+  border-radius: 1px;
+  margin-top: 8px;
+}
+
+/* ═══ CLIENTS VIEW ═══ */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.filter-chip {
+  padding: 5px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text-dim);
+}
+.filter-chip:hover { border-color: var(--berry); color: var(--berry); background: var(--blush); }
+.filter-chip.active { background: var(--berry-dim); border-color: var(--berry); color: var(--berry); font-weight: 600; }
+
+.filter-search-sm {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  margin-left: auto;
+}
+.filter-search-sm input {
+  background: none; border: none; outline: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px; color: var(--text); width: 180px;
+}
+.filter-search-sm input::placeholder { color: var(--text-muted); }
+
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.client-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(122,78,115,0.05);
+}
+.client-card:hover {
+  border-color: var(--berry);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(122,78,115,0.12);
+}
+
+.cc-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.cc-av {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--blush);
+  border: 1px solid rgba(122,78,115,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  color: var(--berry);
+  flex-shrink: 0;
+}
+.cc-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--choco);
+}
+.cc-contact { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
+
+.cc-stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.cc-stat {
+  background: var(--dough);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+.cc-stat-v {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--choco);
+  font-weight: 700;
+}
+.cc-stat-l { font-size: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+.cc-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 9px; color: var(--text-muted);
+}
+
+/* ═══ ORDERS VIEW ═══ */
+.orders-pipeline {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.order-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(122,78,115,0.05);
+}
+.order-row:hover { border-color: var(--rose-deep); box-shadow: 0 4px 16px rgba(122,78,115,0.1); }
+.order-row:last-child { margin-bottom: 0; }
+.or-id { font-size: 10px; color: var(--text-muted); width: 68px; flex-shrink: 0; font-weight: 600; }
+.or-client { flex: 1; }
+.or-client-name { font-size: 13px; font-family: 'Playfair Display', serif; font-weight: 600; color: var(--choco); }
+.or-client-detail { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
+.or-product { flex: 1; font-size: 11px; color: var(--text-dim); }
+.or-florist { font-size: 10px; color: var(--purple); width: 100px; flex-shrink: 0; font-weight: 600; }
+.or-total {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--berry);
+  font-weight: 700;
+  width: 80px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.or-date { font-size: 10px; color: var(--text-muted); width: 90px; text-align: right; flex-shrink: 0; }
+
+/* ═══ INVENTORY VIEW ═══ */
+.inv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.inv-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  box-shadow: 0 1px 3px rgba(122,78,115,0.05);
+}
+.inv-card:hover { border-color: var(--green); box-shadow: 0 4px 16px rgba(90,158,106,0.12); transform: translateY(-2px); }
+.inv-flower-img { width:52px;height:52px;object-fit:contain;border-radius:0;border:none;background:transparent; }
+.inv-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--choco);
+  margin-bottom: 3px;
+}
+.inv-cat { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 10px; }
+.inv-bar-wrap { background: var(--surface); border-radius: 2px; height: 4px; margin-bottom: 6px; overflow: hidden; }
+.inv-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+.inv-footer { display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+.inv-qty { color: var(--text-dim); }
+.inv-price { color: var(--berry); font-size: 11px; }
+
+/* ═══ SUPPLIERS VIEW ═══ */
+.supplier-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(122,78,115,0.05);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  margin-bottom: 8px;
+}
+.supplier-row:hover { border-color: var(--berry); box-shadow: 0 4px 16px rgba(122,78,115,0.1); }
+.sup-logo {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  background: var(--blush);
+  border: 1px solid var(--border);
+}
+.sup-info { flex: 1; }
+.sup-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; color: var(--choco); }
+.sup-detail { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
+.sup-categories { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+.sup-cat-tag { font-size: 8px; padding: 3px 9px; border: 1px solid var(--border); border-radius: 20px; color: var(--berry); background: var(--blush); font-weight: 600; }
+.sup-stat { text-align: center; padding: 0 16px; border-right: 1px solid var(--border-light); }
+.sup-stat:last-of-type { border-right: none; }
+.sup-stat-v { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--berry); }
+.sup-stat-l { font-size: 8px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
+
+/* ═══ FLORISTS VIEW ═══ */
+.florist-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(122,78,115,0.05);
+}
+.florist-card:hover { border-color: var(--berry); box-shadow: 0 6px 20px rgba(122,78,115,0.12); transform: translateY(-2px); }
+.fl-head { display: flex; align-items: center; gap: 12px; }
+.fl-av {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--blush);
+  border: 1px solid rgba(122,78,115,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px; color: var(--berry);
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.fl-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; color: var(--choco); }
+.fl-role { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
+.fl-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+.fl-stat { background: var(--dough); border-radius: 8px; padding: 8px; text-align: center; }
+.fl-stat-v { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--choco); }
+.fl-stat-l { font-size: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+.fl-skills { display: flex; gap: 5px; flex-wrap: wrap; }
+.fl-skill { font-size: 9px; padding: 3px 10px; border: 1px solid rgba(122,78,115,0.2); border-radius: 20px; color: var(--berry); background: var(--blush); font-weight: 600; }
+
+/* ═══ DELIVERY VIEW ═══ */
+.delivery-layout { display: grid; grid-template-columns: 1fr 280px; gap: 16px; }
+.timeline-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.timeline-item:last-child { border-bottom: none; }
+.timeline-item:hover { background: var(--card-hover); }
+.tl-time { font-size: 10px; color: var(--text-muted); width: 55px; flex-shrink: 0; padding-top: 2px; }
+.tl-dot-col { display: flex; flex-direction: column; align-items: center; gap: 0; flex-shrink: 0; }
+.tl-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+.tl-line { flex: 1; width: 1px; background: var(--border); min-height: 20px; }
+.tl-info { flex: 1; padding-bottom: 8px; }
+.tl-order-id { font-size: 9px; color: var(--text-muted); letter-spacing: 0.1em; }
+.tl-client { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 600; color: var(--choco); margin: 2px 0; }
+.tl-address { font-size: 10px; color: var(--text-dim); }
+.tl-items { font-size: 10px; color: var(--teal); margin-top: 3px; }
+
+.driver-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(122,78,115,0.05);
+}
+.dr-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.dr-av {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--blush);
+  border: 1px solid rgba(107,170,160,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; color: var(--teal); font-weight: 700;
+}
+.dr-name { font-size: 13px; color: var(--choco); font-weight: 600; }
+.dr-status { font-size: 9px; color: var(--teal); margin-top: 1px; }
+.dr-progress { margin-top: 8px; }
+.dr-prog-label { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); margin-bottom: 4px; }
+.prog-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--teal); border-radius: 2px; }
+
+/* ═══ MODAL ═══ */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(48,56,56,0.35);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  width: 580px;
+  max-width: 95vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(122,78,115,0.2);
+  animation: modalIn 0.22s ease;
+}
+@keyframes modalIn {
+  from { transform: scale(0.96) translateY(8px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+.modal-header {
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(to right, var(--blush), var(--surface));
+}
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--choco);
+}
+.modal-close {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--dough);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim);
+  transition: all 0.15s;
+}
+.modal-close:hover { border-color: var(--rose-deep); color: var(--rose-deep); background: var(--blush); }
+.modal-body { padding: 22px 24px; }
+
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.detail-block {
+  background: var(--dough);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.detail-label { font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; }
+.detail-value { font-size: 13px; color: var(--choco); font-weight: 500; }
+
+.modal-section { margin-top: 18px; }
+.modal-section-title {
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--berry); border-left: 3px solid var(--rose);
+  padding-left: 9px; margin-bottom: 12px; font-weight: 700;
+}
+
+.history-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--border-light);
+  font-size: 11px;
+}
+.history-row:last-child { border-bottom: none; }
+
+.modal-actions { display: flex; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.btn { padding: 9px 20px; border-radius: 20px; border: none; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; cursor: pointer; transition: all 0.15s; }
+.btn-gold { background: var(--berry); color: #fff; }
+.btn-gold:hover { background: var(--berry-dark); box-shadow: 0 4px 12px rgba(122,78,115,0.3); }
+.btn-outline { background: none; border: 1px solid var(--border); color: var(--text-dim); }
+.btn-outline:hover { border-color: var(--berry); color: var(--berry); background: var(--blush); }
+.btn-rose { background: var(--blush); border: 1px solid rgba(196,96,122,0.3); color: var(--rose-deep); }
+.btn-green { background: rgba(90,158,106,0.1); border: 1px solid rgba(90,158,106,0.3); color: #2E7A40; }
+.btn-wa { background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.35); color: #1A9E4E; }
+.btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* status changer */
+.status-steps {
+  display: flex; align-items: center; gap: 0;
+  background: var(--dough); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+  margin-top: 12px;
+}
+.status-step {
+  flex: 1; padding: 9px 6px; text-align: center;
+  font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase;
+  cursor: pointer; transition: background 0.15s;
+  border-right: 1px solid var(--border-light);
+  color: var(--text-muted); font-weight: 600;
+}
+.status-step:last-child { border-right: none; }
+.status-step.done { background: rgba(90,158,106,0.12); color: #2E7A40; }
+.status-step.current { background: var(--berry-dim); color: var(--berry); }
+.status-step:hover:not(.done):not(.current) { background: var(--blush); color: var(--berry); }
+
+/* toast */
+.toast {
+  position: fixed;
+  bottom: 22px; right: 22px;
+  background: var(--choco);
+  border: none;
+  border-left: 4px solid var(--rose);
+  border-radius: 12px;
+  padding: 13px 20px;
+  font-size: 11px; color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 500;
+  box-shadow: 0 8px 32px rgba(48,56,56,0.25);
+  z-index: 9999;
+  transform: translateY(80px); opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  max-width: 300px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast strong { color: var(--rose); }
+
+/* new order form */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
+.form-input, .form-select {
+  background: var(--dough);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: var(--choco);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.form-input:focus, .form-select:focus { border-color: var(--berry); box-shadow: 0 0 0 3px var(--berry-dim); }
+.form-select option { background: var(--surface); color: var(--choco); }
+
+/* page header */
+.page-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.page-h-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--choco);
+}
+.page-h-sub { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-weight: 500; }
+
+/* ═══ SLIDE PANEL ═══ */
+.slide-panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 480px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: -8px 0 40px rgba(122,78,115,0.14);
+  z-index: 800;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.slide-panel.open { transform: translateX(0); }
+.slide-panel-header {
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex; align-items: flex-start; gap: 12px;
+  background: linear-gradient(135deg, var(--blush) 0%, var(--surface) 60%);
+  flex-shrink: 0;
+}
+.slide-panel-id {
+  font-size: 10px; color: var(--text-muted); font-weight: 700;
+  letter-spacing: 0.12em; margin-bottom: 4px;
+}
+.slide-panel-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700; color: var(--choco);
+}
+.slide-panel-close {
+  margin-left: auto; flex-shrink: 0;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--dough); border: 1px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--text-dim);
+  transition: all 0.15s;
+}
+.slide-panel-close:hover { background: var(--rose-deep); color: #fff; border-color: var(--rose-deep); }
+.slide-panel-body {
+  flex: 1; overflow-y: auto; padding: 20px 22px;
+}
+.slide-panel-footer {
+  padding: 14px 22px;
+  border-top: 1px solid var(--border-light);
+  display: flex; gap: 8px; flex-wrap: wrap;
+  background: var(--surface);
+  flex-shrink: 0;
+}
+.slide-overlay {
+  position: fixed; inset: 0;
+  background: rgba(48,56,56,0.15);
+  z-index: 799;
+  display: none;
+  backdrop-filter: blur(1px);
+}
+.slide-overlay.open { display: block; }
+
+/* ═══ INLINE ORDER ACTIONS ═══ */
+.order-row { position: relative; }
+.order-quick-actions {
+  display: flex; align-items: center; gap: 4px;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.order-row:hover .order-quick-actions { opacity: 1; }
+.qa-btn {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--dough);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  transition: all 0.15s;
+  text-decoration: none;
+  color: inherit;
+}
+.qa-btn:hover { border-color: var(--berry); background: var(--blush); transform: scale(1.1); }
+.qa-btn.advance { background: var(--berry-dim); border-color: var(--berry); color: var(--berry); font-size: 11px; font-weight: 700; }
+.qa-btn.advance:hover { background: var(--berry); color: #fff; }
+.qa-btn.danger:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
+
+/* Clickable badge */
+.badge-clickable { cursor: pointer; }
+.badge-clickable:hover { filter: brightness(0.9); transform: scale(1.04); display: inline-flex; }
+
+/* ═══ STATUS FLOW VISUAL (order detail) ═══ */
+.status-timeline {
+  display: flex; gap: 0;
+  margin: 14px 0;
+  position: relative;
+}
+.status-timeline::before {
+  content: '';
+  position: absolute;
+  top: 13px; left: 13px; right: 13px;
+  height: 2px; background: var(--border);
+  z-index: 0;
+}
+.st-step {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 5px; position: relative; z-index: 1;
+  cursor: pointer;
+}
+.st-dot {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  transition: all 0.2s;
+}
+.st-dot.done { background: var(--green); border-color: var(--green); color: #fff; }
+.st-dot.current { background: var(--berry); border-color: var(--berry); color: #fff; box-shadow: 0 0 0 4px var(--berry-dim); }
+.st-label {
+  font-size: 8px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted); text-align: center;
+  transition: color 0.2s;
+}
+.st-step:hover .st-dot { border-color: var(--berry); transform: scale(1.1); }
+.st-step:hover .st-label { color: var(--berry); }
+
+/* ═══ PRODUCT PICKER ═══ */
+.product-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+.pp-item {
+  background: var(--dough);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.pp-item:hover { border-color: var(--berry); background: var(--blush); }
+.pp-item.selected { border-color: var(--berry); background: var(--berry-dim); }
+.pp-item.selected::after {
+  content: '✓';
+  position: absolute; top: 4px; right: 6px;
+  font-size: 10px; color: var(--berry); font-weight: 700;
+}
+.pp-emoji { font-size: 20px; }
+.pp-name { font-size: 9px; font-weight: 600; color: var(--choco); margin-top: 3px; }
+.pp-price { font-size: 9px; color: var(--berry); font-weight: 700; }
+.pp-qty { display: flex; align-items: center; gap: 5px; justify-content: center; margin-top: 5px; }
+.pp-qty-btn {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; font-size: 12px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; transition: all 0.12s; color: var(--berry);
+}
+.pp-qty-btn:hover { background: var(--berry); color: #fff; border-color: var(--berry); }
+.pp-qty-n { font-size: 11px; font-weight: 700; color: var(--choco); min-width: 14px; text-align: center; }
+
+/* ═══ ORDER CART (in new order modal) ═══ */
+.order-cart-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px; background: var(--dough);
+  border-radius: 8px; margin-bottom: 5px;
+  animation: slideIn 0.2s ease;
+}
+.oc-emoji { font-size: 16px; }
+.oc-name { flex: 1; font-size: 11px; font-weight: 600; color: var(--choco); }
+.oc-qty { font-size: 10px; color: var(--text-muted); }
+.oc-price { font-size: 11px; font-weight: 700; color: var(--berry); }
+.oc-rm { cursor: pointer; color: var(--text-muted); font-size: 14px; transition: color 0.1s; }
+.oc-rm:hover { color: var(--rose-deep); }
+
+/* ═══ INVENTORY CONTROLS ═══ */
+.inv-controls {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 8px;
+}
+.inv-adj-btn {
+  width: 26px; height: 26px;
+  border-radius: 7px; border: 1px solid var(--border);
+  background: var(--dough); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; color: var(--berry);
+  transition: all 0.13s; flex-shrink: 0;
+}
+.inv-adj-btn:hover { background: var(--berry); color: #fff; border-color: var(--berry); transform: scale(1.08); }
+.inv-qty-display {
+  flex: 1; text-align: center; font-size: 12px;
+  font-weight: 700; color: var(--choco);
+}
+.inv-reorder-btn {
+  font-size: 9px; padding: 4px 10px;
+  border-radius: 20px; border: 1px solid var(--border);
+  background: var(--dough); cursor: pointer;
+  color: var(--text-dim); font-family: 'Montserrat', sans-serif;
+  font-weight: 600; transition: all 0.13s;
+}
+.inv-reorder-btn:hover { background: var(--green); color: #fff; border-color: var(--green); }
+
+/* ═══ CLIENT HOVER ACTIONS ═══ */
+.cc-actions {
+  display: flex; gap: 5px;
+  opacity: 0; transition: opacity 0.15s;
+  margin-top: 8px;
+}
+.client-card:hover .cc-actions { opacity: 1; }
+.cc-action-btn {
+  flex: 1; padding: 6px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--dough);
+  cursor: pointer; font-size: 10px; font-weight: 600;
+  color: var(--text-dim); font-family: 'Montserrat', sans-serif;
+  transition: all 0.13s; text-align: center;
+}
+.cc-action-btn:hover { border-color: var(--berry); color: var(--berry); background: var(--blush); }
+.cc-action-btn.wa:hover { border-color: #25d366; color: #25d366; background: rgba(37,211,102,0.08); }
+
+/* ═══ LIVE CLOCK ═══ */
+.topbar-clock {
+  font-size: 11px; font-weight: 600;
+  color: var(--text-muted); letter-spacing: 0.04em;
+  white-space: nowrap; flex-shrink: 0;
+}
+
+/* ═══ INVOICE PRINT ═══ */
+@media print {
+  .sidebar, .topbar, .slide-panel,
+  .slide-overlay, #order-notif, #toast,
+  .modal-overlay { display: none !important; }
+  .main { width: 100%; }
+  .content { padding: 0; }
+  #print-invoice {
+    display: block !important;
+    position: fixed; inset: 0;
+    background: white; z-index: 9999;
+    padding: 40px;
+  }
+}
+#print-invoice { display: none; }
+
+/* ═══ STATS BAR ═══ */
+.stats-bar {
+  display: flex; gap: 10px;
+  margin-bottom: 16px;
+}
+.stat-pill {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-size: 11px; font-weight: 600; color: var(--choco);
+  display: flex; align-items: center; gap: 6px;
+  box-shadow: 0 1px 3px rgba(122,78,115,0.05);
+}
+.stat-pill span { color: var(--berry); font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; }
+
+/* ═══ SEARCH HIGHLIGHT ═══ */
+.search-match { background: rgba(122,78,115,0.12); border-radius: 3px; }
+
+/* ═══ DELIVERY MARK DONE BTN ═══ */
+.tl-done-btn {
+  padding: 4px 12px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--dough);
+  cursor: pointer; font-size: 9px; font-weight: 700;
+  color: var(--text-dim); font-family: 'Montserrat', sans-serif;
+  transition: all 0.13s; white-space: nowrap; align-self: center;
+}
+.tl-done-btn:hover { background: var(--green); color: #fff; border-color: var(--green); }
+.tl-done-btn.done-state { background: rgba(90,158,106,0.12); color: #2E7A40; border-color: rgba(90,158,106,0.3); cursor: default; }
+
+/* ═══ CONTEXT MENU ═══ */
+.ctx-menu {
+  position: fixed; z-index: 900;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 5px;
+  box-shadow: 0 8px 30px rgba(122,78,115,0.18);
+  min-width: 170px;
+  animation: fadeUp 0.15s ease;
+}
+.ctx-item {
+  padding: 8px 12px; border-radius: 7px;
+  cursor: pointer; font-size: 11px; font-weight: 500;
+  color: var(--choco); display: flex; align-items: center; gap: 8px;
+  transition: background 0.1s;
+}
+.ctx-item:hover { background: var(--blush); color: var(--berry); }
+.ctx-item.danger:hover { background: #fef2f2; color: #ef4444; }
+.ctx-sep { height: 1px; background: var(--border-light); margin: 4px 5px; }
+
+/* ══════════════════════════════════════════
+   BOUQUET STUDIO
+══════════════════════════════════════════ */
+.studio-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 260px;
+  gap: 16px;
+  height: clamp(700px, calc(100vh - 120px), 1000px);
+  min-height: 700px;
+}
+
+/* Palette */
+.studio-palette {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  overflow-y: auto;
+  box-shadow: 0 1px 4px rgba(122,78,115,0.06);
+}
+.studio-palette-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--choco); margin-bottom: 14px;
+}
+.palette-section { margin-bottom: 14px; }
+.palette-section-label {
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 7px;
+}
+.palette-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.palette-flower {
+  background: var(--dough);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.34,1.56,0.64,1);
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+.palette-flower:hover {
+  border-color: var(--rose-deep);
+  background: var(--blush);
+  transform: scale(1.06);
+  box-shadow: 0 4px 14px rgba(196,96,122,0.2);
+}
+.palette-flower:active { transform: scale(0.95); }
+.palette-flower.adding { animation: paletteClick 0.35s ease; }
+@keyframes paletteClick {
+  0%  { transform: scale(1); }
+  40% { transform: scale(0.85); }
+  70% { transform: scale(1.15); }
+  100%{ transform: scale(1); }
+}
+.pf-img {
+  width: 90px; height: 90px; object-fit: contain;
+  border-radius: 0; display: block; margin: 0 auto 5px;
+  border: none;
+  transition: transform 0.15s, filter 0.15s;
+  background: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+.palette-flower:hover .pf-img { filter: drop-shadow(0 6px 12px rgba(196,96,122,0.4)); transform: scale(1.06); }
+.pf-name  { font-size: 8px; color: var(--choco); font-weight: 600; line-height: 1.2; }
+.pf-price { font-size: 8px; color: var(--berry); font-weight: 700; margin-top: 1px; }
+
+/* Ripple on click */
+.palette-flower .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(196,96,122,0.25);
+  transform: scale(0);
+  animation: rippleAnim 0.45s linear;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  to { transform: scale(3.5); opacity: 0; }
+}
+
+/* Canvas */
+.studio-canvas-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 1px 4px rgba(122,78,115,0.06);
+  display: flex;
+  flex-direction: column;
+}
+.studio-canvas-toolbar {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.studio-canvas-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px; font-weight: 700; color: var(--choco);
+  flex: 1;
+}
+.studio-tool-btn {
+  padding: 5px 13px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--dough);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+  color: var(--text-dim);
+}
+.studio-tool-btn:hover { border-color: var(--berry); color: var(--berry); background: var(--blush); }
+.studio-tool-btn.danger:hover { border-color: var(--rose-deep); color: var(--rose-deep); }
+
+/* The actual arrangement canvas */
+.studio-canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(241,187,164,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 60%, rgba(240,168,198,0.08) 0%, transparent 70%),
+    var(--dough);
+  cursor: crosshair;
+}
+
+/* Wrapper SVGs */
+.studio-wrapper-back {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 550px; pointer-events: none;
+  z-index: 100;
+}
+.studio-wrapper-front {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 550px; pointer-events: none;
+  z-index: 1580; /* Depth bucket for front tucking */
+  filter: drop-shadow(0 20px 40px rgba(122,78,115,0.35));
+}
+.stems-canvas {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1000; /* Stems behind the vase and flowers */
+}
+.stem {
+  fill: none;
+  stroke: rgba(90, 138, 60, 0.7);
+  stroke-width: 5px;
+  stroke-linecap: round;
+  transition: d 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Drop zone hint ring */
+.studio-drop-ring {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px; height: 220px;
+  border: 2px dashed rgba(196,96,122,0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: border-color 0.3s;
+}
+.studio-drop-ring.active { border-color: rgba(196,96,122,0.5); }
+
+/* Placed flowers */
+.placed-flower {
+  position: absolute;
+  width: 260px; height: 260px;
+  cursor: grab;
+  user-select: none;
+  transform-origin: center bottom;
+  animation: bloomIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  transition: transform 0.15s, filter 0.15s, left 0.5s cubic-bezier(0.25, 1, 0.5, 1), top 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 10;
+  border-radius: 0;
+  overflow: visible;
+  border: none;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+}
+.placed-flower img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  display: block;
+}
+.placed-flower:hover {
+  filter: drop-shadow(0 12px 24px rgba(122,78,115,0.5));
+  transform: scale(1.08) rotate(var(--rot)) !important;
+  z-index: 20;
+}
+.placed-flower.dragging {
+  cursor: grabbing;
+  transition: transform 0.1s, filter 0.1s !important; /* disable left/top transitions when dragging */
+  z-index: 999 !important;
+  filter: drop-shadow(0 18px 36px rgba(122,78,115,0.6));
+  transform: scale(1.15) rotate(var(--rot)) !important;
+}
+
+/* Fly-in Anticipation Clone */
+.flying-clone {
+  position: fixed;
+  width: 180px; height: 180px;
+  object-fit: contain;
+  z-index: 9999;
+  pointer-events: none;
+  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy fly */
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
+}
+@keyframes bloomIn {
+  0%   { transform: scale(0) rotate(var(--rot)); opacity: 0; }
+  60%  { transform: scale(1.3) rotate(var(--rot)); opacity: 1; }
+  80%  { transform: scale(0.9) rotate(var(--rot)); }
+  100% { transform: scale(1) rotate(var(--rot)); opacity: 1; }
+}
+@keyframes bloomOut {
+  0%   { transform: scale(1) rotate(var(--rot)); opacity: 1; }
+  30%  { transform: scale(1.2) rotate(var(--rot)); }
+  100% { transform: scale(0) rotate(var(--rot)) translateY(20px); opacity: 0; }
+}
+.placed-flower.removing { animation: bloomOut 0.3s ease forwards; }
+
+/* Sparkle particles */
+.sparkle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 30;
+  font-size: 14px;
+  animation: sparkleFly 0.7s ease forwards;
+}
+@keyframes sparkleFly {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+/* Canvas empty state */
+.canvas-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+.canvas-empty.hidden { opacity: 0; }
+.canvas-empty-icon { font-size: 42px; margin-bottom: 10px; }
+.canvas-empty-text { font-size: 12px; color: var(--text-muted); font-weight: 500; text-align: center; }
+
+/* Order panel */
+.studio-order {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(122,78,115,0.06);
+  overflow-y: auto;
+}
+.studio-order-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px; font-weight: 700; color: var(--choco);
+}
+.bouquet-items { flex: 1; }
+.bouquet-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border-light);
+  animation: slideIn 0.25s ease;
+}
+@keyframes slideIn {
+  from { opacity:0; transform: translateX(-8px); }
+  to   { opacity:1; transform: translateX(0); }
+}
+.bouquet-item:last-child { border-bottom: none; }
+.bi-img {
+  width: 48px; height: 48px;
+  object-fit: contain; border-radius: 0;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+}
+.bi-info { flex: 1; }
+.bi-name { font-size: 11px; font-weight: 600; color: var(--choco); }
+.bi-qty  { font-size: 9px; color: var(--text-muted); }
+.bi-price { font-size: 11px; font-weight: 700; color: var(--berry); }
+.bi-remove {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--blush);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--rose-deep);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.bi-remove:hover { background: var(--rose-deep); color: #fff; }
+
+.studio-total {
+  background: var(--dough);
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-light);
+}
+.studio-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 5px;
+  color: var(--text-dim);
+}
+.studio-total-row.main {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--choco);
+  margin-bottom: 0;
+  font-family: 'Playfair Display', serif;
+}
+.studio-total-row.main span:last-child { color: var(--berry); }
+
+.ribbon-picker { margin-top: 4px; }
+.ribbon-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 7px; }
+.ribbon-colors { display: flex; gap: 6px; flex-wrap: wrap; }
+.ribbon-swatch {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.15s, border-color 0.15s;
+}
+.ribbon-swatch:hover { transform: scale(1.2); }
+.ribbon-swatch.selected { border-color: var(--choco); transform: scale(1.1); }
+
+/* ══ DEMO MODE INDICATORS ══ */
+.demo-pulse {
+  display: inline-block;
+  width: 7px; height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  margin-right: 5px;
+  animation: pulseDot 1.2s ease infinite;
+}
+@keyframes pulseDot {
+  0%,100% { opacity:1; transform: scale(1); }
+  50%      { opacity:0.4; transform: scale(0.7); }
+}
+
+/* KPI counter animation */
+@keyframes kpiPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); color: var(--berry); }
+  100% { transform: scale(1); }
+}
+.kpi-pop { animation: kpiPop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* Incoming order notification */
+.order-notification {
+  position: fixed;
+  top: 22px; right: 22px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--berry);
+  border-radius: 12px;
+  padding: 14px 18px;
+  min-width: 280px;
+  box-shadow: 0 8px 32px rgba(122,78,115,0.2);
+  z-index: 9990;
+  transform: translateX(340px);
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.order-notification.show { transform: translateX(0); }
+.on-title { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: var(--choco); margin-bottom: 4px; }
+.on-sub { font-size: 11px; color: var(--text-dim); }
+.on-actions { display: flex; gap: 8px; margin-top: 10px; }
+.on-btn {
+  padding: 5px 14px; border-radius: 20px;
+  border: none; font-family: 'Montserrat', sans-serif;
+  font-size: 10px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s;
+}
+.on-btn-accept { background: var(--berry); color: #fff; }
+.on-btn-accept:hover { background: var(--berry-dark); }
+.on-btn-view { background: var(--blush); color: var(--berry); border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-mark">Flowers<br><em>House</em></div>
+    <div class="brand-sub">Varna · CRM v2.0</div>
+  </div>
+
+  <nav>
+    <div class="nav-group">
+      <div class="nav-group-label">Overview</div>
+      <div class="nav-item active" onclick="switchView('dashboard', this)">
+        <span class="nav-dot" style="background:var(--rose)"></span> Dashboard
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Operations</div>
+      <div class="nav-item" onclick="switchView('clients', this)">
+        <span class="nav-dot" style="background:var(--blue)"></span> Clients
+        <span class="nav-count">24</span>
+      </div>
+      <div class="nav-item" onclick="switchView('orders', this)">
+        <span class="nav-dot" style="background:var(--rose)"></span> Orders
+        <span class="nav-count">11</span>
+      </div>
+      <div class="nav-item" onclick="switchView('inventory', this)">
+        <span class="nav-dot" style="background:var(--green)"></span> Inventory
+      </div>
+      <div class="nav-item" onclick="switchView('suppliers', this)">
+        <span class="nav-dot" style="background:var(--berry)"></span> Suppliers
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Team</div>
+      <div class="nav-item" onclick="switchView('florists', this)">
+        <span class="nav-dot" style="background:var(--purple)"></span> Florists
+      </div>
+      <div class="nav-item" onclick="switchView('delivery', this)">
+        <span class="nav-dot" style="background:var(--teal)"></span> Deliveries
+        <span class="nav-count" id="delivery-count">5</span>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Creative</div>
+      <div class="nav-item" onclick="switchView('studio', this)">
+        <span class="nav-dot" style="background:var(--peach)"></span> Bouquet Studio
+        <span class="nav-count" style="background:rgba(241,187,164,0.3);color:#A0502A">NEW</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="sidebar-user">
+    <div class="user-av">М</div>
+    <div>
+      <div class="user-name">Maria Kostadinova</div>
+      <div class="user-role">Store Manager</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard <em>— Today</em></div>
+    <div class="search-wrap">
+      <span style="color:var(--text-muted);font-size:12px">⌕</span>
+      <input type="text" class="topbar-search" placeholder="Search clients, orders, inventory…" onkeydown="if(event.key==='Enter')globalSearch(this.value)" oninput="if(this.value.length>3)globalSearch(this.value)">
+    </div>
+    <div class="topbar-clock" id="topbar-clock">--:--:--</div>
+    <button class="topbar-btn" onclick="openNewOrderModal()">+ New Order</button>
+    <button class="topbar-btn" id="demo-btn" onclick="toggleDemo()" style="background:var(--blush);color:var(--berry);border:1.5px solid var(--border)">▶ Demo</button>
+    <div class="topbar-icon-btn" onclick="showToast('🔔 No new notifications')">
+      🔔<span class="notif-pip"></span>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="view active" id="view-dashboard">
+      <div class="kpi-row">
+        <div class="kpi gold">
+          <div class="kpi-label">Revenue · April</div>
+          <div class="kpi-value gold">12 840</div>
+          <div class="kpi-trend trend-up">▲ 18% vs last month</div>
+        </div>
+        <div class="kpi rose">
+          <div class="kpi-label">Orders Today</div>
+          <div class="kpi-value" style="color:var(--rose)">11</div>
+          <div class="kpi-trend trend-up">▲ 3 more than yesterday</div>
+        </div>
+        <div class="kpi green">
+          <div class="kpi-label">Active Clients</div>
+          <div class="kpi-value" style="color:var(--green)">24</div>
+          <div class="kpi-trend trend-up">▲ 2 new this week</div>
+        </div>
+        <div class="kpi blue">
+          <div class="kpi-label">Deliveries Due</div>
+          <div class="kpi-value" style="color:var(--blue)">5</div>
+          <div class="kpi-trend" style="color:var(--text-muted)">— 2 complete, 3 pending</div>
+        </div>
+        <div class="kpi purple">
+          <div class="kpi-label">Avg. Order Value</div>
+          <div class="kpi-value" style="color:var(--purple)">87</div>
+          <div class="kpi-trend trend-up">▲ 5% vs last week</div>
+        </div>
+      </div>
+
+      <!-- order pipeline -->
+      <div class="panel" style="margin-bottom:16px">
+        <div class="panel-head">
+          <div class="panel-title">Order Pipeline</div>
+          <a class="panel-link" onclick="switchView('orders', document.querySelectorAll('.nav-item')[2])">View all →</a>
+        </div>
+        <div class="pipeline">
+          <div class="pipe-stage" onclick="switchView('orders', document.querySelectorAll('.nav-item')[2])">
+            <div class="pipe-count" style="color:var(--berry)">3</div>
+            <div class="pipe-name">Pending</div>
+            <div class="pipe-bar" style="background:var(--berry)"></div>
+          </div>
+          <div class="pipe-stage">
+            <div class="pipe-count" style="color:var(--blue)">2</div>
+            <div class="pipe-name">Confirmed</div>
+            <div class="pipe-bar" style="background:var(--blue)"></div>
+          </div>
+          <div class="pipe-stage">
+            <div class="pipe-count" style="color:var(--purple)">2</div>
+            <div class="pipe-name">In Prep</div>
+            <div class="pipe-bar" style="background:var(--purple)"></div>
+          </div>
+          <div class="pipe-stage">
+            <div class="pipe-count" style="color:var(--coral)">2</div>
+            <div class="pipe-name">Delivery</div>
+            <div class="pipe-bar" style="background:var(--coral)"></div>
+          </div>
+          <div class="pipe-stage">
+            <div class="pipe-count" style="color:var(--green)">2</div>
+            <div class="pipe-name">Completed</div>
+            <div class="pipe-bar" style="background:var(--green)"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <!-- recent orders -->
+        <div class="panel" style="grid-column: span 2">
+          <div class="panel-head">
+            <div class="panel-title">Recent Orders</div>
+            <a class="panel-link" onclick="switchView('orders', document.querySelectorAll('.nav-item')[2])">All orders →</a>
+          </div>
+          <div class="panel-body" style="padding:0">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Client</th>
+                  <th>Items</th>
+                  <th>Florist</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="dash-orders-tbody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- activity -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Live Activity</div></div>
+          <div class="panel-body">
+            <div class="activity-item">
+              <span class="act-dot" style="background:var(--green)"></span>
+              <div>
+                <div class="act-text"><strong>#ORD-2847</strong> delivered successfully to Sofia M.</div>
+                <div class="act-time">2 min ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <span class="act-dot" style="background:var(--berry)"></span>
+              <div>
+                <div class="act-text">New order <strong>#ORD-2848</strong> placed by Elena V.</div>
+                <div class="act-time">14 min ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <span class="act-dot" style="background:var(--blue)"></span>
+              <div>
+                <div class="act-text"><strong>Lily Warehouse</strong> confirmed Tuesday supply</div>
+                <div class="act-time">38 min ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <span class="act-dot" style="background:var(--purple)"></span>
+              <div>
+                <div class="act-text"><strong>Nadia K.</strong> started prep on #ORD-2845</div>
+                <div class="act-time">1 hr ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <span class="act-dot" style="background:var(--rose)"></span>
+              <div>
+                <div class="act-text">Low stock alert — <strong>Garden Roses</strong> at 12 units</div>
+                <div class="act-time">2 hrs ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- weekly revenue chart + top products -->
+      <div class="dash-grid-2" style="margin-top:16px">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Weekly Revenue</div><span style="font-size:10px;color:var(--text-muted)">Last 7 days</span></div>
+          <div class="panel-body">
+            <div class="bar-chart" id="revenue-chart"></div>
+            <div style="display:flex;gap:5px;margin-top:8px" id="chart-labels"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Top Products</div><span style="font-size:10px;color:var(--text-muted)">This week</span></div>
+          <div class="panel-body" style="padding:0">
+            <table class="data-table">
+              <thead><tr><th>#</th><th>Product</th><th>Sold</th><th>Revenue</th></tr></thead>
+              <tbody id="top-products-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CLIENTS ══ -->
+    <div class="view" id="view-clients">
+      <div class="page-h">
+        <div>
+          <div class="page-h-title">Client Database</div>
+          <div class="page-h-sub">24 active clients · 3 new this month</div>
+        </div>
+        <button class="topbar-btn" onclick="openNewClientModal()">+ Add Client</button>
+      </div>
+      <div class="filter-bar">
+        <div class="filter-chip active" onclick="filterClients('all',this)">All</div>
+        <div class="filter-chip" onclick="filterClients('vip',this)">VIP</div>
+        <div class="filter-chip" onclick="filterClients('regular',this)">Regular</div>
+        <div class="filter-chip" onclick="filterClients('new',this)">New</div>
+        <div class="filter-search-sm">
+          <span style="color:var(--text-muted)">⌕</span>
+          <input type="text" placeholder="Search client…" oninput="filterClientsBySearch(this.value)">
+        </div>
+      </div>
+      <div class="clients-grid" id="clients-grid"></div>
+    </div>
+
+    <!-- ══ ORDERS ══ -->
+    <div class="view" id="view-orders">
+      <div class="page-h">
+        <div>
+          <div class="page-h-title">Order Management</div>
+          <div class="page-h-sub">11 active orders · April 10, 2026</div>
+        </div>
+        <button class="topbar-btn" onclick="openNewOrderModal()">+ New Order</button>
+      </div>
+      <!-- Stats bar -->
+      <div class="stats-bar" id="orders-stats-bar"></div>
+      <div class="orders-pipeline panel" style="margin-bottom:14px">
+        <div class="pipeline" id="orders-pipeline-bar"></div>
+      </div>
+      <div class="filter-bar">
+        <div class="filter-chip active" onclick="filterOrders('all',this)">All</div>
+        <div class="filter-chip" onclick="filterOrders('pending',this)">Pending</div>
+        <div class="filter-chip" onclick="filterOrders('confirmed',this)">Confirmed</div>
+        <div class="filter-chip" onclick="filterOrders('preparing',this)">In Prep</div>
+        <div class="filter-chip" onclick="filterOrders('delivery',this)">Delivery</div>
+        <div class="filter-chip" onclick="filterOrders('delivered',this)">Delivered</div>
+        <div class="filter-search-sm" style="margin-left:auto">
+          <span style="color:var(--text-muted)">⌕</span>
+          <input type="text" placeholder="Search orders…" oninput="searchOrders(this.value)">
+        </div>
+      </div>
+      <div id="orders-list"></div>
+    </div>
+
+    <!-- ══ INVENTORY ══ -->
+    <div class="view" id="view-inventory">
+      <div class="page-h">
+        <div>
+          <div class="page-h-title">Flower Inventory</div>
+          <div class="page-h-sub">18 SKUs · 2 low stock alerts</div>
+        </div>
+        <button class="topbar-btn" onclick="showToast('📦 Reorder request sent to suppliers')">Reorder Low Stock</button>
+      </div>
+      <div class="filter-bar">
+        <div class="filter-chip active" onclick="filterInv('all',this)">All</div>
+        <div class="filter-chip" onclick="filterInv('roses',this)">Roses</div>
+        <div class="filter-chip" onclick="filterInv('seasonal',this)">Seasonal</div>
+        <div class="filter-chip" onclick="filterInv('tropical',this)">Tropical</div>
+        <div class="filter-chip" onclick="filterInv('filler',this)">Filler / Greens</div>
+      </div>
+      <div class="inv-grid" id="inv-grid"></div>
+    </div>
+
+    <!-- ══ SUPPLIERS ══ -->
+    <div class="view" id="view-suppliers">
+      <div class="page-h">
+        <div>
+          <div class="page-h-title">Suppliers</div>
+          <div class="page-h-sub">6 active suppliers · Next delivery Tuesday</div>
+        </div>
+        <button class="topbar-btn" onclick="showToast('📋 New supplier form opened')">+ Add Supplier</button>
+      </div>
+      <div id="suppliers-list"></div>
+    </div>
+
+    <!-- ══ FLORISTS ══ -->
+    <div class="view" id="view-florists">
+      <div class="page-h">
+        <div>
+          <div class="page-h-title">Florist Team</div>
+          <div class="page-h-sub">5 active florists · 2 on shift today</div>
+        </div>
+        <button class="topbar-btn" onclick="showToast('👩‍🎨 Add florist form — coming soon')">+ Add Florist</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px" id="florists-grid"></div>
+    </div>
+
+    <!-- ══ DELIVERY ══ -->
+    <div class="view" id="view-delivery">
+      <div class="page-h">
+        <div>
+          <div class="page-h-title">Today's Deliveries</div>
+          <div class="page-h-sub">April 10, 2026 · 5 scheduled</div>
+        </div>
+        <button class="topbar-btn" onclick="showToast('🗺️ Route optimization applied')">Optimize Routes</button>
+      </div>
+      <div class="delivery-layout">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Delivery Timeline</div></div>
+          <div class="panel-body" id="delivery-timeline"></div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Drivers On Shift</div>
+          <div id="drivers-list"></div>
+          <div class="panel" style="margin-top:12px">
+            <div class="panel-head"><div class="panel-title">Zone Summary</div></div>
+            <div class="panel-body">
+              <table class="data-table">
+                <thead><tr><th>Zone</th><th>Orders</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="td-bold">City Center</td><td>2</td><td><span class="badge badge-done">Done</span></td></tr>
+                  <tr><td class="td-bold">Levski</td><td>1</td><td><span class="badge badge-delivery">On Route</span></td></tr>
+                  <tr><td class="td-bold">Chaika</td><td>1</td><td><span class="badge badge-prep">Pending</span></td></tr>
+                  <tr><td class="td-bold">Asparuhovo</td><td>1</td><td><span class="badge badge-pending">Pending</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ BOUQUET STUDIO ══ -->
+    <div class="view" id="view-studio">
+      <div class="page-h" style="margin-bottom:14px">
+        <div>
+          <div class="page-h-title">🌸 Bouquet Studio</div>
+          <div class="page-h-sub">Design custom arrangements — drag flowers, save as order</div>
+        </div>
+        <button class="topbar-btn" onclick="saveBouquetAsOrder()">💾 Save as Order</button>
+      </div>
+      <div class="studio-layout">
+
+        <!-- PALETTE -->
+        <div class="studio-palette">
+          <div class="studio-palette-title">Flower Palette</div>
+          <div class="palette-section">
+            <div class="palette-section-label">Roses</div>
+            <div class="palette-grid" id="palette-roses"></div>
+          </div>
+          <div class="palette-section">
+            <div class="palette-section-label">Seasonal</div>
+            <div class="palette-grid" id="palette-seasonal"></div>
+          </div>
+          <div class="palette-section">
+            <div class="palette-section-label">Tropical</div>
+            <div class="palette-grid" id="palette-tropical"></div>
+          </div>
+          <div class="palette-section">
+            <div class="palette-section-label">Filler & Greens</div>
+            <div class="palette-grid" id="palette-filler"></div>
+          </div>
+        </div>
+
+        <!-- CANVAS -->
+        <div class="studio-canvas-wrap">
+          <div class="studio-canvas-toolbar">
+            <span class="studio-canvas-title" id="bouquet-name-label">My Bouquet</span>
+            <button class="studio-tool-btn" onclick="autoArrange()">✨ Auto-Arrange</button>
+            <button class="studio-tool-btn" onclick="shuffleArrangement()">🔀 Shuffle</button>
+            <button class="studio-tool-btn danger" onclick="clearBouquet()">🗑 Clear</button>
+          </div>
+          <div class="studio-canvas" id="studio-canvas" onclick="canvasClick(event)">
+            <div class="studio-drop-ring" id="drop-ring"></div>
+            <!-- Wrapper Back -->
+            <svg class="studio-wrapper-back" viewBox="0 0 300 400" preserveAspectRatio="xMidYMax meet">
+               <path d="M 20 80 Q 150 -20 280 80 L 170 380 L 130 380 Z" fill="#E8D1B5" stroke="#C3A686" stroke-width="2"/>
+               <!-- Realistic inner shadow depth -->
+               <path d="M 20 80 Q 150 180 280 80 L 170 380 L 130 380 Z" fill="rgba(60, 40, 20, 0.15)"/>
+            </svg>
+            <!-- Stems Canvas -->
+            <svg id="stems-canvas" class="stems-canvas"></svg>
+            <!-- Wrapper Front Layer -->
+            <svg class="studio-wrapper-front" viewBox="0 0 300 400" preserveAspectRatio="xMidYMax meet">
+                <!-- Left flap -->
+                <path d="M 5 150 Q 80 180 140 280 L 140 380 L 130 380 Z" fill="#F4E3CB" stroke="#C3A686" stroke-width="2"/>
+                <!-- Right flap -->
+                <path d="M 295 150 Q 220 180 160 280 L 160 380 L 170 380 Z" fill="#FFF5E8" stroke="#C3A686" stroke-width="2"/>
+                <!-- Main Center Front Wrapping Bottom -->
+                <path d="M 40 220 Q 150 270 260 220 L 170 380 L 130 380 Z" fill="#F4E3CB" stroke="#C3A686" stroke-width="2"/>
+                <!-- Ribbon Tie -->
+                <path class="svg-ribbon-path" d="M 125 320 Q 150 330 175 320 L 170 340 Q 150 350 130 340 Z" fill="var(--berry)" />
+                <path class="svg-ribbon-path" d="M 150 330 Q 120 370 100 390 Q 130 360 150 330" fill="var(--berry)" />
+                <path class="svg-ribbon-path" d="M 150 330 Q 180 370 200 390 Q 170 360 150 330" fill="var(--berry)" />
+            </svg>
+            <!-- Placed flowers container -->
+            <div id="placed-flowers"></div>
+            <!-- Empty state -->
+            <div class="canvas-empty" id="canvas-empty">
+              <div class="canvas-empty-icon"><img src="images/buntysmum-rose-3602285_1920.png" style="width:72px;height:72px;object-fit:contain;opacity:0.6;border:none;background:transparent;" onerror="this.outerHTML='🌸'"></div>
+              <div class="canvas-empty-text">Click flowers from the palette<br>to build your bouquet</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ORDER PANEL -->
+        <div class="studio-order">
+          <div class="studio-order-title">Arrangement</div>
+          <div id="bouquet-items" class="bouquet-items">
+            <div style="font-size:11px;color:var(--text-muted);text-align:center;padding:20px 0">No flowers added yet</div>
+          </div>
+          <div class="ribbon-picker">
+            <div class="ribbon-label">Ribbon Colour</div>
+            <div class="ribbon-colors" id="ribbon-colors"></div>
+          </div>
+          <div class="studio-total">
+            <div class="studio-total-row"><span>Stems</span><span id="total-stems">0</span></div>
+            <div class="studio-total-row"><span>Wrapping</span><span>15 лв</span></div>
+            <div class="studio-total-row main"><span>Total</span><span id="total-price">15 лв</span></div>
+          </div>
+          <button class="topbar-btn" style="width:100%;padding:11px;font-size:11px;border-radius:10px" onclick="saveBouquetAsOrder()">💐 Create Order from Bouquet</button>
+          <button class="studio-tool-btn" style="width:100%;text-align:center" onclick="clearBouquet()">Start Fresh</button>
+        </div>
+
+      </div>
+    </div><!-- /studio -->
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ORDER NOTIFICATION (incoming) -->
+<div class="order-notification" id="order-notif">
+  <div class="on-title" id="on-title">🌹 New Order Incoming!</div>
+  <div class="on-sub" id="on-sub">Loading…</div>
+  <div class="on-actions">
+    <button class="on-btn on-btn-accept" onclick="acceptNotifOrder()">✓ Accept</button>
+    <button class="on-btn on-btn-view" onclick="dismissNotif()">Dismiss</button>
+  </div>
+</div>
+
+<!-- SLIDE PANEL -->
+<div class="slide-overlay" id="slide-overlay" onclick="closeSlidePanel()"></div>
+<div class="slide-panel" id="slide-panel">
+  <div class="slide-panel-header">
+    <div>
+      <div class="slide-panel-id" id="sp-id"></div>
+      <div class="slide-panel-title" id="sp-title"></div>
+    </div>
+    <button class="slide-panel-close" onclick="closeSlidePanel()">✕</button>
+  </div>
+  <div class="slide-panel-body" id="sp-body"></div>
+  <div class="slide-panel-footer" id="sp-footer"></div>
+</div>
+
+<!-- PRINT INVOICE -->
+<div id="print-invoice"></div>
+
+<!-- CONTEXT MENU -->
+<div class="ctx-menu" id="ctx-menu" style="display:none"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Detail</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+
+const CLIENTS = [
+  { id:'C001', name:'Sofia Marinova', phone:'+359 88 123 4567', email:'sofia.m@gmail.com', tag:'vip', city:'Varna Center', orders:14, spent:1840, last:'2026-04-09', note:'Prefers garden roses, allergic to lilies' },
+  { id:'C002', name:'Elena Vasileva', phone:'+359 87 234 5678', email:'elena.v@abv.bg', tag:'vip', city:'Chaika', orders:11, spent:1340, last:'2026-04-10', note:'Corporate client — weekly office bouquets' },
+  { id:'C003', name:'Ivan Petrov', phone:'+359 89 345 6789', email:'i.petrov@mail.bg', tag:'regular', city:'Levski', orders:6, spent:520, last:'2026-03-28', note:'Anniversary orders every March' },
+  { id:'C004', name:'Maria Todorova', phone:'+359 88 456 7890', email:'m.todorova@gmail.com', tag:'regular', city:'Asparuhovo', orders:5, spent:390, last:'2026-04-02', note:'Prefers pastel tones' },
+  { id:'C005', name:'Georgi Dimitrov', phone:'+359 87 567 8901', email:'g.dim@yahoo.com', tag:'regular', city:'Varna Center', orders:4, spent:310, last:'2026-04-01', note:'' },
+  { id:'C006', name:'Nikoleta Hristova', phone:'+359 89 678 9012', email:'niki.h@gmail.com', tag:'new', city:'Mladost', orders:1, spent:95, last:'2026-04-08', note:'First time client — wedding enquiry' },
+  { id:'C007', name:'Petar Angelov', phone:'+359 88 789 0123', email:'p.angelov@abv.bg', tag:'regular', city:'Vinitsa', orders:7, spent:630, last:'2026-03-25', note:'' },
+  { id:'C008', name:'Daniela Ivanova', phone:'+359 87 890 1234', email:'dani.i@gmail.com', tag:'vip', city:'Varna Center', orders:18, spent:2240, last:'2026-04-07', note:'VIP — monthly flower subscription' },
+  { id:'C009', name:'Hristo Kolev', phone:'+359 89 901 2345', email:'h.kolev@mail.bg', tag:'new', city:'Chaika', orders:2, spent:145, last:'2026-04-09', note:'' },
+  { id:'C010', name:'Violeta Stoyanova', phone:'+359 88 012 3456', email:'violet.s@gmail.com', tag:'regular', city:'Levski', orders:5, spent:460, last:'2026-03-30', note:'Likes tropical arrangements' },
+];
+
+const ORDERS = [
+  { id:'ORD-2848', clientId:'C002', client:'Elena Vasileva', items:'White Lily Bouquet × 2, Eucalyptus', florist:'Nadia K.', status:'pending', total:185, date:'2026-04-10', delivery:'Today 14:00', address:'Chaika Blvd 42, Varna', note:'Office delivery — ring bell 2' },
+  { id:'ORD-2847', clientId:'C001', client:'Sofia Marinova', items:'Garden Rose Bouquet, Baby\'s Breath', florist:'Maria T.', status:'delivered', total:120, date:'2026-04-10', delivery:'Done 10:30', address:'Slivnitsa 18, Varna', note:'' },
+  { id:'ORD-2846', clientId:'C008', client:'Daniela Ivanova', items:'Monthly Subscription Box', florist:'Nadia K.', status:'preparing', total:210, date:'2026-04-10', delivery:'Today 15:30', address:'Preslav 7, Varna', note:'Subscription order — include card' },
+  { id:'ORD-2845', clientId:'C003', client:'Ivan Petrov', items:'Sunflower & Wildflower Mix', florist:'Elena R.', status:'delivery', total:78, date:'2026-04-10', delivery:'En route', address:'Levski 12a, Varna', note:'' },
+  { id:'ORD-2844', clientId:'C007', client:'Petar Angelov', items:'Red Rose Bouquet × 24', florist:'Maria T.', status:'confirmed', total:145, date:'2026-04-10', delivery:'Today 17:00', address:'Vinitsa 34, Varna', note:'Birthday — include ribbon' },
+  { id:'ORD-2843', clientId:'C004', client:'Maria Todorova', items:'Pastel Peony Arrangement', florist:'Elena R.', status:'pending', total:95, date:'2026-04-10', delivery:'Today 16:00', address:'Asparuhovo 89, Varna', note:'' },
+  { id:'ORD-2842', clientId:'C006', client:'Nikoleta Hristova', items:'Wedding consultation bouquet', florist:'Nadia K.', status:'pending', total:65, date:'2026-04-09', delivery:'Tomorrow', address:'Mladost 4, Varna', note:'Sample for wedding 2026-06-14' },
+  { id:'ORD-2841', clientId:'C009', client:'Hristo Kolev', items:'Orchid Pot + Delivery', florist:'Maria T.', status:'confirmed', total:88, date:'2026-04-09', delivery:'Tomorrow 11:00', address:'Chaika 77, Varna', note:'' },
+  { id:'ORD-2840', clientId:'C010', client:'Violeta Stoyanova', items:'Tropical Bird of Paradise', florist:'Elena R.', status:'preparing', total:110, date:'2026-04-09', delivery:'Today 16:30', address:'Levski 50b, Varna', note:'' },
+  { id:'ORD-2839', clientId:'C005', client:'Georgi Dimitrov', items:'Mixed Seasonal Bouquet', florist:'Nadia K.', status:'delivered', total:72, date:'2026-04-08', delivery:'Done', address:'Center 11, Varna', note:'' },
+  { id:'ORD-2838', clientId:'C008', client:'Daniela Ivanova', items:'White Wedding Arch Decor', florist:'Maria T.', status:'delivery', total:380, date:'2026-04-09', delivery:'En route', address:'Sea Garden, Varna', note:'Event delivery — team assist' },
+];
+
+// Map inventory items to flower image IDs
+const INV_IMG_MAP = {
+  'INV-01':'rose-g','INV-02':'peony','INV-03':'sunflower','INV-04':'tulip',
+  'INV-05':'paradise','INV-06':'lily','INV-07':'eucalyptus','INV-08':'pampas',
+  'INV-09':'babysbreath','INV-10':'ruscus','INV-11':'orchid','INV-12':'rose-r'
+};
+
+const INVENTORY = [
+  { id:'INV-01', name:'Garden Roses',     category:'roses',    qty:12, max:80,  price:2.80, supplier:'Rosa Bella Farm',   status:'low' },
+  { id:'INV-02', name:'Pink Peonies',     category:'seasonal', qty:45, max:60,  price:3.50, supplier:'Mountain Bloom',    status:'in'  },
+  { id:'INV-03', name:'Sunflowers',       category:'seasonal', qty:60, max:100, price:1.20, supplier:'Sunny Fields',      status:'in'  },
+  { id:'INV-04', name:'Tulips (White)',   category:'seasonal', qty:30, max:80,  price:1.80, supplier:'Dutch Flowers BG',  status:'in'  },
+  { id:'INV-05', name:'Bird of Paradise', category:'tropical', qty:8,  max:30,  price:6.50, supplier:'Exotic Blooms Ltd', status:'low' },
+  { id:'INV-06', name:'Lily (White)',     category:'seasonal', qty:55, max:70,  price:2.20, supplier:'Rosa Bella Farm',   status:'in'  },
+  { id:'INV-07', name:'Eucalyptus',       category:'filler',   qty:90, max:120, price:0.90, supplier:'Green Leaf',        status:'in'  },
+  { id:'INV-08', name:'Dried Pampas',     category:'filler',   qty:25, max:40,  price:4.20, supplier:'Natural Deco',      status:'in'  },
+  { id:'INV-09', name:"Baby's Breath",    category:'filler',   qty:70, max:100, price:0.60, supplier:'Green Leaf',        status:'in'  },
+  { id:'INV-10', name:'Ruscus Greens',    category:'filler',   qty:85, max:100, price:0.55, supplier:'Green Leaf',        status:'in'  },
+  { id:'INV-11', name:'Orchids (Purple)', category:'tropical', qty:18, max:25,  price:8.00, supplier:'Exotic Blooms Ltd', status:'in'  },
+  { id:'INV-12', name:'Red Roses',        category:'roses',    qty:38, max:80,  price:2.60, supplier:'Rosa Bella Farm',   status:'in'  },
+];
+
+const SUPPLIERS = [
+  { id:'SUP-01', emoji:'🌹', name:'Rosa Bella Farm', location:'Kazanlak, BG', contact:'+359 43 123 456', deliveries: 24, reliability:'98%', nextDelivery:'Tue Apr 12', categories:['Roses','Lilies','Mixed Cut'] },
+  { id:'SUP-02', emoji:'🌸', name:'Mountain Bloom', location:'Smolyan, BG', contact:'+359 30 234 567', deliveries: 18, reliability:'95%', nextDelivery:'Wed Apr 13', categories:['Peonies','Seasonal','Wildflowers'] },
+  { id:'SUP-03', emoji:'🌻', name:'Sunny Fields', location:'Plovdiv, BG', contact:'+359 32 345 678', deliveries: 32, reliability:'99%', nextDelivery:'Mon Apr 11', categories:['Sunflowers','Gerbera','Field Mix'] },
+  { id:'SUP-04', emoji:'🌿', name:'Green Leaf', location:'Varna, BG', contact:'+359 52 456 789', deliveries: 41, reliability:'100%', nextDelivery:'Fri Apr 14', categories:['Eucalyptus','Ruscus','Ferns','Baby\'s Breath'] },
+  { id:'SUP-05', emoji:'🌺', name:'Exotic Blooms Ltd', location:'Sofia, BG', contact:'+359 2 567 890', deliveries: 9, reliability:'92%', nextDelivery:'Thu Apr 15', categories:['Orchids','Tropicals','Bird of Paradise'] },
+  { id:'SUP-06', emoji:'🌷', name:'Dutch Flowers BG', location:'Sofia, BG', contact:'+359 2 678 901', deliveries: 15, reliability:'96%', nextDelivery:'Tue Apr 12', categories:['Tulips','Hyacinths','Dutch Cut'] },
+];
+
+const FLORISTS = [
+  { id:'FL-01', name:'Nadia Kostadinova', role:'Senior Florist', initials:'НК', orders:4, rating:4.9, exp:'7 yrs', skills:['Bridal','Arrangements','Events','Bouquets'], status:'On Shift' },
+  { id:'FL-02', name:'Maria Todorova', role:'Lead Florist', initials:'МТ', orders:3, rating:5.0, exp:'12 yrs', skills:['Luxury','Wedding','Corporate','Design'], status:'On Shift' },
+  { id:'FL-03', name:'Elena Radeva', role:'Florist', initials:'ЕР', orders:3, rating:4.7, exp:'3 yrs', skills:['Tropical','Seasonal','Minimalist'], status:'Off Today' },
+  { id:'FL-04', name:'Vesela Stancheva', role:'Junior Florist', initials:'ВС', orders:0, rating:4.5, exp:'1 yr', skills:['Bouquets','Gift Wrap'], status:'Off Today' },
+  { id:'FL-05', name:'Kristina Angelova', role:'Event Florist', initials:'КА', orders:1, rating:4.8, exp:'5 yrs', skills:['Events','Arch Decor','Stage','Ceremony'], status:'On Shift' },
+];
+
+const DELIVERIES = [
+  { time:'10:00', orderId:'ORD-2847', client:'Sofia Marinova', address:'Slivnitsa 18, Varna', zone:'City Center', items:'Rose Bouquet, Baby\'s Breath', status:'done', driver:'Viktor P.' },
+  { time:'10:30', orderId:'ORD-2839', client:'Georgi Dimitrov', address:'Center 11, Varna', zone:'City Center', items:'Mixed Seasonal', status:'done', driver:'Dimitar S.' },
+  { time:'13:30', orderId:'ORD-2845', client:'Ivan Petrov', address:'Levski 12a, Varna', zone:'Levski', items:'Sunflower Mix', status:'delivery', driver:'Viktor P.' },
+  { time:'15:30', orderId:'ORD-2846', client:'Daniela Ivanova', address:'Preslav 7, Varna', zone:'Chaika', items:'Subscription Box', status:'pending', driver:'Dimitar S.' },
+  { time:'17:00', orderId:'ORD-2844', client:'Petar Angelov', address:'Vinitsa 34, Varna', zone:'Asparuhovo', items:'Red Rose Bouquet × 24', status:'pending', driver:'Viktor P.' },
+];
+
+const WEEKLY_REVENUE = [980, 1240, 890, 1560, 1380, 2100, 1820];
+const WEEK_DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+const TOP_PRODUCTS = [
+  { name:'Garden Rose Bouquet', cat:'Roses', sold:24, rev:2880 },
+  { name:'Monthly Subscription', cat:'Subscriptions', sold:8, rev:1680 },
+  { name:'Peony Arrangement', cat:'Seasonal', sold:14, rev:1330 },
+  { name:'White Lily Classic', cat:'Lilies', sold:18, rev:990 },
+  { name:'Sunflower Mix', cat:'Seasonal', sold:20, rev:780 },
+];
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderDashboardOrders();
+  renderRevenueChart();
+  renderTopProducts();
+  renderClients(CLIENTS);
+  renderOrders(ORDERS);
+  renderInventory(INVENTORY);
+  renderSuppliers(SUPPLIERS);
+  renderFlorists(FLORISTS);
+  renderDeliveries(DELIVERIES);
+  renderOrdersPipeline();
+});
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+
+function switchView(name, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  const titles = {
+    dashboard: 'Dashboard <em>— Today</em>',
+    clients: 'Clients <em>— Database</em>',
+    orders: 'Orders <em>— Active</em>',
+    inventory: 'Inventory <em>— Stock</em>',
+    suppliers: 'Suppliers <em>— Partners</em>',
+    florists: 'Florists <em>— Team</em>',
+    delivery: 'Deliveries <em>— Today</em>',
+  };
+  document.getElementById('topbar-title').innerHTML = titles[name] || name;
+}
+
+// ═══════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════
+
+function renderDashboardOrders() {
+  const tbody = document.getElementById('dash-orders-tbody');
+  tbody.innerHTML = ORDERS.slice(0, 6).map(o => `
+    <tr onclick="openOrderSlidePanel('${o.id}')" style="cursor:pointer">
+      <td style="color:var(--text-muted);font-weight:600">${o.id}</td>
+      <td class="td-bold">${o.client}</td>
+      <td style="color:var(--text-dim)">${o.items.length > 38 ? o.items.substring(0,38)+'…' : o.items}</td>
+      <td style="color:var(--purple);font-weight:600">${o.florist}</td>
+      <td><span class="badge-clickable" onclick="event.stopPropagation();cycleStatus('${o.id}',this)">${statusBadge(o.status)}</span></td>
+      <td style="color:var(--berry);font-weight:700;font-family:'Playfair Display',serif">${o.total} лв</td>
+      <td style="color:var(--text-muted)">${o.date}</td>
+    </tr>
+  `).join('');
+}
+
+function renderRevenueChart() {
+  const max = Math.max(...WEEKLY_REVENUE);
+  const chart = document.getElementById('revenue-chart');
+  const labels = document.getElementById('chart-labels');
+  chart.innerHTML = WEEKLY_REVENUE.map((v, i) => {
+    const h = Math.round((v / max) * 65);
+    const isToday = i === 6;
+    return `<div class="bar-col">
+      <div class="bar" style="height:${h}px;${isToday ? 'background:var(--berry-dim);border-color:var(--berry)' : ''}" title="${WEEK_DAYS[i]}: ${v} лв"></div>
+    </div>`;
+  }).join('');
+  labels.innerHTML = WEEK_DAYS.map((d,i) => `<div style="flex:1;text-align:center;font-size:8px;color:${i===6?'var(--berry)':'var(--text-muted)'}">${d}</div>`).join('');
+}
+
+function renderTopProducts() {
+  const tbody = document.getElementById('top-products-tbody');
+  tbody.innerHTML = TOP_PRODUCTS.map((p,i) => `
+    <tr>
+      <td style="color:var(--text-muted)">${i+1}</td>
+      <td class="td-bold">${p.name}<br><span style="font-size:9px;color:var(--text-muted)">${p.cat}</span></td>
+      <td style="color:var(--blue)">${p.sold}</td>
+      <td class="td-gold">${p.rev} лв</td>
+    </tr>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════
+// CLIENTS
+// ═══════════════════════════════════════════════
+
+function renderClients(list) {
+  const grid = document.getElementById('clients-grid');
+  grid.innerHTML = list.map(c => `
+    <div class="client-card" onclick="openClientSlidePanel('${c.id}')">
+      <div class="cc-head">
+        <div class="cc-av">${c.name.charAt(0)}</div>
+        <div style="flex:1">
+          <div class="cc-name">${c.name}</div>
+          <div class="cc-contact">${c.phone}</div>
+        </div>
+        <span class="badge badge-${c.tag}">${c.tag.toUpperCase()}</span>
+      </div>
+      <div class="cc-stats">
+        <div class="cc-stat"><div class="cc-stat-v">${c.orders}</div><div class="cc-stat-l">Orders</div></div>
+        <div class="cc-stat"><div class="cc-stat-v" style="color:var(--berry)">${c.spent}</div><div class="cc-stat-l">Spent лв</div></div>
+        <div class="cc-stat"><div class="cc-stat-v">${Math.round(c.spent/c.orders)}</div><div class="cc-stat-l">Avg. лв</div></div>
+      </div>
+      <div class="cc-foot">
+        <span>📍 ${c.city}</span>
+        <span>Last: ${c.last}</span>
+      </div>
+      <div class="cc-actions">
+        <div class="cc-action-btn" onclick="event.stopPropagation();openNewOrderModal('${c.id}')">+ Order</div>
+        <div class="cc-action-btn wa" onclick="event.stopPropagation();showToast('📱 WhatsApp → ${c.name}')">💬 WA</div>
+        <div class="cc-action-btn" onclick="event.stopPropagation();showToast('📞 Calling ${c.phone}')">📞 Call</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+let clientFilter = 'all';
+let clientSearch = '';
+
+function filterClients(tag, el) {
+  document.querySelectorAll('#view-clients .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  clientFilter = tag;
+  applyClientFilter();
+}
+
+function filterClientsBySearch(val) {
+  clientSearch = val.toLowerCase();
+  applyClientFilter();
+}
+
+function applyClientFilter() {
+  let list = CLIENTS;
+  if (clientFilter !== 'all') list = list.filter(c => c.tag === clientFilter);
+  if (clientSearch) list = list.filter(c => c.name.toLowerCase().includes(clientSearch) || c.phone.includes(clientSearch) || c.email.toLowerCase().includes(clientSearch));
+  renderClients(list);
+  // Update subtitle count
+  const sub = document.getElementById('topbar-subtitle');
+  if (sub && document.getElementById('view-clients').classList.contains('active')) {
+    sub.textContent = list.length + ' client' + (list.length !== 1 ? 's' : '') + (clientFilter !== 'all' ? ' — ' + clientFilter : '') + (clientSearch ? ' matching "' + clientSearch + '"' : '');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ORDERS
+// ═══════════════════════════════════════════════
+
+function renderOrdersPipeline() {
+  const stages = [
+    { key:'pending', label:'Pending', color:'var(--berry)' },
+    { key:'confirmed', label:'Confirmed', color:'var(--blue)' },
+    { key:'preparing', label:'In Prep', color:'var(--purple)' },
+    { key:'delivery', label:'Delivery', color:'var(--coral)' },
+    { key:'delivered', label:'Delivered', color:'var(--green)' },
+  ];
+  const bar = document.getElementById('orders-pipeline-bar');
+  bar.innerHTML = stages.map(s => {
+    const count = ORDERS.filter(o => o.status === s.key).length;
+    return `<div class="pipe-stage" onclick="filterOrders('${s.key}', document.querySelector('[onclick*=\\'${s.key}\\']'))">
+      <div class="pipe-count" style="color:${s.color}">${count}</div>
+      <div class="pipe-name">${s.label}</div>
+      <div class="pipe-bar" style="background:${s.color}"></div>
+    </div>`;
+  }).join('');
+}
+
+function renderOrders(list) {
+  const container = document.getElementById('orders-list');
+  if (!list.length) {
+    container.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-muted)"><div style="font-size:36px;margin-bottom:12px">📋</div><div style="font-size:13px;font-weight:500">No orders found</div></div>';
+    return;
+  }
+  container.innerHTML = list.map(o => `
+    <div class="order-row" id="order-row-${o.id}" onclick="openOrderSlidePanel('${o.id}')"
+         oncontextmenu="showOrderCtx(event,'${o.id}')">
+      <div class="or-id">${o.id}</div>
+      <div class="or-client">
+        <div class="or-client-name">${o.client}</div>
+        <div class="or-client-detail">🕐 ${o.delivery} · 📍 ${o.address.split(',')[0]}</div>
+      </div>
+      <div class="or-product">${o.items.length > 42 ? o.items.substring(0,42)+'…' : o.items}</div>
+      <div class="or-florist">🌸 ${o.florist}</div>
+      <div><span class="badge-clickable" onclick="event.stopPropagation();cycleStatus('${o.id}',this)"
+           title="Click to advance status">${statusBadge(o.status)}</span></div>
+      <div class="or-total">${o.total} лв</div>
+      <div class="or-date">${o.date}</div>
+      <div class="order-quick-actions" onclick="event.stopPropagation()">
+        <div class="qa-btn advance" onclick="advanceOrderNext('${o.id}')" title="Advance Status →">→</div>
+        <div class="qa-btn" onclick="whatsappOrder('${o.id}')" title="WhatsApp client">💬</div>
+        <div class="qa-btn" onclick="printInvoice('${o.id}')" title="Print invoice">🖨</div>
+        <div class="qa-btn danger" onclick="cancelOrder('${o.id}')" title="Cancel order">✕</div>
+      </div>
+    </div>
+  `).join('');
+  updateOrdersStats();
+}
+
+function updateOrdersStats() {
+  const bar = document.getElementById('orders-stats-bar');
+  if (!bar) return;
+  const todayRev = ORDERS.filter(o=>o.status==='delivered').reduce((s,o)=>s+o.total,0);
+  const pending = ORDERS.filter(o=>o.status==='pending').length;
+  const inProg = ORDERS.filter(o=>['confirmed','preparing','delivery'].includes(o.status)).length;
+  bar.innerHTML = `
+    <div class="stat-pill">Today Revenue <span>${todayRev} лв</span></div>
+    <div class="stat-pill">Pending <span>${pending}</span></div>
+    <div class="stat-pill">In Progress <span>${inProg}</span></div>
+    <div class="stat-pill">Delivered <span>${ORDERS.filter(o=>o.status==='delivered').length}</span></div>
+  `;
+}
+
+function searchOrders(val) {
+  const q = val.toLowerCase();
+  const list = !q ? ORDERS : ORDERS.filter(o =>
+    o.id.toLowerCase().includes(q) ||
+    o.client.toLowerCase().includes(q) ||
+    o.items.toLowerCase().includes(q) ||
+    o.florist.toLowerCase().includes(q)
+  );
+  renderOrders(list);
+}
+
+function filterOrders(status, el) {
+  if (el) {
+    document.querySelectorAll('#view-orders .filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+  const list = status === 'all' ? ORDERS : ORDERS.filter(o => o.status === status);
+  renderOrders(list);
+}
+
+function cycleStatus(id, badgeEl) {
+  const o = ORDERS.find(x => x.id === id);
+  if (!o) return;
+  const flow = ['pending','confirmed','preparing','delivery','delivered'];
+  const idx = flow.indexOf(o.status);
+  if (idx < flow.length - 1) {
+    o.status = flow[idx + 1];
+    badgeEl.innerHTML = statusBadge(o.status);
+    // Flash the row
+    const row = document.getElementById('order-row-' + id);
+    if (row) { row.style.background='rgba(122,78,115,0.06)'; setTimeout(()=>row.style.background='',600); }
+    showToast(`→ <strong>${id}</strong> advanced to ${o.status.toUpperCase()}`);
+    renderOrdersPipeline();
+    renderDashboardOrders();
+    updateOrdersStats();
+    if (document.getElementById('slide-panel').classList.contains('open')) openOrderSlidePanel(id);
+  } else {
+    showToast('✓ Order already delivered');
+  }
+}
+
+function cancelOrder(id) {
+  const o = ORDERS.find(x => x.id === id);
+  if (!o || o.status === 'cancelled') return;
+  if (o.status === 'delivered') { showToast('⚠️ Cannot cancel a delivered order'); return; }
+  o.status = 'cancelled';
+  renderOrders(ORDERS);
+  renderOrdersPipeline();
+  renderDashboardOrders();
+  showToast(`✕ Order <strong>${id}</strong> cancelled`);
+}
+
+function whatsappOrder(id) {
+  const o = ORDERS.find(x => x.id === id);
+  if (!o) return;
+  const msg = `Hello ${o.client.split(' ')[0]}! Your order ${id} is currently ${o.status}. Items: ${o.items}. Delivery: ${o.delivery}. – Flowers House Varna 🌸`;
+  showToast(`📱 WhatsApp sent to <strong>${o.client}</strong>`);
+  // Simulate opening WA
+  setTimeout(() => showToast(`💬 "<em>${msg.substring(0,60)}…</em>"`), 800);
+}
+
+function statusBadge(status) {
+  const map = {
+    pending: ['badge-pending','PENDING'],
+    confirmed: ['badge-confirm','CONFIRMED'],
+    preparing: ['badge-prep','PREPARING'],
+    delivery: ['badge-delivery','ON ROUTE'],
+    delivered: ['badge-done','DELIVERED'],
+    cancelled: ['badge-cancel','CANCELLED'],
+  };
+  const [cls, label] = map[status] || ['badge-cancel','UNKNOWN'];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+
+// ═══════════════════════════════════════════════
+// INVENTORY
+// ═══════════════════════════════════════════════
+
+function renderInventory(list) {
+  const grid = document.getElementById('inv-grid');
+  grid.innerHTML = list.map(item => {
+    const pct = Math.round((item.qty / item.max) * 100);
+    const barColor = item.status === 'low' ? 'var(--rose)' : item.status === 'out' ? 'var(--text-muted)' : 'var(--green)';
+    return `
+      <div class="inv-card" id="inv-card-${item.id}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+          <img src="${FLOWER_IMGS[INV_IMG_MAP[item.id]]||''}" alt="${item.name}"
+            style="width:52px;height:52px;object-fit:contain;border-radius:0;border:none;background:transparent"
+            onerror="this.src=''">
+          ${item.status==='low'?`<span class="badge badge-low">LOW</span>`:''}
+        </div>
+        <div class="inv-name">${item.name}</div>
+        <div class="inv-cat">${item.category} · ${item.supplier}</div>
+        <div class="inv-bar-wrap" style="margin:8px 0 4px">
+          <div class="inv-bar-fill" id="inv-bar-${item.id}" style="width:${pct}%;background:${barColor}"></div>
+        </div>
+        <div class="inv-footer" style="margin-bottom:8px">
+          <span class="inv-qty" id="inv-qty-${item.id}">${item.qty} / ${item.max}</span>
+          <span class="inv-price">${item.price.toFixed(2)} лв/stem</span>
+        </div>
+        <div class="inv-controls">
+          <button class="inv-adj-btn" onclick="adjustStock('${item.id}',-5)" title="−5">−5</button>
+          <div class="inv-qty-display" id="inv-big-qty-${item.id}">${item.qty}</div>
+          <button class="inv-adj-btn" onclick="adjustStock('${item.id}',10)" title="+10">+10</button>
+          <button class="inv-reorder-btn" onclick="reorderItem('${item.id}')">Reorder</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function adjustStock(id, delta) {
+  const item = INVENTORY.find(i => i.id === id);
+  if (!item) return;
+  item.qty = Math.max(0, Math.min(item.max, item.qty + delta));
+  item.status = item.qty === 0 ? 'out' : item.qty < item.max * 0.2 ? 'low' : 'in';
+  const pct = Math.round((item.qty / item.max) * 100);
+  const barColor = item.status === 'low' ? 'var(--rose-deep)' : item.status === 'out' ? 'var(--text-muted)' : 'var(--green)';
+  const qEl = document.getElementById('inv-qty-' + id);
+  const bEl = document.getElementById('inv-bar-' + id);
+  const bigEl = document.getElementById('inv-big-qty-' + id);
+  if (qEl) qEl.textContent = `${item.qty} / ${item.max}`;
+  if (bEl) { bEl.style.width = pct + '%'; bEl.style.background = barColor; }
+  if (bigEl) { bigEl.textContent = item.qty; bigEl.style.color = item.status==='low'?'var(--rose-deep)':item.status==='out'?'var(--text-muted)':'var(--choco)'; }
+  if (item.status === 'low') showToast(`⚠️ <strong>${item.name}</strong> low — ${item.qty} stems left`);
+  if (item.status === 'out') showToast(`🚨 <strong>${item.name}</strong> OUT OF STOCK!`);
+}
+
+function reorderItem(id) {
+  const item = INVENTORY.find(i => i.id === id);
+  if (!item) return;
+  const need = item.max - item.qty;
+  showToast(`📦 Reorder sent to <strong>${item.supplier}</strong> — ${need} stems of ${item.name}`);
+  setTimeout(() => { item.qty = item.max; item.status = 'in'; adjustStock(id, 0); showToast(`✅ <strong>${item.name}</strong> restocked!`); }, 2500);
+}
+
+function filterInv(cat, el) {
+  document.querySelectorAll('#view-inventory .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const list = cat === 'all' ? INVENTORY : INVENTORY.filter(i => i.category === cat);
+  renderInventory(list);
+}
+
+// ═══════════════════════════════════════════════
+// SUPPLIERS
+// ═══════════════════════════════════════════════
+
+// Map supplier IDs to a representative flower image
+const SUP_IMG_MAP = {
+  'SUP-01':'rose-g','SUP-02':'peony','SUP-03':'sunflower',
+  'SUP-04':'eucalyptus','SUP-05':'orchid','SUP-06':'tulip'
+};
+
+function renderSuppliers(list) {
+  const container = document.getElementById('suppliers-list');
+  container.innerHTML = list.map(s => {
+    const flId = SUP_IMG_MAP[s.id] || 'rose-g';
+    const imgSrc = FLOWER_IMGS[flId] || '';
+    const fb = FLOWER_FALLBACK[flId] || 'var(--blush)';
+    return `
+    <div class="supplier-row" onclick="openSupplierModal('${s.id}')">
+      <div class="sup-logo" style="padding:0;overflow:hidden;border-radius:0;width:48px;height:48px;flex-shrink:0;background:transparent;border:none;">
+        <img src="${imgSrc}" style="width:48px;height:48px;object-fit:contain;display:block;background:transparent" onerror="this.src=''">
+      </div>
+      <div class="sup-info">
+        <div class="sup-name">${s.name}</div>
+        <div class="sup-detail">📍 ${s.location} · 📞 ${s.contact}</div>
+        <div class="sup-categories">${s.categories.map(c => `<span class="sup-cat-tag">${c}</span>`).join('')}</div>
+      </div>
+      <div class="sup-stat"><div class="sup-stat-v">${s.deliveries}</div><div class="sup-stat-l">Deliveries</div></div>
+      <div class="sup-stat"><div class="sup-stat-v" style="color:var(--green)">${s.reliability}</div><div class="sup-stat-l">Reliability</div></div>
+      <div class="sup-stat"><div style="font-size:11px;color:var(--blue)">${s.nextDelivery}</div><div class="sup-stat-l">Next Delivery</div></div>
+    </div>
+  `;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// FLORISTS
+// ═══════════════════════════════════════════════
+
+function renderFlorists(list) {
+  const grid = document.getElementById('florists-grid');
+  grid.innerHTML = list.map(f => `
+    <div class="florist-card" onclick="openFloristModal('${f.id}')">
+      <div class="fl-head">
+        <div class="fl-av">${f.initials}</div>
+        <div>
+          <div class="fl-name">${f.name}</div>
+          <div class="fl-role">${f.role} · ${f.exp}</div>
+        </div>
+        <span class="badge" style="${f.status === 'On Shift' ? 'background:rgba(143,188,90,0.15);color:var(--green);border:1px solid rgba(143,188,90,0.3)' : 'background:var(--border);color:var(--text-muted);border:1px solid var(--border)'}">${f.status}</span>
+      </div>
+      <div class="fl-stats">
+        <div class="fl-stat"><div class="fl-stat-v">${f.orders}</div><div class="fl-stat-l">Today</div></div>
+        <div class="fl-stat"><div class="fl-stat-v" style="color:var(--berry)">${f.rating}</div><div class="fl-stat-l">Rating</div></div>
+        <div class="fl-stat"><div class="fl-stat-v">${f.exp}</div><div class="fl-stat-l">Exp</div></div>
+      </div>
+      <div class="fl-skills">${f.skills.map(s => `<span class="fl-skill">${s}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════
+// DELIVERY
+// ═══════════════════════════════════════════════
+
+function markDeliveryDone(deliveryIdx) {
+  const d = DELIVERIES[deliveryIdx];
+  if (!d || d.status === 'done') return;
+  const btn = document.getElementById('dlv-btn-' + deliveryIdx);
+  if (btn) { btn.textContent = '⏳'; btn.disabled = true; }
+  setTimeout(() => {
+    d.status = 'done';
+    const order = ORDERS.find(o => o.id === d.orderId);
+    if (order) order.status = 'delivered';
+    renderDeliveries(DELIVERIES);
+    renderOrders(ORDERS);
+    renderDashboardOrders();
+    showToast(`✅ Delivery complete — <strong>${d.client}</strong> received their flowers!`);
+  }, 1200);
+}
+
+function renderDeliveries(list) {
+  const timeline = document.getElementById('delivery-timeline');
+  timeline.innerHTML = list.map((d, i) => {
+    const done = d.status === 'done';
+    const onRoute = d.status === 'delivery';
+    const dotColor = done ? 'var(--green)' : onRoute ? 'var(--coral)' : 'var(--border)';
+    const filled = done || onRoute;
+    return `
+      <div class="timeline-item" id="dlv-row-${i}" onclick="openOrderSlidePanel('${d.orderId}')" style="cursor:pointer;transition:background 0.15s" onmouseover="this.style.background='var(--blush)'" onmouseout="this.style.background=''">
+        <div class="tl-time" style="color:${done?'var(--green)':onRoute?'var(--coral)':'var(--text-muted)'}">${d.time}</div>
+        <div class="tl-dot-col">
+          <div class="tl-dot" style="border-color:${dotColor};${filled ? `background:${dotColor}` : ''};transition:all 0.4s"></div>
+          ${i < list.length-1 ? '<div class="tl-line"></div>' : ''}
+        </div>
+        <div class="tl-info">
+          <div class="tl-order-id">${d.orderId} · <span style="color:var(--text-muted)">${d.zone}</span> · ${d.driver}</div>
+          <div class="tl-client">${d.client}</div>
+          <div class="tl-address">📍 ${d.address}</div>
+          <div class="tl-items">🌸 ${d.items}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          ${statusBadge(done ? 'delivered' : onRoute ? 'delivery' : 'pending')}
+          ${!done ? `<button id="dlv-btn-${i}" class="btn" onclick="event.stopPropagation();markDeliveryDone(${i})"
+            style="font-size:9px;padding:4px 8px;background:${onRoute?'rgba(34,197,94,0.12)':'var(--blush)'};color:${onRoute?'#15803d':'var(--text-dim)'};border-color:${onRoute?'rgba(34,197,94,0.3)':'var(--border)'};border-radius:6px;cursor:pointer;transition:all 0.15s">
+            ${onRoute ? '✓ Mark Done' : '→ Dispatch'}
+          </button>` : '<div style="font-size:9px;color:var(--green);font-weight:600">✓ Done</div>'}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const drivers = document.getElementById('drivers-list');
+  const driverData = [
+    { name:'Viktor Petrov', initials:'ВП', deliveries:3, done:1, status:'On Route — Levski' },
+    { name:'Dimitar Stoyanov', initials:'ДС', deliveries:2, done:1, status:'Loading — Depot' },
+  ];
+  drivers.innerHTML = driverData.map(d => `
+    <div class="driver-card">
+      <div class="dr-head">
+        <div class="dr-av">${d.initials}</div>
+        <div>
+          <div class="dr-name">${d.name}</div>
+          <div class="dr-status">🚐 ${d.status}</div>
+        </div>
+      </div>
+      <div class="dr-progress">
+        <div class="dr-prog-label"><span>${d.done} done</span><span>${d.deliveries} total</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${Math.round(d.done/d.deliveries*100)}%"></div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════
+
+function openOrderModal(id) {
+  const o = ORDERS.find(x => x.id === id);
+  if (!o) return;
+  document.getElementById('modal-title').textContent = o.id + ' — Order Detail';
+  const statusFlow = ['pending','confirmed','preparing','delivery','delivered'];
+  const currentIdx = statusFlow.indexOf(o.status);
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-block"><div class="detail-label">Client</div><div class="detail-value">${o.client}</div></div>
+      <div class="detail-block"><div class="detail-label">Total</div><div class="detail-value" style="color:var(--berry);font-size:20px;font-family:'Playfair Display',serif;font-weight:700">${o.total} лв</div></div>
+      <div class="detail-block"><div class="detail-label">Items</div><div class="detail-value" style="font-size:12px">${o.items}</div></div>
+      <div class="detail-block"><div class="detail-label">Florist</div><div class="detail-value" style="color:var(--purple)">${o.florist}</div></div>
+      <div class="detail-block"><div class="detail-label">Delivery</div><div class="detail-value">${o.delivery}</div></div>
+      <div class="detail-block"><div class="detail-label">Address</div><div class="detail-value" style="font-size:12px">${o.address}</div></div>
+    </div>
+    ${o.note ? `<div class="detail-block" style="margin-bottom:14px"><div class="detail-label">Notes</div><div class="detail-value" style="font-size:12px;color:var(--text-dim)">${o.note}</div></div>` : ''}
+    <div class="modal-section">
+      <div class="modal-section-title">Order Progress</div>
+      <div class="status-steps">
+        ${statusFlow.map((s, i) => {
+          let cls = '';
+          if (i < currentIdx) cls = 'done';
+          else if (i === currentIdx) cls = 'current';
+          const labels = ['Pending','Confirmed','Preparing','On Route','Delivered'];
+          return `<div class="status-step ${cls}" onclick="advanceOrder('${id}', '${s}')">${labels[i]}</div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-gold" onclick="advanceOrderNext('${id}')">→ Advance Status</button>
+      <button class="btn btn-wa" onclick="showToast('💬 WhatsApp opened for ${o.client}')">📱 WhatsApp</button>
+      <button class="btn btn-outline" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  openModal();
+}
+
+function advanceOrderNext(id) {
+  const o = ORDERS.find(x => x.id === id);
+  const flow = ['pending','confirmed','preparing','delivery','delivered'];
+  const idx = flow.indexOf(o.status);
+  if (idx < flow.length - 1) {
+    o.status = flow[idx + 1];
+    showToast(`✓ Order <strong>${id}</strong> moved to ${o.status.toUpperCase()}`);
+    openOrderModal(id);
+    renderOrders(ORDERS);
+    renderOrdersPipeline();
+    renderDashboardOrders();
+  } else {
+    showToast('✓ Order already completed');
+  }
+}
+
+function advanceOrder(id, status) {
+  const o = ORDERS.find(x => x.id === id);
+  o.status = status;
+  showToast(`✓ <strong>${id}</strong> status set to ${status.toUpperCase()}`);
+  openOrderModal(id);
+  renderOrders(ORDERS);
+  renderOrdersPipeline();
+  renderDashboardOrders();
+}
+
+function openClientModal(id) {
+  const c = CLIENTS.find(x => x.id === id);
+  const cOrders = ORDERS.filter(o => o.clientId === id);
+  document.getElementById('modal-title').innerHTML = c.name + ' <span class="badge badge-' + c.tag + '" style="font-size:11px">' + c.tag.toUpperCase() + '</span>';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-block"><div class="detail-label">Phone</div><div class="detail-value">${c.phone}</div></div>
+      <div class="detail-block"><div class="detail-label">Email</div><div class="detail-value" style="font-size:12px">${c.email}</div></div>
+      <div class="detail-block"><div class="detail-label">City</div><div class="detail-value">${c.city}</div></div>
+      <div class="detail-block"><div class="detail-label">Total Spent</div><div class="detail-value" style="color:var(--berry);font-family:'Playfair Display',serif;font-size:22px;font-weight:700">${c.spent} лв</div></div>
+    </div>
+    ${c.note ? `<div class="detail-block" style="margin-bottom:14px"><div class="detail-label">Notes</div><div class="detail-value" style="font-size:12px;color:var(--text-dim)">💡 ${c.note}</div></div>` : ''}
+    <div class="modal-section">
+      <div class="modal-section-title">Order History (${cOrders.length})</div>
+      ${cOrders.length ? cOrders.map(o => `
+        <div class="history-row" style="cursor:pointer" onclick="openOrderModal('${o.id}')">
+          <span style="color:var(--text-muted);width:80px">${o.id}</span>
+          <span style="flex:1;color:var(--text-dim)">${o.items.length>35?o.items.substring(0,35)+'…':o.items}</span>
+          ${statusBadge(o.status)}
+          <span style="color:var(--berry);width:70px;text-align:right">${o.total} лв</span>
+        </div>
+      `).join('') : '<div style="color:var(--text-muted);font-size:11px">No orders yet</div>'}
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-gold" onclick="openNewOrderModal(); showToast('Creating order for ${c.name}')">+ New Order</button>
+      <button class="btn btn-wa" onclick="showToast('💬 WhatsApp: ${c.phone}')">📱 WhatsApp</button>
+      <button class="btn btn-outline" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  openModal();
+}
+
+function openInvModal(id) {
+  const item = INVENTORY.find(x => x.id === id);
+  const pct = Math.round((item.qty / item.max) * 100);
+  document.getElementById('modal-title').textContent = '📦 ' + item.name;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-block"><div class="detail-label">Category</div><div class="detail-value">${item.category}</div></div>
+      <div class="detail-block"><div class="detail-label">Supplier</div><div class="detail-value" style="color:var(--berry)">${item.supplier}</div></div>
+      <div class="detail-block"><div class="detail-label">Current Stock</div><div class="detail-value" style="font-size:22px;font-family:'Playfair Display',serif;font-weight:700;color:${item.status==='low'?'var(--rose-deep)':'var(--green)'}">${item.qty} units</div></div>
+      <div class="detail-block"><div class="detail-label">Price / Stem</div><div class="detail-value" style="color:var(--berry)">${item.price.toFixed(2)} лв</div></div>
+    </div>
+    <div style="margin:14px 0">
+      <div style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px">Stock Level — ${pct}%</div>
+      <div class="prog-bar" style="height:8px;border-radius:4px"><div class="prog-fill" style="width:${pct}%;background:${item.status==='low'?'var(--rose)':'var(--green)'};border-radius:4px"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:4px"><span>0</span><span>Max: ${item.max} units</span></div>
+    </div>
+    ${item.status === 'low' ? '<div class="detail-block" style="border-color:rgba(201,107,122,0.4);background:rgba(201,107,122,0.08)"><div class="detail-label" style="color:var(--rose)">⚠ Low Stock Alert</div><div class="detail-value" style="font-size:12px">Recommend reorder of ${item.max - item.qty} units from ${item.supplier}</div></div>' : ''}
+    <div class="modal-actions">
+      <button class="btn btn-green" onclick="showToast('📦 Reorder sent to ${item.supplier}'); closeModal()">Reorder Now</button>
+      <button class="btn btn-outline" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  openModal();
+}
+
+function openSupplierModal(id) {
+  const s = SUPPLIERS.find(x => x.id === id);
+  document.getElementById('modal-title').textContent = '🏭 ' + s.name;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-block"><div class="detail-label">Location</div><div class="detail-value">${s.location}</div></div>
+      <div class="detail-block"><div class="detail-label">Contact</div><div class="detail-value">${s.contact}</div></div>
+      <div class="detail-block"><div class="detail-label">Total Deliveries</div><div class="detail-value" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--berry)">${s.deliveries}</div></div>
+      <div class="detail-block"><div class="detail-label">Reliability</div><div class="detail-value" style="color:var(--green);font-size:18px;font-family:'Playfair Display',serif;font-weight:700">${s.reliability}</div></div>
+      <div class="detail-block"><div class="detail-label">Next Delivery</div><div class="detail-value" style="color:var(--blue)">${s.nextDelivery}</div></div>
+      <div class="detail-block"><div class="detail-label">Categories</div><div class="detail-value" style="font-size:12px">${s.categories.join(', ')}</div></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-gold" onclick="showToast('📋 Order sent to ${s.name}')">Place Order</button>
+      <button class="btn btn-outline" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  openModal();
+}
+
+function openFloristModal(id) {
+  const f = FLORISTS.find(x => x.id === id);
+  const fOrders = ORDERS.filter(o => o.florist.startsWith(f.name.split(' ')[0]));
+  document.getElementById('modal-title').textContent = f.name;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-block"><div class="detail-label">Role</div><div class="detail-value">${f.role}</div></div>
+      <div class="detail-block"><div class="detail-label">Status</div><div class="detail-value" style="color:${f.status==='On Shift'?'var(--green)':'var(--text-dim)'}">${f.status}</div></div>
+      <div class="detail-block"><div class="detail-label">Experience</div><div class="detail-value">${f.exp}</div></div>
+      <div class="detail-block"><div class="detail-label">Rating</div><div class="detail-value" style="color:var(--berry);font-family:'Playfair Display',serif;font-size:22px;font-weight:700">★ ${f.rating}</div></div>
+    </div>
+    <div style="margin:12px 0">
+      <div style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Specializations</div>
+      <div class="fl-skills">${f.skills.map(s => `<span class="fl-skill">${s}</span>`).join('')}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Active Orders (${fOrders.length})</div>
+      ${fOrders.length ? fOrders.map(o => `
+        <div class="history-row">
+          <span style="color:var(--text-muted);width:80px">${o.id}</span>
+          <span style="flex:1;color:var(--text-dim)">${o.client}</span>
+          ${statusBadge(o.status)}
+        </div>
+      `).join('') : '<div style="color:var(--text-muted);font-size:11px">No active orders</div>'}
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  openModal();
+}
+
+function openNewOrderModal(preClientId) {
+  document.getElementById('modal-title').textContent = '+ New Order';
+
+  // Product quick-picker data
+  const quickProducts = [
+    { name:'Garden Rose Bouquet × 12', price:145 },
+    { name:'White Lily Arrangement',   price:95  },
+    { name:'Peony & Eucalyptus Mix',   price:175 },
+    { name:'Sunflower Burst × 10',     price:75  },
+    { name:'Orchid Gift Box',          price:185 },
+    { name:'Wildflower Bundle',        price:65  },
+    { name:'Tropical Bird of Paradise',price:225 },
+    { name:'Pink Tulip × 20',          price:85  },
+  ];
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Client</label>
+        <select class="form-select" id="no-client">
+          ${CLIENTS.map(c => `<option value="${c.id}" ${c.id===preClientId?'selected':''}>${c.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Florist</label>
+        <select class="form-select" id="no-florist">
+          ${FLORISTS.filter(f=>f.status==='On Shift').map(f => `<option>${f.name}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Quick Product Picker</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px" id="quick-picker">
+        ${quickProducts.map((p,i) => `
+          <div class="qp-item" id="qpi-${i}" onclick="toggleProduct(${i},'${p.name.replace(/'/g,"\\'")}',${p.price})"
+               style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s;font-size:11px;display:flex;justify-content:space-between;align-items:center;user-select:none">
+            <span style="color:var(--choco)">${p.name}</span>
+            <span style="color:var(--berry);font-weight:600;white-space:nowrap;margin-left:6px">${p.price} лв</span>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Additional Items / Notes</label>
+        <input class="form-input" id="no-items" placeholder="e.g. Add eucalyptus, card message">
+      </div>
+      <div class="form-group"><label class="form-label">Total (лв)</label>
+        <input class="form-input" type="number" id="no-total" placeholder="0" value="0" style="font-weight:700;font-size:15px;color:var(--berry)">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Delivery Address</label>
+        <input class="form-input" id="no-addr" placeholder="Street, Varna">
+      </div>
+      <div class="form-group"><label class="form-label">Delivery Time</label>
+        <input class="form-input" id="no-time" placeholder="e.g. Today 15:00" value="Today 15:00">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-gold" onclick="createOrder()">✓ Create Order</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+    </div>
+  `;
+
+  // Style selected items
+  window._selectedProducts = [];
+  openModal();
+}
+
+function toggleProduct(idx, name, price) {
+  const el = document.getElementById('qpi-' + idx);
+  const sp = window._selectedProducts;
+  const existing = sp.findIndex(p => p.name === name);
+  if (existing >= 0) {
+    sp.splice(existing, 1);
+    el.style.background = '';
+    el.style.borderColor = 'var(--border)';
+    el.style.transform = '';
+  } else {
+    sp.push({ name, price });
+    el.style.background = 'var(--blush)';
+    el.style.borderColor = 'var(--berry)';
+    el.style.transform = 'scale(0.97)';
+  }
+  // Update total
+  const total = sp.reduce((s, p) => s + p.price, 0);
+  const totalEl = document.getElementById('no-total');
+  if (totalEl) totalEl.value = total;
+}
+
+function createOrder() {
+  const clientEl = document.getElementById('no-client');
+  const floristEl = document.getElementById('no-florist');
+  const addrEl  = document.getElementById('no-addr');
+  const timeEl  = document.getElementById('no-time');
+  const totalEl = document.getElementById('no-total');
+  const extraEl = document.getElementById('no-items');
+
+  const selectedProducts = window._selectedProducts || [];
+  let items = selectedProducts.map(p => p.name).join(', ');
+  if (extraEl && extraEl.value.trim()) items += (items ? ', ' : '') + extraEl.value.trim();
+  if (!items) items = 'Custom arrangement';
+
+  const clientName = clientEl ? clientEl.options[clientEl.selectedIndex].text : 'Client';
+  const clientId   = clientEl ? clientEl.value : 'C001';
+  const florist    = floristEl ? floristEl.value : 'Nadia K.';
+  const total      = parseFloat(totalEl ? totalEl.value : 0) || 85;
+  const address    = addrEl && addrEl.value.trim() ? addrEl.value.trim() : 'Varna';
+  const delivery   = timeEl && timeEl.value.trim() ? timeEl.value.trim() : 'Today 15:00';
+
+  const maxId = Math.max(...ORDERS.map(o => parseInt(o.id.split('-')[1]) || 0));
+  const newId = 'ORD-' + (maxId + 1);
+
+  ORDERS.unshift({ id:newId, clientId, client:clientName, items, florist, status:'pending', total, date:'2026-04-10', delivery, address, note:'' });
+  demoOrders++;
+  const el = document.querySelector('.kpi.rose .kpi-value');
+  if (el) { popKpi(el.closest('.kpi')); animateCounter(el, demoOrders-1, demoOrders, 400); }
+  renderDashboardOrders();
+  renderOrders(ORDERS);
+  renderOrdersPipeline();
+  showToast(`✅ Order <strong>${newId}</strong> created — ${clientName}`);
+  closeModal();
+}
+
+function openNewClientModal() {
+  document.getElementById('modal-title').textContent = 'Add New Client';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" placeholder="Name Surname"></div>
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" placeholder="+359 88 ..."></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" placeholder="email@domain.com"></div>
+      <div class="form-group"><label class="form-label">City / District</label><input class="form-input" placeholder="Varna Center"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:0"><label class="form-label">Notes / Preferences</label><input class="form-input" placeholder="Allergies, preferences, occasion…"></div>
+    <div class="modal-actions">
+      <button class="btn btn-gold" onclick="showToast('✓ New client added'); closeModal()">Add Client</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+    </div>
+  `;
+  openModal();
+}
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+let toastTimeout;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function globalSearch(val) {
+  if (!val || val.trim().length < 2) return;
+  const lower = val.toLowerCase().trim();
+  // Search orders first (by ID or client name)
+  const order = ORDERS.find(o =>
+    o.id.toLowerCase().includes(lower) ||
+    o.client.toLowerCase().includes(lower) ||
+    o.items.toLowerCase().includes(lower)
+  );
+  // Search clients
+  const client = CLIENTS.find(c =>
+    c.name.toLowerCase().includes(lower) ||
+    c.phone.includes(lower) ||
+    c.email.toLowerCase().includes(lower)
+  );
+  // Search inventory
+  const invItem = INVENTORY.find(i => i.name.toLowerCase().includes(lower));
+
+  if (order) {
+    showToast(`🔍 <strong>${order.id}</strong> — ${order.client} · Click to open`);
+    setTimeout(() => openOrderSlidePanel(order.id), 600);
+  } else if (client) {
+    showToast(`👤 Found client: <strong>${client.name}</strong> · Click to open`);
+    setTimeout(() => openClientSlidePanel(client.id), 600);
+  } else if (invItem) {
+    showToast(`📦 Inventory: <strong>${invItem.name}</strong> — ${invItem.qty} in stock`);
+  } else {
+    showToast(`🔍 No results found for "<strong>${val}</strong>"`);
+  }
+  // Clear search field after 100ms
+  setTimeout(() => {
+    const searchEl = document.querySelector('.topbar-search');
+    if (searchEl) searchEl.value = '';
+  }, 2000);
+}
+
+// keyboard shortcuts (n = new order, Escape handled globally in slide-panel section)
+document.addEventListener('keydown', e => {
+  if (e.key === 'n' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') openNewOrderModal();
+});
+
+// ═══════════════════════════════════════════════════════
+//  ANIMATED COUNTER UTIL
+// ═══════════════════════════════════════════════════════
+function animateCounter(el, from, to, duration = 800, prefix='', suffix='') {
+  const start = performance.now();
+  const update = (now) => {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(from + (to - from) * ease);
+    el.textContent = prefix + val.toLocaleString() + suffix;
+    if (p < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+function popKpi(el) {
+  el.classList.remove('kpi-pop');
+  void el.offsetWidth;
+  el.classList.add('kpi-pop');
+  setTimeout(() => el.classList.remove('kpi-pop'), 500);
+}
+
+// ═══════════════════════════════════════════════════════
+//  DEMO MODE
+// ═══════════════════════════════════════════════════════
+let demoInterval = null;
+let demoRunning = false;
+let demoEventIdx = 0;
+let demoRevenue = 12840;
+let demoOrders = 11;
+let demoClients = 24;
+
+const DEMO_EVENTS = [
+  function newOrderIncoming() {
+    const names = ['Petya Ivanova', 'Rumen Georgiev', 'Anita Yordanova', 'Kristian Borisov', 'Silviya Koeva'];
+    const products = ['White Rose Bouquet × 12', 'Peony Arrangement', 'Sunflower & Lily Mix', 'Orchid Gift Box', 'Wildflower Bundle'];
+    const amounts = [95, 145, 78, 185, 65];
+    const i = Math.floor(Math.random() * names.length);
+    const id = 'ORD-' + (2848 + Math.floor(Math.random()*100));
+    showIncomingOrder(id, names[i], products[i], amounts[i]);
+  },
+  function advanceRandomOrder() {
+    const pending = ORDERS.filter(o => o.status !== 'delivered' && o.status !== 'cancelled');
+    if (!pending.length) return;
+    const o = pending[Math.floor(Math.random() * pending.length)];
+    const flow = ['pending','confirmed','preparing','delivery','delivered'];
+    const idx = flow.indexOf(o.status);
+    if (idx < flow.length - 1) {
+      o.status = flow[idx + 1];
+      const labels = { confirmed:'Confirmed', preparing:'Being Prepared', delivery:'Out for Delivery', delivered:'Delivered ✓' };
+      showToast(`🔄 <strong>${o.id}</strong> → ${labels[o.status] || o.status}`);
+      renderOrders(ORDERS);
+      renderOrdersPipeline();
+      renderDashboardOrders();
+    }
+  },
+  function revenueUp() {
+    const bump = Math.floor(Math.random() * 200) + 50;
+    const oldRev = demoRevenue;
+    demoRevenue += bump;
+    const el = document.querySelector('.kpi.gold .kpi-value');
+    if (el) { popKpi(el.closest('.kpi')); animateCounter(el, oldRev, demoRevenue, 700); }
+    showToast(`💰 Revenue updated: <strong>+${bump} лв</strong> — new payment received`);
+  },
+  function newClientAdded() {
+    const names = ['Gabriela Stanova', 'Viktor Naydenov', 'Ina Borisova', 'Dimitar Velev'];
+    const name = names[Math.floor(Math.random() * names.length)];
+    demoClients++;
+    const el = document.querySelector('.kpi.green .kpi-value');
+    if (el) { popKpi(el.closest('.kpi')); animateCounter(el, demoClients - 1, demoClients, 500); }
+    showToast(`👤 New client registered: <strong>${name}</strong>`);
+  },
+  function stockAlert() {
+    const flowers = ['Garden Roses', 'Bird of Paradise', 'Pink Peonies', 'Orchids'];
+    const f = flowers[Math.floor(Math.random() * flowers.length)];
+    const qty = Math.floor(Math.random() * 8) + 3;
+    showToast(`⚠️ Low stock: <strong>${f}</strong> — only ${qty} stems remaining`);
+  },
+  function deliveryCompleted() {
+    const doneDeliveries = DELIVERIES.filter(d => d.status === 'pending' || d.status === 'delivery');
+    if (!doneDeliveries.length) return;
+    const d = doneDeliveries[0];
+    d.status = 'done';
+    renderDeliveries(DELIVERIES);
+    showToast(`🚐 Delivery complete: <strong>${d.client}</strong> — ${d.address}`);
+  },
+  function floristMessage() {
+    const msgs = [
+      'Nadia K. started preparing <strong>Peony Arrangement</strong>',
+      'Maria T. requests more rose stems for <strong>ORD-2844</strong>',
+      'Elena R. completed <strong>Tropical Bird of Paradise</strong>',
+      'Nadia K. finished wrapping — <strong>3 orders ready</strong>',
+    ];
+    showToast('🌸 ' + msgs[Math.floor(Math.random() * msgs.length)]);
+  },
+  function supplierUpdate() {
+    const msgs = [
+      '🌹 <strong>Rosa Bella Farm</strong> confirmed Tuesday delivery',
+      '📦 <strong>Green Leaf</strong> sent invoice — 42 bundles',
+      '🚛 <strong>Dutch Flowers BG</strong> shipment on the way',
+    ];
+    showToast(msgs[Math.floor(Math.random() * msgs.length)]);
+  }
+];
+
+function toggleDemo() {
+  const btn = document.getElementById('demo-btn');
+  if (demoRunning) {
+    clearInterval(demoInterval);
+    demoRunning = false;
+    btn.innerHTML = '▶ Demo';
+    btn.style.background = 'var(--blush)';
+    btn.style.color = 'var(--berry)';
+    showToast('⏸ Demo mode stopped');
+  } else {
+    demoRunning = true;
+    btn.innerHTML = '<span class="demo-pulse"></span>Live Demo';
+    btn.style.background = 'rgba(34,197,94,0.15)';
+    btn.style.color = '#15803d';
+    btn.style.borderColor = 'rgba(34,197,94,0.4)';
+    showToast('▶ Demo mode started — watch the CRM come alive!');
+    // Fire first event immediately
+    setTimeout(() => fireDemoEvent(), 1200);
+    demoInterval = setInterval(fireDemoEvent, 5500);
+  }
+}
+
+function fireDemoEvent() {
+  const fn = DEMO_EVENTS[demoEventIdx % DEMO_EVENTS.length];
+  demoEventIdx++;
+  fn();
+}
+
+// ═══════════════════════════════════════════════════════
+//  INCOMING ORDER NOTIFICATION
+// ═══════════════════════════════════════════════════════
+let notifTimeout;
+let pendingNotifData = null;
+
+function showIncomingOrder(id, client, items, total) {
+  pendingNotifData = { id, client, items, total };
+  document.getElementById('on-title').innerHTML = `🌹 New Order — ${id}`;
+  document.getElementById('on-sub').innerHTML = `<strong>${client}</strong> · ${items} · <strong>${total} лв</strong>`;
+  const n = document.getElementById('order-notif');
+  n.classList.add('show');
+  clearTimeout(notifTimeout);
+  notifTimeout = setTimeout(() => n.classList.remove('show'), 7000);
+}
+
+function acceptNotifOrder() {
+  if (pendingNotifData) {
+    const { id, client, items, total } = pendingNotifData;
+    // Add to ORDERS array
+    ORDERS.unshift({ id, clientId:'C001', client, items, florist:'Nadia K.', status:'confirmed', total, date:'2026-04-10', delivery:'TBD', address:'Varna', note:'' });
+    demoOrders++;
+    const el = document.querySelector('.kpi.rose .kpi-value');
+    if (el) { popKpi(el.closest('.kpi')); animateCounter(el, demoOrders-1, demoOrders, 400); }
+    renderDashboardOrders();
+    renderOrders(ORDERS);
+    renderOrdersPipeline();
+    showToast(`✓ Order <strong>${id}</strong> accepted & confirmed`);
+  }
+  dismissNotif();
+}
+
+function dismissNotif() {
+  document.getElementById('order-notif').classList.remove('show');
+  clearTimeout(notifTimeout);
+}
+
+// ═══════════════════════════════════════════════════════
+//  BOUQUET STUDIO
+// ═══════════════════════════════════════════════════════
+
+// Real flower photo URLs (Local images)
+const FLOWER_IMGS = {
+  'rose-g':       'images/buntysmum-rose-3602285_1920.png',
+  'rose-r':       'images/erbs55-rose-3160075_1920.png',
+  'rose-p':       'images/garten-gg-nature-3335990_1920.png',
+  'rose-w':       'images/garten-gg-nature-3443472_1920.png',
+  'peony':        'images/susannp4-poppy-1952024_1920.png',
+  'sunflower':    'images/buntysmum-flower-5428157_1920.png',
+  'tulip':        'images/trixieliko-tulip-2979748_1920.png',
+  'lily':         'images/garten-gg-nature-3699654_1920.png',
+  'orchid':       'images/openclipart-vectors-floral-2028501_1920.png',
+  'paradise':     'images/openclipart-vectors-floral-2028503_1920.png',
+  'hibiscus':     'images/erbs55-rose-3160075_1920 (1).png',
+  'eucalyptus':   'images/buntysmum-rose-3036266_1920.png',
+  'pampas':       'images/openclipart-vectors-floral-2028503_1920.png',
+  'babysbreath':  'images/openclipart-vectors-floral-2028501_1920.png',
+  'ruscus':       'images/garten-gg-nature-3335990_1920.png',
+};
+
+// Fallback gradient colors per flower (if image fails to load)
+const FLOWER_FALLBACK = {
+  'rose-g':'#D4607A','rose-r':'#C0152A','rose-p':'#E8709A','rose-w':'#F0EEE8',
+  'peony':'#F08BA0','sunflower':'#F5C518','tulip':'#E04040','lily':'#F5EED0',
+  'orchid':'#9966CC','paradise':'#E87800','hibiscus':'#E81060',
+  'eucalyptus':'#5A8A3C','pampas':'#D4C5A9','babysbreath':'#F0F0EE','ruscus':'#2E7D32',
+};
+
+function flowerImgEl(id, size=68, radius='0') {
+  const src = FLOWER_IMGS[id] || '';
+  return `<img src="${src}" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:${radius};display:block;background:transparent"
+    onerror="this.style.opacity='0.85';this.src=''">`;
+}
+
+const PALETTE_FLOWERS = {
+  roses: [
+    { id:'rose-g', name:'Garden Rose',  price:2.80 },
+    { id:'rose-r', name:'Red Rose',     price:2.60 },
+    { id:'rose-p', name:'Pink Rose',    price:2.70 },
+    { id:'rose-w', name:'White Rose',   price:2.90 },
+  ],
+  seasonal: [
+    { id:'peony',     name:'Peony',     price:3.50 },
+    { id:'sunflower', name:'Sunflower', price:1.20 },
+    { id:'tulip',     name:'Tulip',     price:1.80 },
+    { id:'lily',      name:'Lily',      price:2.20 },
+  ],
+  tropical: [
+    { id:'orchid',   name:'Orchid',           price:6.50 },
+    { id:'paradise', name:'Bird of Paradise',  price:8.00 },
+    { id:'hibiscus', name:'Hibiscus',          price:4.00 },
+  ],
+  filler: [
+    { id:'eucalyptus',  name:'Eucalyptus',    price:0.90 },
+    { id:'pampas',      name:'Pampas',        price:4.20 },
+    { id:'babysbreath', name:"Baby's Breath", price:0.60 },
+    { id:'ruscus',      name:'Ruscus',        price:0.55 },
+  ]
+};
+
+const RIBBON_COLORS = [
+  '#C4607A','#7A4E73','#F0A8C6','#F1BBA4',
+  '#5AAAC8','#5A9E6A','#FAF7F5','#303838'
+];
+
+let bouquetFlowers = []; // { flower, x, y, rot, id: uid }
+let selectedRibbon = '#C4607A';
+let placedCount = 0;
+
+
+
+function initBouquetStudio() {
+  // Render palette
+  Object.entries(PALETTE_FLOWERS).forEach(([cat, flowers]) => {
+    const el = document.getElementById('palette-' + cat);
+    if (!el) return;
+    el.innerHTML = flowers.map(f => `
+      <div class="palette-flower" id="pf-${f.id}" onclick="addFlowerFromPalette('${f.id}', event)" title="${f.name} — ${f.price.toFixed(2)} лв/stem">
+        ${flowerImgEl(f.id, 68, '50%').replace('display:block', 'display:block;margin:0 auto 5px')}
+        <div class="pf-name">${f.name}</div>
+        <div class="pf-price">${f.price.toFixed(2)} лв</div>
+      </div>`).join('');
+  });
+
+  // Ribbon swatches
+  const rc = document.getElementById('ribbon-colors');
+  rc.innerHTML = RIBBON_COLORS.map(c => `
+    <div class="ribbon-swatch ${c === selectedRibbon ? 'selected' : ''}"
+         style="background:${c}" onclick="selectRibbon('${c}', this)"></div>`).join('');
+         
+  document.querySelectorAll('.svg-ribbon-path').forEach(p => p.setAttribute('fill', selectedRibbon));
+}
+
+function getAllFlowers() {
+  return Object.values(PALETTE_FLOWERS).flat();
+}
+
+function addFlowerFromPalette(flowerId, event) {
+  const flower = getAllFlowers().find(f => f.id === flowerId);
+  if (!flower) return;
+
+  const pfEl = document.getElementById('pf-' + flowerId);
+  pfEl.classList.add('adding');
+  setTimeout(() => pfEl.classList.remove('adding'), 400);
+
+  if (event) {
+    const rect = pfEl.getBoundingClientRect();
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple';
+    ripple.style.cssText = `width:60px;height:60px;left:${event.clientX-rect.left-30}px;top:${event.clientY-rect.top-30}px`;
+    pfEl.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 500);
+  }
+
+  const canvas = document.getElementById('studio-canvas');
+  const rectC = canvas.getBoundingClientRect();
+  const cw = canvas.offsetWidth;
+  const ch = canvas.offsetHeight;
+  const centerX = cw / 2;
+  const baseY = ch - 440;
+
+  const destX = centerX;
+  const destY = baseY;
+  const rot = (Math.random() - 0.5) * 28;
+
+  // Fly animation mechanics
+  if (event && event.type !== 'CustomEvent') {
+    const rectF = pfEl.getBoundingClientRect();
+    const clone = document.createElement('img');
+    clone.src = FLOWER_IMGS[flowerId];
+    clone.className = 'flying-clone';
+    // Starting coordinates
+    clone.style.left = rectF.left + 'px';
+    clone.style.top = rectF.top + 'px';
+    document.body.appendChild(clone);
+
+    // Reflow
+    void clone.offsetWidth;
+
+    // Ending coordinates
+    const targetLeft = rectC.left + destX - 45; 
+    const targetTop = rectC.top + destY - 45;
+
+    clone.style.left = targetLeft + 'px';
+    clone.style.top = targetTop + 'px';
+    clone.style.transform = `rotate(${rot}deg) scale(1.5)`;
+
+    setTimeout(() => {
+      clone.remove();
+      commitFlower(flower, destX, destY, rot);
+    }, 450); // Matches CSS transition duration
+  } else {
+    commitFlower(flower, destX, destY, rot);
+  }
+}
+
+function commitFlower(flower, x, y, rot) {
+  const uid = 'bf-' + (++placedCount);
+  bouquetFlowers.push({ flower, x, y, rot, uid });
+  renderPlacedFlower({ flower, x, y, rot, uid });
+  spawnSparkles(x, y);
+  snapBouquet(); // Auto organize seamlessly
+  updateBouquetPanel();
+  document.getElementById('canvas-empty').classList.add('hidden');
+}
+
+function updateFlowerTransform(bf) {
+  const el = document.getElementById(bf.uid);
+  if (el) {
+    el.style.left = (bf.x - 130) + 'px';
+    el.style.top  = (bf.y - 130) + 'px';
+    el.style.setProperty('--rot', bf.rot + 'deg');
+    el.style.zIndex = Math.floor(bf.y) + 1000;
+  }
+  // Sync curved stem
+  let path = document.getElementById('stem-' + bf.uid);
+  if (!path) {
+    path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.id = 'stem-' + bf.uid;
+    path.classList.add('stem');
+    const canvas = document.getElementById('stems-canvas');
+    if(canvas) canvas.appendChild(path);
+  }
+  const canvas = document.getElementById('studio-canvas');
+  if (!canvas) return;
+  const vaseTopX = canvas.offsetWidth / 2;
+  const vaseTopY = canvas.offsetHeight - 130;
+  const ctrlY = (bf.y + vaseTopY) / 2 + 50;
+  path.setAttribute('d', `M ${bf.x} ${bf.y} Q ${bf.x} ${ctrlY} ${vaseTopX} ${vaseTopY}`);
+}
+
+function renderPlacedFlower({ flower, x, y, rot, uid }) {
+  const container = document.getElementById('placed-flowers');
+  const el = document.createElement('div');
+  el.className = 'placed-flower';
+  el.id = uid;
+  el.title = `${flower.name} · Drag to move · Scroll to rotate · Double-click to remove`;
+  container.appendChild(el);
+  updateFlowerTransform({ uid, x, y, rot });
+  
+  // Double-click to remove
+  el.ondblclick = (e) => { e.stopPropagation(); removeFlower(uid); };
+  
+  // Drag & Move interactions
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  el.onmousedown = (e) => {
+    if (e.button !== 0) return; 
+    e.preventDefault();
+    e.stopPropagation();
+    isDragging = true;
+    el.classList.add('dragging');
+    const rect = el.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+
+    const onMouseM = (ev) => {
+      if (!isDragging) return;
+      const canvas = document.getElementById('studio-canvas');
+      const crect = canvas.getBoundingClientRect();
+      const nx = ev.clientX - crect.left - offsetX + 130; 
+      const ny = ev.clientY - crect.top - offsetY + 130;
+      
+      const bf = bouquetFlowers.find(b => b.uid === uid);
+      if (bf) {
+         bf.x = nx; 
+         bf.y = ny;
+         updateFlowerTransform(bf);
+      }
+    };
+    const onMouseU = () => {
+      isDragging = false;
+      el.classList.remove('dragging');
+      document.removeEventListener('mousemove', onMouseM);
+      document.removeEventListener('mouseup', onMouseU);
+      snapBouquet(); 
+    };
+    document.addEventListener('mousemove', onMouseM);
+    document.addEventListener('mouseup', onMouseU);
+  };
+
+  // Scroll to rotate 
+  el.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const bf = bouquetFlowers.find(b => b.uid === uid);
+    if (!bf) return;
+    bf.rot += e.deltaY > 0 ? 15 : -15;
+    updateFlowerTransform(bf);
+  }, { passive: false });
+
+  const img = document.createElement('img');
+  const src = FLOWER_IMGS[flower.id] || '';
+  img.src = src;
+  img.alt = flower.name;
+  img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;background:transparent;';
+  img.onerror = () => { img.src = ''; };
+  el.appendChild(img);
+}
+
+function removeFlower(uid) {
+  const el = document.getElementById(uid);
+  if (el) {
+    el.classList.add('removing');
+    setTimeout(() => el.remove(), 320);
+  }
+  const stem = document.getElementById('stem-' + uid);
+  if (stem) {
+    stem.style.opacity = '0';
+    setTimeout(() => stem.remove(), 320);
+  }
+  bouquetFlowers = bouquetFlowers.filter(f => f.uid !== uid);
+  snapBouquet();
+  updateBouquetPanel();
+  if (bouquetFlowers.length === 0) document.getElementById('canvas-empty').classList.remove('hidden');
+}
+
+function snapBouquet() {
+  const canvas = document.getElementById('studio-canvas');
+  if (!canvas) return;
+  const cw = canvas.offsetWidth;
+  const ch = canvas.offsetHeight;
+  const cx = cw / 2;
+  const cy = ch - 440; // Wrapper mouth center
+  const count = bouquetFlowers.length;
+  if(count === 0) return;
+
+  // Organically sort flowers based on how close they physically are to the core.
+  bouquetFlowers.sort((a, b) => {
+     let da = Math.pow(a.x - cx, 2) + Math.pow(a.y - cy, 2);
+     let db = Math.pow(b.x - cx, 2) + Math.pow(b.y - cy, 2);
+     return da - db;
+  });
+
+  const slots = [];
+  for (let i = 0; i < count; i++) {
+     if (count === 1) {
+         slots.push({ox: 0, oy: 0});
+     } else if (count === 2) {
+         slots.push(i===0 ? {ox: -40, oy: 0} : {ox: 40, oy: 0});
+     } else if (count === 3) {
+         if (i===0) slots.push({ox: 0, oy: -35});
+         if (i===1) slots.push({ox: -40, oy: 25});
+         if (i===2) slots.push({ox: 40, oy: 25});
+     } else {
+         // Sunflower spiral, tightly packed into the wrapper bounds
+         let c = (count > 15) ? 35 : 45; // squeeze tight if heavy
+         let r = Math.min(c * Math.sqrt(i), 150); // Hard clamp to wrapper width!
+         let a = i * 137.5 * (Math.PI / 180);
+         slots.push({ ox: r * Math.cos(a), oy: r * 0.75 * Math.sin(a) });
+     }
+  }
+
+  // Gracefully assign layout geometry
+  bouquetFlowers.forEach((bf, i) => {
+     bf.x = cx + slots[i].ox;
+     bf.y = cy + slots[i].oy;
+     updateFlowerTransform(bf);
+  });
+}
+
+function spawnSparkles(x, y) {
+  const canvas = document.getElementById('studio-canvas');
+  const sparks = ['✨','⭐','💫','🌟','✦'];
+  for (let i = 0; i < 5; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    const angle = (i / 5) * Math.PI * 2;
+    const dist = 30 + Math.random() * 30;
+    s.style.cssText = `left:${x}px;top:${y}px;--dx:${Math.cos(angle)*dist}px;--dy:${Math.sin(angle)*dist}px;animation-delay:${i*0.06}s`;
+    s.textContent = sparks[Math.floor(Math.random()*sparks.length)];
+    canvas.appendChild(s);
+    setTimeout(() => s.remove(), 800);
+  }
+}
+
+function canvasClick(event) {
+  if (event.target.id !== 'studio-canvas' && event.target.id !== 'drop-ring' && event.target.id !== 'canvas-empty') return;
+  const allFlowers = getAllFlowers();
+  const available = bouquetFlowers.length > 0 ? [...new Set(bouquetFlowers.map(b=>b.flower))] : allFlowers;
+  const flower = available[Math.floor(Math.random() * available.length)] || allFlowers[0];
+  const canvas = document.getElementById('studio-canvas');
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  const rot = (Math.random() - 0.5) * 30;
+  
+  commitFlower(flower, x, y, rot);
+}
+
+function clearBouquet() {
+  const container = document.getElementById('placed-flowers');
+  // Animate all out with stagger
+  const flowers = container.querySelectorAll('.placed-flower');
+  flowers.forEach((el, i) => {
+    setTimeout(() => {
+      el.classList.add('removing');
+      setTimeout(() => el.remove(), 320);
+    }, i * 40);
+  });
+  
+  const stemsContainer = document.getElementById('stems-canvas');
+  if (stemsContainer) {
+    const stems = stemsContainer.querySelectorAll('.stem');
+    stems.forEach((stem, i) => {
+      setTimeout(() => {
+        stem.style.opacity = '0';
+        setTimeout(() => stem.remove(), 320);
+      }, i * 40);
+    });
+  }
+  
+  bouquetFlowers = [];
+  setTimeout(() => {
+    updateBouquetPanel();
+    document.getElementById('canvas-empty').classList.remove('hidden');
+  }, flowers.length * 40 + 350);
+}
+
+function autoArrange() {
+  if (bouquetFlowers.length === 0) {
+    // Auto-fill a beautiful default bouquet
+    const presets = [
+      {id:'rose-g',n:5},{id:'rose-p',n:3},{id:'peony',n:2},
+      {id:'eucalyptus',n:3},{id:'babysbreath',n:4},{id:'lily',n:2}
+    ];
+    clearBouquet();
+    let delay = 0;
+    presets.forEach(p => {
+      for(let i=0;i<p.n;i++){
+        const flower = getAllFlowers().find(f=>f.id===p.id);
+        if(!flower) continue;
+        setTimeout(()=>addFlowerToBouquetSilent(flower), delay);
+        delay += 120;
+      }
+    });
+    showToast('✨ Auto-arranged a beautiful bouquet!');
+    return;
+  }
+  // Auto-arrange to mathematical symmetry
+  snapBouquet();
+  showToast('✨ Arrangement optimised!');
+}
+
+function shuffleArrangement() {
+  const canvas = document.getElementById('studio-canvas');
+  const cw = canvas.offsetWidth;
+  const ch = canvas.offsetHeight;
+  bouquetFlowers.forEach(bf => {
+    bf.x = cw/2 + (Math.random() - 0.5) * 400; // Throw them around wildly
+    bf.y = ch - 220 + (Math.random() - 0.5) * 400; // Then snapBouquet will catch them
+    bf.rot = (Math.random() - 0.5) * 40;
+  });
+  snapBouquet();
+}
+
+function addFlowerToBouquetSilent(flower) {
+  const canvas = document.getElementById('studio-canvas');
+  const cw = canvas.offsetWidth;
+  const ch = canvas.offsetHeight;
+  const x = cw/2;
+  const y = ch - 220;
+  const rot = (Math.random() - 0.5) * 25;
+  commitFlower(flower, x, y, rot);
+}
+
+function updateBouquetPanel() {
+  const container = document.getElementById('bouquet-items');
+  if (bouquetFlowers.length === 0) {
+    container.innerHTML = '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:20px 0">No flowers added yet</div>';
+    document.getElementById('total-stems').textContent = '0';
+    document.getElementById('total-price').textContent = '15 лв';
+    return;
+  }
+  // Group by flower
+  const groups = {};
+  bouquetFlowers.forEach(bf => {
+    const k = bf.flower.id;
+    if (!groups[k]) groups[k] = { flower: bf.flower, count: 0, uids: [] };
+    groups[k].count++;
+    groups[k].uids.push(bf.uid);
+  });
+  let totalStemPrice = 0;
+  container.innerHTML = Object.values(groups).map(g => {
+    const subtotal = g.flower.price * g.count;
+    totalStemPrice += subtotal;
+    return `<div class="bouquet-item">
+      ${flowerImgEl(g.flower.id, 48, '0').replace('display:block', 'display:block;flex-shrink:0')}
+      <div class="bi-info">
+        <div class="bi-name">${g.flower.name}</div>
+        <div class="bi-qty">× ${g.count} stem${g.count>1?'s':''}</div>
+      </div>
+      <div class="bi-price">${subtotal.toFixed(2)} лв</div>
+      <div class="bi-remove" onclick="removeFlower('${g.uids[g.uids.length-1]}')" title="Remove one">−</div>
+    </div>`;
+  }).join('');
+  const total = totalStemPrice + 15;
+  const stemsEl = document.getElementById('total-stems');
+  const priceEl = document.getElementById('total-price');
+  stemsEl.textContent = bouquetFlowers.length;
+  priceEl.textContent = total.toFixed(0) + ' лв';
+}
+
+function selectRibbon(color, el) {
+  selectedRibbon = color;
+  document.querySelectorAll('.ribbon-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.querySelectorAll('.svg-ribbon-path').forEach(p => p.setAttribute('fill', color));
+  showToast(`🎀 Ribbon colour selected`);
+}
+
+function saveBouquetAsOrder() {
+  if (bouquetFlowers.length === 0) {
+    showToast('⚠️ Add at least one flower first!'); return;
+  }
+  const groups = {};
+  bouquetFlowers.forEach(bf => {
+    const k = bf.flower.name;
+    groups[k] = (groups[k] || 0) + 1;
+  });
+  const itemsList = Object.entries(groups).map(([n,q]) => `${n} ×${q}`).join(', ');
+  const total = bouquetFlowers.reduce((s,b) => s + b.flower.price, 0) + 15;
+  document.getElementById('modal-title').textContent = '💐 Save Bouquet as Order';
+  document.getElementById('modal-body').innerHTML = `
+    <div style="background:var(--blush);border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">
+      <div style="display:flex;justify-content:center;gap:4px;margin-bottom:8px">${[...new Set(bouquetFlowers.slice(0,5).map(b=>b.flower.id))].map(id=>flowerImgEl(id,60,'0')).join('')}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--choco)">Custom Bouquet</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:4px">${itemsList}</div>
+      <div style="font-size:20px;font-weight:700;color:var(--berry);margin-top:8px;font-family:'Playfair Display',serif">${total.toFixed(0)} лв</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Client</label>
+        <select class="form-select">${CLIENTS.map(c=>`<option>${c.name}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label class="form-label">Delivery Time</label>
+        <input class="form-input" placeholder="Today 16:00" value="Today 16:00">
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Delivery Address</label>
+      <input class="form-input" placeholder="Street, Varna">
+    </div>
+    <div class="form-group" style="margin-bottom:0"><label class="form-label">Card Message</label>
+      <input class="form-input" placeholder="With love… 🌸">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-gold" onclick="confirmBouquetOrder('${itemsList}',${total.toFixed(0)})">✓ Create Order</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+    </div>`;
+  openModal();
+}
+
+function confirmBouquetOrder(items, total) {
+  const newId = 'ORD-' + (2848 + Math.floor(Math.random()*100));
+  ORDERS.unshift({ id:newId, clientId:'C001', client:'Custom Client', items, florist:'Nadia K.', status:'pending', total, date:'2026-04-10', delivery:'Today 16:00', address:'Varna', note:'Custom bouquet order from Studio' });
+  renderDashboardOrders();
+  renderOrders(ORDERS);
+  renderOrdersPipeline();
+  closeModal();
+  showToast(`✓ Order <strong>${newId}</strong> created from Bouquet Studio!`);
+  clearBouquet();
+}
+
+// ═══════════════════════════════════════════════════════
+//  LIVE CLOCK
+// ═══════════════════════════════════════════════════════
+(function startClock() {
+  function tick() {
+    const el = document.getElementById('topbar-clock');
+    if (el) el.textContent = new Date().toLocaleTimeString('bg-BG', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+// ═══════════════════════════════════════════════════════
+//  SLIDE PANEL — ORDER DETAIL
+// ═══════════════════════════════════════════════════════
+function openOrderSlidePanel(id) {
+  const o = ORDERS.find(x => x.id === id);
+  if (!o) return;
+  const client = CLIENTS.find(c => c.id === o.clientId) || {};
+  const flow = ['pending','confirmed','preparing','delivery','delivered'];
+  const stepLabels = { pending:'Pending', confirmed:'Confirmed', preparing:'Preparing', delivery:'Delivery', delivered:'Delivered' };
+
+  document.getElementById('sp-id').textContent = o.id;
+  document.getElementById('sp-title').textContent = o.client;
+
+  document.getElementById('sp-body').innerHTML = `
+    <!-- Status pipeline -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">Order Progress</div>
+      <div style="display:flex;align-items:center;gap:0">
+        ${flow.map((s, i) => {
+          const done = flow.indexOf(o.status) >= i;
+          const active = o.status === s;
+          return `<div style="flex:1;text-align:center">
+            <div style="width:28px;height:28px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;transition:all 0.3s;
+              background:${active ? 'var(--berry)' : done ? 'var(--rose)' : 'var(--blush)'};
+              color:${done ? '#fff' : 'var(--text-muted)'};
+              box-shadow:${active ? '0 0 0 3px rgba(122,78,115,0.25)' : 'none'}">${done ? (active ? '●' : '✓') : (i+1)}</div>
+            <div style="font-size:8px;color:${active ? 'var(--berry)' : done ? 'var(--rose-deep)' : 'var(--text-muted)'};font-weight:${active?700:500}">${stepLabels[s]}</div>
+          </div>
+          ${i < flow.length-1 ? `<div style="flex:0 0 2px;height:2px;background:${flow.indexOf(o.status) > i ? 'var(--rose)' : 'var(--border)'};margin-bottom:18px;transition:background 0.3s"></div>` : ''}`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- Details grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div class="detail-block"><div class="detail-label">Status</div><div class="detail-value">${statusBadge(o.status)}</div></div>
+      <div class="detail-block"><div class="detail-label">Total</div><div class="detail-value" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--berry)">${o.total} лв</div></div>
+      <div class="detail-block"><div class="detail-label">Florist</div><div class="detail-value">🌸 ${o.florist}</div></div>
+      <div class="detail-block"><div class="detail-label">Delivery</div><div class="detail-value">🕐 ${o.delivery}</div></div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div class="detail-label" style="margin-bottom:6px">Items</div>
+      <div style="background:var(--blush);border-radius:10px;padding:12px;font-size:12px;color:var(--choco);line-height:1.6">${o.items}</div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div class="detail-label" style="margin-bottom:6px">Delivery Address</div>
+      <div style="font-size:12px;color:var(--choco);display:flex;align-items:center;gap:6px">
+        <span>📍</span><span>${o.address}</span>
+      </div>
+    </div>
+
+    ${o.note ? `<div style="margin-bottom:16px">
+      <div class="detail-label" style="margin-bottom:6px">Notes</div>
+      <div style="font-size:11px;color:var(--text-dim);font-style:italic;border-left:3px solid var(--rose);padding-left:10px">${o.note}</div>
+    </div>` : ''}
+
+    ${client.name ? `<div style="margin-bottom:16px">
+      <div class="detail-label" style="margin-bottom:6px">Client</div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--blush);border-radius:10px;padding:10px 12px;cursor:pointer" onclick="closeSlidePanel();setTimeout(()=>openClientSlidePanel('${client.id}'),200)">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--berry);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">${(client.name||'?')[0]}</div>
+        <div>
+          <div style="font-weight:600;font-size:12px;color:var(--choco)">${client.name}</div>
+          <div style="font-size:10px;color:var(--text-dim)">${client.phone || ''} · ${client.orders || 0} orders</div>
+        </div>
+        <span style="margin-left:auto;color:var(--text-muted);font-size:14px">›</span>
+      </div>
+    </div>` : ''}
+
+    <!-- Activity log -->
+    <div>
+      <div class="detail-label" style="margin-bottom:8px">Activity Log</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${[
+          { time: o.date + ' 09:15', icon:'📝', text:`Order created` },
+          { time: o.date + ' 09:18', icon:'✅', text:`Confirmed by manager` },
+          o.status !== 'pending' && o.status !== 'confirmed' ? { time: o.date + ' 10:30', icon:'🌸', text:`${o.florist} started preparing` } : null,
+          o.status === 'delivery' || o.status === 'delivered' ? { time: o.date + ' 13:45', icon:'🚐', text:`Out for delivery` } : null,
+          o.status === 'delivered' ? { time: o.date + ' 14:20', icon:'🏠', text:`Delivered successfully` } : null,
+        ].filter(Boolean).map(e => `
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="font-size:13px">${e.icon}</span>
+            <div>
+              <div style="font-size:11px;color:var(--choco)">${e.text}</div>
+              <div style="font-size:9px;color:var(--text-muted)">${e.time}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+  `;
+
+  const flow2 = ['pending','confirmed','preparing','delivery','delivered'];
+  const curIdx = flow2.indexOf(o.status);
+  const nextStatus = curIdx < flow2.length - 1 ? flow2[curIdx + 1] : null;
+  const nextLabels = { confirmed:'Confirm', preparing:'Start Prep', delivery:'Send Delivery', delivered:'Mark Delivered' };
+
+  document.getElementById('sp-footer').innerHTML = `
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${nextStatus ? `<button class="btn btn-gold" style="flex:1" onclick="advanceOrderFromPanel('${o.id}','${nextStatus}')">→ ${nextLabels[nextStatus]}</button>` : `<div style="flex:1;text-align:center;font-size:11px;color:var(--green);font-weight:600">✓ Order Complete</div>`}
+      <button class="btn" style="background:rgba(37,211,102,0.1);color:#128C7E;border-color:rgba(37,211,102,0.3)" onclick="whatsappOrder('${o.id}')">💬 WhatsApp</button>
+      <button class="btn btn-outline" onclick="printInvoice('${o.id}')">🖨 Invoice</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-outline" style="flex:1;font-size:10px" onclick="closeSlidePanel()">Close</button>
+      <button class="btn" style="background:#fef2f2;color:#ef4444;border-color:#fecaca;font-size:10px" onclick="cancelOrder('${o.id}');closeSlidePanel()">✕ Cancel Order</button>
+    </div>
+  `;
+
+  document.getElementById('slide-panel').classList.add('open');
+  document.getElementById('slide-overlay').classList.add('open');
+}
+
+function advanceOrderFromPanel(id, nextStatus) {
+  const o = ORDERS.find(x => x.id === id);
+  if (!o) return;
+  o.status = nextStatus;
+  renderOrders(ORDERS);
+  renderOrdersPipeline();
+  renderDashboardOrders();
+  const labels = { confirmed:'Confirmed ✓', preparing:'In Preparation 🌸', delivery:'Out for Delivery 🚐', delivered:'Delivered ✓' };
+  showToast(`✅ <strong>${id}</strong> → ${labels[nextStatus] || nextStatus}`);
+  // Re-open to refresh panel content
+  openOrderSlidePanel(id);
+}
+
+// ═══════════════════════════════════════════════════════
+//  SLIDE PANEL — CLIENT DETAIL
+// ═══════════════════════════════════════════════════════
+function openClientSlidePanel(id) {
+  const c = CLIENTS.find(x => x.id === id);
+  if (!c) return;
+  const cOrders = ORDERS.filter(o => o.clientId === id || o.client === c.name);
+  const tagColors = { VIP:'var(--berry)', Regular:'var(--rose-deep)', New:'var(--green)', Wholesale:'var(--peach)' };
+
+  document.getElementById('sp-id').textContent = c.id;
+  document.getElementById('sp-title').textContent = c.name;
+
+  document.getElementById('sp-body').innerHTML = `
+    <!-- Client header -->
+    <div style="text-align:center;padding:20px 0 16px;border-bottom:1px solid var(--border);margin-bottom:16px">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--berry);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;margin:0 auto 10px;box-shadow:0 4px 16px rgba(122,78,115,0.3)">${c.name[0]}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--choco)">${c.name}</div>
+      <div style="margin-top:6px"><span style="background:${tagColors[c.tag]||'var(--blush)'};color:#fff;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;border-radius:20px">${c.tag}</span></div>
+    </div>
+
+    <!-- Stats row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px">
+      <div style="text-align:center;background:var(--blush);border-radius:10px;padding:12px 6px">
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--berry)">${c.orders}</div>
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em">Orders</div>
+      </div>
+      <div style="text-align:center;background:var(--blush);border-radius:10px;padding:12px 6px">
+        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--berry)">${c.spent}</div>
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em">Spent лв</div>
+      </div>
+      <div style="text-align:center;background:var(--blush);border-radius:10px;padding:12px 6px">
+        <div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--berry)">${c.last}</div>
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em">Last Order</div>
+      </div>
+    </div>
+
+    <!-- Contact info -->
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:14px">📞</span>
+        <a href="tel:${c.phone}" style="font-size:12px;color:var(--berry);text-decoration:none;font-weight:500">${c.phone}</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:14px">✉️</span>
+        <a href="mailto:${c.email}" style="font-size:12px;color:var(--berry);text-decoration:none;font-weight:500">${c.email}</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:14px">📍</span>
+        <span style="font-size:12px;color:var(--text-dim)">${c.city}</span>
+      </div>
+    </div>
+
+    ${c.note ? `<div style="margin-bottom:16px;border-left:3px solid var(--rose);padding-left:10px">
+      <div class="detail-label" style="margin-bottom:4px">Notes</div>
+      <div style="font-size:11px;color:var(--text-dim);font-style:italic">${c.note}</div>
+    </div>` : ''}
+
+    <!-- Order history -->
+    <div>
+      <div class="detail-label" style="margin-bottom:8px">Order History (${cOrders.length})</div>
+      ${cOrders.length ? cOrders.map(o => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background 0.15s;margin-bottom:4px;border:1px solid var(--border)"
+             onmouseover="this.style.background='var(--blush)'" onmouseout="this.style.background=''"
+             onclick="closeSlidePanel();setTimeout(()=>openOrderSlidePanel('${o.id}'),200)">
+          <div style="font-size:10px;font-weight:600;color:var(--text-muted);width:70px">${o.id}</div>
+          <div style="flex:1;font-size:11px;color:var(--choco);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${o.items}</div>
+          <div>${statusBadge(o.status)}</div>
+          <div style="font-size:11px;font-weight:600;color:var(--berry);white-space:nowrap">${o.total} лв</div>
+        </div>`).join('') : '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:16px">No orders yet</div>'}
+    </div>
+  `;
+
+  document.getElementById('sp-footer').innerHTML = `
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-gold" style="flex:1" onclick="closeSlidePanel();openNewOrderModal('${c.id}')">+ New Order</button>
+      <button class="btn" style="background:rgba(37,211,102,0.1);color:#128C7E;border-color:rgba(37,211,102,0.3)" onclick="showToast('💬 Opening WhatsApp for ${c.name}…')">💬 WhatsApp</button>
+    </div>
+    <div style="margin-top:8px">
+      <button class="btn btn-outline" style="width:100%;font-size:10px" onclick="closeSlidePanel()">Close</button>
+    </div>
+  `;
+
+  document.getElementById('slide-panel').classList.add('open');
+  document.getElementById('slide-overlay').classList.add('open');
+}
+
+function closeSlidePanel() {
+  document.getElementById('slide-panel').classList.remove('open');
+  document.getElementById('slide-overlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════
+//  CONTEXT MENU (RIGHT-CLICK ON ORDER)
+// ═══════════════════════════════════════════════════════
+let ctxTarget = null;
+
+function showOrderCtx(event, id) {
+  event.preventDefault();
+  event.stopPropagation();
+  ctxTarget = id;
+  const o = ORDERS.find(x => x.id === id);
+  if (!o) return;
+  const flow = ['pending','confirmed','preparing','delivery','delivered'];
+  const curIdx = flow.indexOf(o.status);
+  const nextStatus = curIdx < flow.length-1 ? flow[curIdx+1] : null;
+  const nextLabels = { confirmed:'Confirm Order', preparing:'Start Preparation', delivery:'Send for Delivery', delivered:'Mark Delivered' };
+
+  const menu = document.getElementById('ctx-menu');
+  menu.innerHTML = `
+    <div class="ctx-item" onclick="openOrderSlidePanel('${id}');hideCtx()">🔍 View Details</div>
+    ${nextStatus ? `<div class="ctx-item" onclick="advanceOrderNext('${id}');hideCtx()">→ ${nextLabels[nextStatus]}</div>` : ''}
+    <div class="ctx-sep"></div>
+    <div class="ctx-item" onclick="whatsappOrder('${id}');hideCtx()">💬 Send WhatsApp</div>
+    <div class="ctx-item" onclick="printInvoice('${id}');hideCtx()">🖨 Print Invoice</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item danger" onclick="cancelOrder('${id}');hideCtx()">✕ Cancel Order</div>
+  `;
+
+  // Position near cursor
+  const x = Math.min(event.clientX, window.innerWidth - 190);
+  const y = Math.min(event.clientY, window.innerHeight - 200);
+  menu.style.display = 'block';
+  menu.style.left = x + 'px';
+  menu.style.top  = y + 'px';
+}
+
+function hideCtx() {
+  document.getElementById('ctx-menu').style.display = 'none';
+  ctxTarget = null;
+}
+
+document.addEventListener('click', hideCtx);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeSlidePanel();
+    hideCtx();
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+//  PRINT INVOICE
+// ═══════════════════════════════════════════════════════
+function printInvoice(id) {
+  const o = ORDERS.find(x => x.id === id);
+  if (!o) return;
+  const client = CLIENTS.find(c => c.id === o.clientId || c.name === o.client) || {};
+  const today = new Date().toLocaleDateString('bg-BG', { day:'2-digit', month:'long', year:'numeric' });
+
+  document.getElementById('print-invoice').innerHTML = `
+    <div style="font-family:'Montserrat',sans-serif;max-width:600px;margin:0 auto;color:#303838">
+      <!-- Header -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:24px;border-bottom:2px solid #7A4E73;margin-bottom:24px">
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#7A4E73">Flower House Varna</div>
+          <div style="font-size:10px;color:#888;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px">Professional Floristry & Design</div>
+          <div style="font-size:11px;color:#555;margin-top:8px">📍 Chaika Blvd 1, Varna 9000<br>📞 +359 52 123 456<br>✉️ hello@flowerhouse.bg</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;font-weight:700;color:#7A4E73;letter-spacing:0.1em;text-transform:uppercase">Invoice</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#303838">${o.id}</div>
+          <div style="font-size:10px;color:#888;margin-top:4px">Date: ${today}</div>
+          <div style="margin-top:8px;display:inline-block;padding:4px 12px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;
+            background:${o.status==='delivered'?'#dcfce7':'#FCEEF6'};
+            color:${o.status==='delivered'?'#15803d':'#7A4E73'}">
+            ${o.status.toUpperCase()}
+          </div>
+        </div>
+      </div>
+
+      <!-- Bill to -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
+        <div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:#888;margin-bottom:8px">Bill To</div>
+          <div style="font-weight:700;font-size:13px;color:#303838">${client.name || o.client}</div>
+          ${client.phone ? `<div style="font-size:11px;color:#555;margin-top:3px">${client.phone}</div>` : ''}
+          ${client.email ? `<div style="font-size:11px;color:#555">${client.email}</div>` : ''}
+          <div style="font-size:11px;color:#555">${o.address}</div>
+        </div>
+        <div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:#888;margin-bottom:8px">Delivery</div>
+          <div style="font-size:11px;color:#303838"><strong>Time:</strong> ${o.delivery}</div>
+          <div style="font-size:11px;color:#303838"><strong>Florist:</strong> ${o.florist}</div>
+          <div style="font-size:11px;color:#303838"><strong>Order Date:</strong> ${o.date}</div>
+        </div>
+      </div>
+
+      <!-- Items table -->
+      <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
+        <thead>
+          <tr style="background:#FCEEF6">
+            <th style="text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#7A4E73;border-radius:6px 0 0 6px">Item</th>
+            <th style="text-align:right;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#7A4E73">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${o.items.split(',').map((item, i) => `
+            <tr style="border-bottom:1px solid #EDD8E8">
+              <td style="padding:10px 12px;font-size:12px;color:#303838">${item.trim()}</td>
+              <td style="padding:10px 12px;font-size:12px;color:#303838;text-align:right">—</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+
+      <!-- Totals -->
+      <div style="display:flex;justify-content:flex-end;margin-bottom:32px">
+        <div style="min-width:200px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;padding:5px 0">
+            <span>Subtotal</span><span>${(o.total * 0.8).toFixed(2)} лв</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;padding:5px 0">
+            <span>Delivery</span><span>${(o.total * 0.1).toFixed(2)} лв</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;padding:5px 0;border-bottom:1px solid #EDD8E8">
+            <span>VAT (20%)</span><span>${(o.total * 0.1).toFixed(2)} лв</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-weight:700;font-size:16px;color:#7A4E73;padding:10px 0;font-family:'Playfair Display',serif">
+            <span>TOTAL</span><span>${o.total} лв</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      ${o.note ? `<div style="background:#FCEEF6;border-radius:8px;padding:12px;margin-bottom:24px;font-size:11px;color:#555;font-style:italic">
+        <strong style="color:#7A4E73">Note:</strong> ${o.note}
+      </div>` : ''}
+
+      <!-- Footer -->
+      <div style="text-align:center;padding-top:20px;border-top:1px solid #EDD8E8;font-size:10px;color:#aaa">
+        Thank you for choosing Flower House Varna 🌸 &nbsp;|&nbsp; flowerhouse.bg &nbsp;|&nbsp; +359 52 123 456
+      </div>
+    </div>
+  `;
+
+  showToast(`🖨 Printing invoice for <strong>${o.id}</strong>…`);
+  setTimeout(() => window.print(), 400);
+}
+
+// Init studio on first view switch
+const origSwitch = switchView;
+switchView = function(name, el) {
+  origSwitch(name, el);
+  if (name === 'studio') {
+    setTimeout(initBouquetStudio, 50);
+  }
+};
+
+// Also update titles map
+const origTitles = { dashboard:'Dashboard <em>— Today</em>', clients:'Clients <em>— Database</em>', orders:'Orders <em>— Active</em>', inventory:'Inventory <em>— Stock</em>', suppliers:'Suppliers <em>— Partners</em>', florists:'Florists <em>— Team</em>', delivery:'Deliveries <em>— Today</em>', studio:'Bouquet Studio <em>— Design</em>' };
+switchView = function(name, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('topbar-title').innerHTML = origTitles[name] || name;
+  if (name === 'studio') setTimeout(initBouquetStudio, 50);
+};
+</script>
+</body>
+</html>
