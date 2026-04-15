@@ -1672,6 +1672,147 @@ body {
 .on-btn-accept { background: var(--berry); color: #fff; }
 .on-btn-accept:hover { background: var(--berry-dark); }
 .on-btn-view { background: var(--blush); color: var(--berry); border: 1px solid var(--border); }
+
+/* ═══ RESPONSIVE ═══ */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+}
+.hamburger span {
+  display: block;
+  width: 20px; height: 2px;
+  background: var(--berry);
+  border-radius: 2px;
+  transition: all 0.25s ease;
+}
+.sidebar.open .hamburger span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.sidebar.open .hamburger span:nth-child(2) { opacity: 0; }
+.sidebar.open .hamburger span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+#sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(48,56,56,0.45);
+  z-index: 199;
+  backdrop-filter: blur(1px);
+}
+#sidebar-overlay.open { display: block; }
+
+@media (max-width: 900px) {
+  /* Sidebar slides in from left */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto;
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  /* Main takes full width */
+  body { display: block; }
+  .main { width: 100%; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Hamburger visible */
+  .hamburger { display: flex; }
+
+  /* Topbar */
+  .topbar { padding: 0 12px; gap: 8px; }
+  .topbar-title { font-size: 15px; }
+  .search-wrap { display: none; }
+  .topbar-clock { display: none; }
+  #demo-btn { display: none; }
+
+  /* Content area */
+  .content { padding: 14px 12px; }
+
+  /* KPI row → 2 cols */
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+  }
+
+  /* Dashboard grids → single column */
+  .dash-grid, .dash-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  /* Page header wraps */
+  .page-h { flex-wrap: wrap; gap: 8px; }
+
+  /* Filter bar horizontal scroll */
+  .filter-bar { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip { flex-shrink: 0; }
+  .filter-search-sm { flex-shrink: 0; }
+
+  /* Tables horizontal scroll */
+  .panel-body { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .data-table { min-width: 460px; }
+
+  /* Clients grid → 1 col */
+  .clients-grid { grid-template-columns: 1fr !important; }
+
+  /* Stats bar */
+  .stats-bar { grid-template-columns: repeat(3, 1fr) !important; gap: 6px !important; }
+  .stat-item { padding: 10px 8px !important; }
+  .stat-num { font-size: 20px !important; }
+
+  /* Orders pipeline scroll */
+  .orders-pipeline { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pipeline { min-width: 380px; }
+
+  /* Inventory grid → 1 col */
+  .inv-grid { grid-template-columns: 1fr !important; }
+
+  /* Florists & suppliers auto-fill at 1 col on small screens */
+  #florists-grid { grid-template-columns: 1fr !important; }
+
+  /* Modals → bottom sheet on mobile */
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92dvh !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Slide panels → full width */
+  .slide-panel { width: 100% !important; max-width: 100% !important; }
+
+  /* Bouquet Studio → vertical stack */
+  .studio-layout {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    min-height: unset !important;
+    gap: 12px;
+  }
+  .studio-canvas-wrap { min-height: 280px; }
+  .studio-canvas { width: 100% !important; height: 260px !important; }
+  .studio-wrapper-back, .studio-wrapper-front { width: 100% !important; height: 260px !important; }
+  .palette-grid { grid-template-columns: repeat(3, 1fr); }
+  .studio-palette { overflow-y: visible; }
+  .studio-order { border-radius: 14px; }
+}
+
+@media (max-width: 480px) {
+  .kpi-row { grid-template-columns: 1fr 1fr !important; }
+  .kpi-value { font-size: 26px !important; }
+  .topbar-btn { padding: 7px 12px; font-size: 9px; }
+  .page-h .topbar-btn { font-size: 10px; }
+  .modal-body .form-row { flex-direction: column; }
+  .cc-action-btn { font-size: 9px; padding: 6px 4px; }
+}
 </style>
 </head>
 <body>
@@ -1736,9 +1877,15 @@ body {
 </aside>
 
 <!-- MAIN -->
+<!-- Mobile sidebar overlay -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
 <div class="main">
   <!-- TOPBAR -->
   <div class="topbar">
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
     <div class="topbar-title" id="topbar-title">Dashboard <em>— Today</em></div>
     <div class="search-wrap">
       <span style="color:var(--text-muted);font-size:12px">⌕</span>
@@ -2830,7 +2977,7 @@ function advanceOrder(id, status) {
 
 function openClientModal(id) {
   const c = CLIENTS.find(x => x.id === id);
-  const cOrders = ORDERS.filter(o => o.clientId === id);
+  const cOrders = ORDERS.filter(o => o.clientId === id || o.client === c.name);
   document.getElementById('modal-title').innerHTML = c.name + ' <span class="badge badge-' + c.tag + '" style="font-size:11px">' + c.tag.toUpperCase() + '</span>';
   document.getElementById('modal-body').innerHTML = `
     <div class="detail-grid">
@@ -3051,7 +3198,7 @@ function createOrder() {
   const maxId = Math.max(...ORDERS.map(o => parseInt(o.id.split('-')[1]) || 0));
   const newId = 'ORD-' + (maxId + 1);
 
-  ORDERS.unshift({ id:newId, clientId, client:clientName, items, florist, status:'pending', total, date:'2026-04-10', delivery, address, note:'' });
+  ORDERS.unshift({ id:newId, clientId, client:clientName, items, florist, status:'pending', total, date:new Date().toISOString().split('T')[0], delivery, address, note:'' });
   demoOrders++;
   const el = document.querySelector('.kpi.rose .kpi-value');
   if (el) { popKpi(el.closest('.kpi')); animateCounter(el, demoOrders-1, demoOrders, 400); }
@@ -3059,6 +3206,24 @@ function createOrder() {
   renderOrders(ORDERS);
   renderOrdersPipeline();
   showToast(`✅ Order <strong>${newId}</strong> created — ${clientName}`);
+  closeModal();
+}
+
+function createClient() {
+  const inputs = document.querySelectorAll('#modal-body .form-input');
+  const name  = inputs[0]?.value.trim();
+  const phone = inputs[1]?.value.trim();
+  const email = inputs[2]?.value.trim();
+  const city  = inputs[3]?.value.trim() || 'Varna';
+  const note  = inputs[4]?.value.trim() || '';
+  if (!name) { showToast('⚠ Please enter a client name'); return; }
+  const maxNum = Math.max(...CLIENTS.map(c => parseInt(c.id.replace('C','')) || 0));
+  const newId  = 'C' + String(maxNum + 1).padStart(3, '0');
+  CLIENTS.push({ id:newId, name, phone, email, tag:'new', city, orders:0, spent:0, last:'—', note });
+  renderClients(CLIENTS);
+  const countEl = document.querySelector('.nav-item[onclick*="clients"] .nav-count');
+  if (countEl) countEl.textContent = CLIENTS.length;
+  showToast(`✅ Client <strong>${name}</strong> added`);
   closeModal();
 }
 
@@ -3075,7 +3240,7 @@ function openNewClientModal() {
     </div>
     <div class="form-group" style="margin-bottom:0"><label class="form-label">Notes / Preferences</label><input class="form-input" placeholder="Allergies, preferences, occasion…"></div>
     <div class="modal-actions">
-      <button class="btn btn-gold" onclick="showToast('✓ New client added'); closeModal()">Add Client</button>
+      <button class="btn btn-gold" onclick="createClient()">Add Client</button>
       <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
     </div>
   `;
@@ -3298,7 +3463,7 @@ function acceptNotifOrder() {
   if (pendingNotifData) {
     const { id, client, items, total } = pendingNotifData;
     // Add to ORDERS array
-    ORDERS.unshift({ id, clientId:'C001', client, items, florist:'Nadia K.', status:'confirmed', total, date:'2026-04-10', delivery:'TBD', address:'Varna', note:'' });
+    ORDERS.unshift({ id, clientId:'C001', client, items, florist:'Nadia K.', status:'confirmed', total, date:new Date().toISOString().split('T')[0], delivery:'TBD', address:'Varna', note:'' });
     demoOrders++;
     const el = document.querySelector('.kpi.rose .kpi-value');
     if (el) { popKpi(el.closest('.kpi')); animateCounter(el, demoOrders-1, demoOrders, 400); }
@@ -3831,7 +3996,7 @@ function saveBouquetAsOrder() {
 
 function confirmBouquetOrder(items, total) {
   const newId = 'ORD-' + (2848 + Math.floor(Math.random()*100));
-  ORDERS.unshift({ id:newId, clientId:'C001', client:'Custom Client', items, florist:'Nadia K.', status:'pending', total, date:'2026-04-10', delivery:'Today 16:00', address:'Varna', note:'Custom bouquet order from Studio' });
+  ORDERS.unshift({ id:newId, clientId:'C001', client:'Custom Client', items, florist:'Nadia K.', status:'pending', total, date:new Date().toISOString().split('T')[0], delivery:'Today 16:00', address:'Varna', note:'Custom bouquet order from Studio' });
   renderDashboardOrders();
   renderOrders(ORDERS);
   renderOrdersPipeline();
@@ -3993,7 +4158,7 @@ function openClientSlidePanel(id) {
   document.getElementById('sp-body').innerHTML = `
     <!-- Client header -->
     <div style="text-align:center;padding:20px 0 16px;border-bottom:1px solid var(--border);margin-bottom:16px">
-      <div style="width:64px;height:64px;border-radius:50%;background:var(--berry);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;margin:0 auto 10px;box-shadow:0 4px 16px rgba(122,78,115,0.3)">${c.name[0]}</div>
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--berry);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;margin:0 auto 10px;box-shadow:0 4px 16px rgba(122,78,115,0.3)">${(c.name || '?')[0]}</div>
       <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--choco)">${c.name}</div>
       <div style="margin-top:6px"><span style="background:${tagColors[c.tag]||'var(--blush)'};color:#fff;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;border-radius:20px">${c.tag}</span></div>
     </div>
@@ -4189,10 +4354,10 @@ function printInvoice(id) {
             <span>Subtotal</span><span>${(o.total * 0.8).toFixed(2)} лв</span>
           </div>
           <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;padding:5px 0">
-            <span>Delivery</span><span>${(o.total * 0.1).toFixed(2)} лв</span>
+            <span>Delivery</span><span>${(o.total * 0.04).toFixed(2)} лв</span>
           </div>
           <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;padding:5px 0;border-bottom:1px solid #EDD8E8">
-            <span>VAT (20%)</span><span>${(o.total * 0.1).toFixed(2)} лв</span>
+            <span>VAT (20%)</span><span>${(o.total * 0.16).toFixed(2)} лв</span>
           </div>
           <div style="display:flex;justify-content:space-between;font-weight:700;font-size:16px;color:#7A4E73;padding:10px 0;font-family:'Playfair Display',serif">
             <span>TOTAL</span><span>${o.total} лв</span>
@@ -4216,24 +4381,28 @@ function printInvoice(id) {
   setTimeout(() => window.print(), 400);
 }
 
-// Init studio on first view switch
-const origSwitch = switchView;
-switchView = function(name, el) {
-  origSwitch(name, el);
-  if (name === 'studio') {
-    setTimeout(initBouquetStudio, 50);
-  }
-};
+// ═══════════════════════════════════════════════
+// MOBILE SIDEBAR TOGGLE
+// ═══════════════════════════════════════════════
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
 
-// Also update titles map
-const origTitles = { dashboard:'Dashboard <em>— Today</em>', clients:'Clients <em>— Database</em>', orders:'Orders <em>— Active</em>', inventory:'Inventory <em>— Stock</em>', suppliers:'Suppliers <em>— Partners</em>', florists:'Florists <em>— Team</em>', delivery:'Deliveries <em>— Today</em>', studio:'Bouquet Studio <em>— Design</em>' };
+// Unified switchView with full title map + studio init
+const VIEW_TITLES = { dashboard:'Dashboard <em>— Today</em>', clients:'Clients <em>— Database</em>', orders:'Orders <em>— Active</em>', inventory:'Inventory <em>— Stock</em>', suppliers:'Suppliers <em>— Partners</em>', florists:'Florists <em>— Team</em>', delivery:'Deliveries <em>— Today</em>', studio:'Bouquet Studio <em>— Design</em>' };
 switchView = function(name, el) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (el) el.classList.add('active');
-  document.getElementById('topbar-title').innerHTML = origTitles[name] || name;
+  document.getElementById('topbar-title').innerHTML = VIEW_TITLES[name] || name;
   if (name === 'studio') setTimeout(initBouquetStudio, 50);
+  if (window.innerWidth <= 900) closeSidebar();
 };
 </script>
 </body>

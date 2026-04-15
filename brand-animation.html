@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowers House Varna — Brand Film</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Brand palette from color guide */
+    --berry:      #7A4E73;   /* Berry Primary   */
+    --peach:      #F1BBA4;   /* Peach Brand     */
+    --rose:       #F0A8C6;   /* Rose Soft       */
+    --blush:      #FCEEF6;   /* Card Blush      */
+    --dough:      #FAF7F5;   /* Dough Base      */
+    --choco:      #303838;   /* Chocolate       */
+    --berry-dark: #5C3457;
+    --rose-deep:  #C4607A;
+    --muted:      #9e8a97;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--dough);
+    font-family: 'Cormorant Garamond', serif;
+    cursor: none;
+  }
+
+  /* ─── CANVAS LAYER ─── */
+  #petalCanvas {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 4; /* above scenes (z:3), same level as vignette but earlier in DOM so beneath it */
+  }
+
+  /* ─── SUBTLE NOISE TEXTURE ─── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 2;
+    mix-blend-mode: multiply;
+  }
+
+  /* ─── CUSTOM CURSOR ─── */
+  #cursor {
+    position: fixed;
+    width: 9px; height: 9px;
+    background: var(--berry);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s ease, opacity 0.3s ease;
+    opacity: 0; /* hidden until first mouse move */
+  }
+
+  /* ─── MAIN WRAPPER ─── */
+  #stage {
+    position: fixed; inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ─── SCENES ─── */
+  .scene {
+    position: absolute; inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .scene.active { pointer-events: all; }
+
+  /* ─── SCENE 1: OPENING ─── */
+  #scene-1 { background: var(--dough); }
+
+  .bloom-ring {
+    position: absolute;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    border: 1px solid var(--peach);
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  .bloom-ring:nth-child(2) { width: 200px; height: 200px; border-color: var(--rose); }
+  .bloom-ring:nth-child(3) { width: 80px;  height: 80px;  border-color: var(--berry); background: var(--blush); }
+
+  .opening-line {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--berry), transparent);
+  }
+
+  /* ─── SCENE 2: BRAND LOGO ─── */
+  #scene-2 { background: var(--dough); gap: 0; }
+
+  .brand-pre {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(9px, 1.2vw, 12px);
+    letter-spacing: 0.6em;
+    color: var(--peach);
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .brand-title {
+    font-size: clamp(56px, 9.5vw, 116px);
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    color: var(--berry);
+    line-height: 0.88;
+    text-align: center;
+    overflow: hidden;
+  }
+  .brand-title .word {
+    display: inline-block;
+    overflow: hidden;
+  }
+  .brand-title .word span {
+    display: inline-block;
+    transform: translateY(110%);
+  }
+  .brand-divider {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--peach), transparent);
+    margin: 26px auto;
+    opacity: 0;
+  }
+  .brand-location {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.65em;
+    color: var(--muted);
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  /* ─── SCENE 3: IMAGE GALLERY ─── */
+  #scene-3 { overflow: hidden; background: #1a0f18; }
+
+  .gallery-grid {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+  }
+  .gallery-cell {
+    overflow: hidden;
+    position: relative;
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  .gallery-cell img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: saturate(0.85) brightness(0.65);
+    transform: scale(1.1);
+    transition: transform 9s ease, filter 1.5s ease;
+  }
+  .gallery-cell.loaded img {
+    transform: scale(1.0);
+    filter: saturate(1.0) brightness(0.72);
+  }
+  .gallery-cell:nth-child(1) { grid-row: span 2; }
+  .gallery-cell:nth-child(1) img { object-position: center 30%; }
+
+  .gallery-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, rgba(122,78,115,0.18) 0%, transparent 55%);
+  }
+
+  /* Blush vignette over whole gallery scene */
+  #scene-3::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 30%, rgba(26,15,24,0.55) 100%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .gallery-text {
+    position: absolute; inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    gap: 18px;
+    pointer-events: none;
+  }
+  .gallery-tagline {
+    font-size: clamp(30px, 5.5vw, 68px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--dough);
+    letter-spacing: 0.04em;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    padding: 0 40px;
+    line-height: 1.15;
+    text-shadow: 0 2px 24px rgba(26,15,24,0.5);
+  }
+  .gallery-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.55em;
+    color: var(--rose);
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  /* ─── SCENE 4: SERVICES ─── */
+  #scene-4 { background: var(--blush); }
+
+  .services-header {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(9px, 1vw, 11px);
+    letter-spacing: 0.7em;
+    color: var(--peach);
+    text-transform: uppercase;
+    opacity: 0;
+    margin-bottom: 52px;
+  }
+  .services-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    text-align: center;
+  }
+  .services-list li {
+    font-size: clamp(24px, 4.8vw, 60px);
+    font-weight: 300;
+    color: var(--berry);
+    letter-spacing: 0.1em;
+    padding: 10px 0;
+    opacity: 0;
+    transform: translateX(-28px);
+    position: relative;
+    overflow: hidden;
+  }
+  .services-list li .accent {
+    color: var(--rose-deep);
+    font-style: italic;
+  }
+  .services-list li::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--peach), transparent);
+    transform: translateX(-50%);
+    transition: width 0.7s ease;
+  }
+  .services-list li.line-in::after { width: 100%; }
+
+  /* ─── SCENE 5: FINAL CARD ─── */
+  #scene-5 { background: var(--dough); }
+
+  .final-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    text-align: center;
+  }
+  /* Soft blush backdrop circle */
+  .final-backdrop {
+    position: absolute;
+    width: min(560px, 80vw);
+    height: min(560px, 80vw);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--blush) 0%, transparent 70%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .final-diamond {
+    width: 7px; height: 7px;
+    background: var(--peach);
+    transform: rotate(45deg);
+    opacity: 0;
+    margin-bottom: 30px;
+    position: relative;
+    box-shadow: 0 0 12px var(--peach);
+  }
+  .final-name {
+    font-size: clamp(44px, 7.8vw, 100px);
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--berry);
+    opacity: 0;
+    transform: translateY(16px);
+    line-height: 0.9;
+    position: relative;
+  }
+  .final-rule {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--peach), transparent);
+    margin: 28px auto;
+  }
+  .final-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.7em;
+    color: var(--rose-deep);
+    text-transform: uppercase;
+    opacity: 0;
+    margin-bottom: 48px;
+    position: relative;
+  }
+  .final-tagline {
+    font-size: clamp(15px, 2.2vw, 26px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+    opacity: 0;
+    transform: translateY(8px);
+    max-width: 520px;
+    line-height: 1.65;
+    position: relative;
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  #progress {
+    position: fixed;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--berry), var(--rose), var(--peach));
+    width: 0;
+    z-index: 100;
+    transition: width 0.4s linear;
+    box-shadow: 0 0 6px var(--rose);
+  }
+
+  /* ─── SKIP HINT ─── */
+  #skip-hint {
+    position: fixed;
+    bottom: 28px; right: 36px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    text-transform: uppercase;
+    z-index: 100;
+    opacity: 0;
+    cursor: pointer;
+    transition: color 0.3s, opacity 0.6s;
+    user-select: none;
+  }
+  #skip-hint:hover { color: var(--berry); }
+
+  /* ─── REPLAY BUTTON ─── */
+  #replay-btn {
+    position: fixed;
+    bottom: 52px; left: 50%; transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    color: var(--muted);
+    text-transform: uppercase;
+    z-index: 100;
+    opacity: 0;
+    cursor: pointer;
+    transition: color 0.3s, border-color 0.3s;
+    border: 1px solid var(--peach);
+    padding: 10px 26px;
+    background: transparent;
+    pointer-events: none;
+  }
+  #replay-btn:hover { color: var(--berry); border-color: var(--berry); }
+
+  /* ─── VIGNETTE ─── */
+  #vignette {
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 45%, rgba(252,238,246,0.55) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  /* ─── CORNER DECORATIONS ─── */
+  .corner-deco {
+    position: fixed;
+    width: 56px; height: 56px;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+  .corner-deco.tl { top: 24px; left: 24px; border-top: 1px solid var(--peach); border-left: 1px solid var(--peach); }
+  .corner-deco.tr { top: 24px; right: 24px; border-top: 1px solid var(--peach); border-right: 1px solid var(--peach); }
+  .corner-deco.bl { bottom: 24px; left: 24px; border-bottom: 1px solid var(--peach); border-left: 1px solid var(--peach); }
+  .corner-deco.br { bottom: 24px; right: 24px; border-bottom: 1px solid var(--peach); border-right: 1px solid var(--peach); }
+
+  /* ─── IMAGE ERROR FALLBACK ─── */
+  .gallery-cell img.broken {
+    display: none;
+  }
+  .gallery-cell.no-img {
+    background: linear-gradient(135deg, var(--blush), var(--rose));
+  }
+</style>
+</head>
+<body>
+
+<canvas id="petalCanvas"></canvas>
+<div id="vignette"></div>
+<div id="cursor"></div>
+<div id="progress"></div>
+<div id="skip-hint">Skip ›</div>
+<button id="replay-btn">↺ &nbsp; Replay</button>
+
+<div class="corner-deco tl" id="deco-tl"></div>
+<div class="corner-deco tr" id="deco-tr"></div>
+<div class="corner-deco bl" id="deco-bl"></div>
+<div class="corner-deco br" id="deco-br"></div>
+
+<div id="stage">
+
+  <!-- Scene 1: Bloom Rings Opening -->
+  <div class="scene" id="scene-1">
+    <div class="bloom-ring" id="ring-1"></div>
+    <div class="bloom-ring" id="ring-2"></div>
+    <div class="bloom-ring" id="ring-3"></div>
+    <div class="opening-line" id="opening-line"></div>
+  </div>
+
+  <!-- Scene 2: Brand Logo -->
+  <div class="scene" id="scene-2">
+    <div class="brand-pre" id="brand-pre">Est. Varna · Bulgaria</div>
+    <div style="height:22px"></div>
+    <div class="brand-title" id="brand-title">
+      <div class="word"><span>Flowers</span></div>
+      &nbsp;
+      <div class="word"><span>House</span></div>
+    </div>
+    <div class="brand-divider" id="brand-divider"></div>
+    <div class="brand-location" id="brand-location">Custom Bouquets &nbsp;·&nbsp; Varna</div>
+  </div>
+
+  <!-- Scene 3: Flower Image Gallery — all 5 images with verified paths -->
+  <div class="scene" id="scene-3">
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="gallery-cell" id="gc-0">
+        <img src="images/buntysmum-rose-3036266_1920.png"
+             alt="Rose arrangement"
+             onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+        <div class="gallery-overlay"></div>
+      </div>
+      <div class="gallery-cell" id="gc-1">
+        <img src="images/trixieliko-tulip-2979748_1920.png"
+             alt="Tulips"
+             onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+        <div class="gallery-overlay"></div>
+      </div>
+      <div class="gallery-cell" id="gc-2">
+        <img src="images/erbs55-rose-3160075_1920.png"
+             alt="Red rose"
+             onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+        <div class="gallery-overlay"></div>
+      </div>
+      <div class="gallery-cell" id="gc-3">
+        <img src="images/garten-gg-nature-3699654_1920.png"
+             alt="Nature flowers"
+             onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+        <div class="gallery-overlay"></div>
+      </div>
+      <div class="gallery-cell" id="gc-4">
+        <img src="images/susannp4-poppy-1952024_1920.png"
+             alt="Poppies"
+             onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+        <div class="gallery-overlay"></div>
+      </div>
+    </div>
+    <div class="gallery-text">
+      <div class="gallery-tagline" id="gallery-tagline">Where every petal<br>tells a story.</div>
+      <div class="gallery-sub" id="gallery-sub">Handcrafted with love</div>
+    </div>
+  </div>
+
+  <!-- Scene 4: Services -->
+  <div class="scene" id="scene-4">
+    <div class="services-header" id="svc-header">What We Offer</div>
+    <ul class="services-list">
+      <li id="svc-1">Custom <span class="accent">Bouquets</span></li>
+      <li id="svc-2">Bridal <span class="accent">Arrangements</span></li>
+      <li id="svc-3">Online <span class="accent">Ordering</span></li>
+      <li id="svc-4">City-wide <span class="accent">Delivery</span></li>
+    </ul>
+  </div>
+
+  <!-- Scene 5: Final Card -->
+  <div class="scene" id="scene-5">
+    <div class="final-backdrop" id="final-backdrop"></div>
+    <div class="final-wrap">
+      <div class="final-diamond" id="final-diamond"></div>
+      <div class="final-name" id="final-name">
+        Flowers<br>House
+      </div>
+      <div class="final-rule" id="final-rule"></div>
+      <div class="final-sub" id="final-sub">Varna · Bulgaria</div>
+      <div class="final-tagline" id="final-tagline">
+        Bringing beauty to every occasion,<br>one bloom at a time.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ─── UTILS ─── */
+const el  = id => document.getElementById(id);
+const delay = ms => new Promise(r => {
+  if (skipCalled) { r(); return; }
+  const t = setTimeout(r, ms);
+  const watch = setInterval(() => {
+    if (skipCalled) { clearTimeout(t); clearInterval(watch); r(); }
+  }, 50);
+  setTimeout(() => clearInterval(watch), ms + 50);
+});
+
+function showScene(id) {
+  document.querySelectorAll('.scene').forEach(s => {
+    s.style.opacity = '0';
+    s.classList.remove('active');
+  });
+  const sc = el(id);
+  sc.style.opacity = '1';
+  sc.classList.add('active');
+}
+
+/* ─── CURSOR ─── */
+const cursor = el('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.opacity = '1';
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+
+/* ─── PETAL CANVAS ─── */
+const canvas = el('petalCanvas');
+const ctx    = canvas.getContext('2d');
+let petals = [], petalActive = false;
+
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Petal {
+  constructor() { this.reset(true); }
+  reset(init = false) {
+    this.x        = Math.random() * canvas.width;
+    this.y        = init ? Math.random() * -canvas.height : -20;
+    this.size     = Math.random() * 5 + 2;
+    this.speedY   = Math.random() * 0.7 + 0.25;
+    this.speedX   = (Math.random() - 0.5) * 0.4;
+    this.rotation = Math.random() * Math.PI * 2;
+    this.rotSpeed = (Math.random() - 0.5) * 0.018;
+    this.opacity  = Math.random() * 0.35 + 0.12;
+    const palette = [
+      [240,168,198],  // rose
+      [241,187,164],  // peach
+      [122, 78,115],  // berry
+      [196, 96,122],  // rose-deep
+    ];
+    const c = palette[Math.floor(Math.random() * palette.length)];
+    this.color = `rgba(${c[0]},${c[1]},${c[2]},${this.opacity})`;
+    this.sway      = Math.random() * 1.8;
+    this.swaySpeed = Math.random() * 0.01 + 0.004;
+    this.t         = Math.random() * Math.PI * 2;
+  }
+  update() {
+    this.t += this.swaySpeed;
+    this.x += this.speedX + Math.sin(this.t) * this.sway;
+    this.y += this.speedY;
+    this.rotation += this.rotSpeed;
+    if (this.y > canvas.height + 20) this.reset();
+  }
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    ctx.globalAlpha = this.opacity;
+    ctx.fillStyle   = this.color;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, this.size * 2.2, this.size, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function spawnPetals(n = 55) {
+  petals = Array.from({length: n}, () => new Petal());
+  petalActive = true;
+}
+
+(function petalLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (petalActive) petals.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(petalLoop);
+})();
+
+/* ─── CORNERS ─── */
+function showCorners(show) {
+  ['deco-tl','deco-tr','deco-bl','deco-br'].forEach(id => {
+    el(id).style.opacity = show ? '1' : '0';
+  });
+}
+
+/* ─── PROGRESS ─── */
+const TOTAL = 23000;
+let progStart = null;
+function startProgress() {
+  progStart = performance.now();
+  (function tick(now) {
+    const pct = Math.min((now - progStart) / TOTAL, 1) * 100;
+    el('progress').style.width = pct + '%';
+    if (pct < 100) requestAnimationFrame(tick);
+  })(performance.now());
+}
+
+/* ─── SKIP ─── */
+let skipCalled = false;
+el('skip-hint').addEventListener('click', () => {
+  if (!skipCalled) { skipCalled = true; goFinal(); }
+});
+async function goFinal() {
+  el('skip-hint').style.opacity = '0';
+  el('progress').style.width = '100%';
+  petalActive = false;
+  showCorners(true);
+  showScene('scene-5');
+  await runScene5();
+}
+
+/* ─────────────────────────────────────────────
+   SCENE 1 — Bloom rings + line
+───────────────────────────────────────────── */
+async function runScene1() {
+  showScene('scene-1');
+  await delay(200);
+
+  const rings = [el('ring-1'), el('ring-2'), el('ring-3')];
+  rings.forEach((r, i) => {
+    r.style.transition = `opacity ${0.7 + i * 0.15}s ease ${i * 0.18}s, transform ${0.9 + i * 0.2}s cubic-bezier(0.22,1,0.36,1) ${i * 0.18}s`;
+    r.style.opacity   = '1';
+    r.style.transform = 'scale(1)';
+  });
+  await delay(700);
+
+  const line = el('opening-line');
+  line.style.transition = 'none';
+  line.style.width = '0'; line.style.opacity = '0';
+  await delay(40);
+  line.style.transition = 'width 1.1s ease, opacity 0.5s ease';
+  line.style.opacity = '1';
+  line.style.width   = 'min(440px, 78vw)';
+  await delay(1300);
+
+  el('scene-1').style.transition = 'opacity 0.7s ease';
+  el('scene-1').style.opacity    = '0';
+  await delay(750);
+}
+
+/* ─────────────────────────────────────────────
+   SCENE 2 — Logo reveal
+───────────────────────────────────────────── */
+async function runScene2() {
+  showScene('scene-2');
+  spawnPetals(55);
+  showCorners(true);
+
+  const pre      = el('brand-pre');
+  const words    = document.querySelectorAll('#brand-title .word span');
+  const divider  = el('brand-divider');
+  const location = el('brand-location');
+
+  pre.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+  await delay(150);
+  pre.style.opacity   = '1';
+  pre.style.transform = 'translateY(0)';
+  await delay(350);
+
+  for (const span of words) {
+    span.style.transition = 'transform 0.95s cubic-bezier(0.22, 1, 0.36, 1)';
+    span.style.transform  = 'translateY(0)';
+    await delay(175);
+  }
+  await delay(500);
+
+  divider.style.transition = 'width 0.9s ease, opacity 0.5s ease';
+  divider.style.opacity    = '1';
+  divider.style.width      = 'min(200px, 44vw)';
+  await delay(600);
+
+  location.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+  location.style.opacity    = '1';
+  location.style.transform  = 'translateY(0)';
+  await delay(2400);
+
+  el('scene-2').style.transition = 'opacity 0.8s ease';
+  el('scene-2').style.opacity    = '0';
+  await delay(850);
+}
+
+/* ─────────────────────────────────────────────
+   SCENE 3 — Gallery
+───────────────────────────────────────────── */
+async function runScene3() {
+  showScene('scene-3');
+
+  const cells   = document.querySelectorAll('.gallery-cell');
+  const tagline = el('gallery-tagline');
+  const sub     = el('gallery-sub');
+
+  let i = 0;
+  for (const cell of cells) {
+    cell.style.transition = `opacity 1s ease ${i * 0.14}s, transform 1.3s ease ${i * 0.14}s`;
+    cell.style.opacity    = '1';
+    cell.style.transform  = 'scale(1)';
+    setTimeout(() => cell.classList.add('loaded'), i * 140);
+    i++;
+  }
+  await delay(1000);
+
+  tagline.style.transition = 'opacity 1.1s ease, transform 1.1s ease';
+  tagline.style.opacity    = '1';
+  tagline.style.transform  = 'translateY(0)';
+  await delay(650);
+
+  sub.style.transition = 'opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s';
+  sub.style.opacity    = '1';
+  sub.style.transform  = 'translateY(0)';
+
+  await delay(3800);
+
+  el('scene-3').style.transition = 'opacity 0.9s ease';
+  el('scene-3').style.opacity    = '0';
+  await delay(950);
+}
+
+/* ─────────────────────────────────────────────
+   SCENE 4 — Services
+───────────────────────────────────────────── */
+async function runScene4() {
+  showScene('scene-4');
+
+  const header = el('svc-header');
+  const items  = ['svc-1','svc-2','svc-3','svc-4'];
+
+  header.style.transition = 'opacity 0.7s ease';
+  header.style.opacity    = '1';
+  await delay(300);
+
+  for (const id of items) {
+    const item = el(id);
+    item.style.transition = 'opacity 0.75s ease, transform 0.75s ease';
+    item.style.opacity    = '1';
+    item.style.transform  = 'translateX(0)';
+    await delay(80);
+    item.classList.add('line-in');
+    await delay(230);
+  }
+
+  await delay(2500);
+
+  el('scene-4').style.transition = 'opacity 0.8s ease';
+  el('scene-4').style.opacity    = '0';
+  await delay(900);
+}
+
+/* ─────────────────────────────────────────────
+   SCENE 5 — Final card
+───────────────────────────────────────────── */
+async function runScene5() {
+  showScene('scene-5');
+  petalActive = false;
+  spawnPetals(30); // gentle finishing petals
+
+  const backdrop = el('final-backdrop');
+  const diamond  = el('final-diamond');
+  const name     = el('final-name');
+  const rule     = el('final-rule');
+  const sub      = el('final-sub');
+  const tag      = el('final-tagline');
+  const replay   = el('replay-btn');
+
+  // Backdrop bloom
+  backdrop.style.transition = 'opacity 1.2s ease';
+  backdrop.style.opacity    = '1';
+  await delay(300);
+
+  // Diamond
+  diamond.style.transition = 'opacity 0.7s ease';
+  diamond.style.opacity    = '1';
+  await delay(350);
+
+  // Name
+  name.style.transition = 'opacity 1.1s ease, transform 1.1s ease';
+  name.style.opacity    = '1';
+  name.style.transform  = 'translateY(0)';
+  await delay(650);
+
+  // Rule
+  rule.style.transition = 'width 1.2s ease';
+  rule.style.width      = 'min(230px, 52vw)';
+  await delay(800);
+
+  // Sub
+  sub.style.transition = 'opacity 0.85s ease';
+  sub.style.opacity    = '1';
+  await delay(500);
+
+  // Tagline
+  tag.style.transition = 'opacity 0.9s ease, transform 0.9s ease';
+  tag.style.opacity    = '1';
+  tag.style.transform  = 'translateY(0)';
+  await delay(900);
+
+  // Replay
+  replay.style.transition  = 'opacity 0.8s ease';
+  replay.style.opacity     = '1';
+  replay.style.pointerEvents = 'all';
+
+  el('skip-hint').style.opacity = '0';
+}
+
+/* ─── REPLAY ─── */
+el('replay-btn').addEventListener('click', () => location.reload());
+
+/* ─── MAIN SEQUENCE ─── */
+async function runFilm() {
+  await delay(1000);
+  el('skip-hint').style.opacity = '1';
+  startProgress();
+
+  await runScene1(); if (skipCalled) return;
+  await runScene2(); if (skipCalled) return;
+  await runScene3(); if (skipCalled) return;
+  await runScene4(); if (skipCalled) return;
+  await runScene5();
+}
+
+window.addEventListener('load', () => {
+  document.querySelectorAll('.scene').forEach(s => { s.style.opacity = '0'; });
+  runFilm();
+});
+</script>
+</body>
+</html>

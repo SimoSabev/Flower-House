@@ -1,0 +1,267 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - text: Flowers
+        - emphasis [ref=e5]: House
+      - generic [ref=e6]: Varna · CRM v2.0
+    - navigation [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e9]: Overview
+        - generic [ref=e10] [cursor=pointer]: Dashboard
+      - generic [ref=e12]:
+        - generic [ref=e13]: Operations
+        - generic [ref=e14] [cursor=pointer]:
+          - text: Clients
+          - generic [ref=e16]: "24"
+        - generic [ref=e17] [cursor=pointer]:
+          - text: Orders
+          - generic [ref=e19]: "11"
+        - generic [ref=e20] [cursor=pointer]: Inventory
+        - generic [ref=e22] [cursor=pointer]: Suppliers
+      - generic [ref=e24]:
+        - generic [ref=e25]: Team
+        - generic [ref=e26] [cursor=pointer]: Florists
+        - generic [ref=e28] [cursor=pointer]:
+          - text: Deliveries
+          - generic [ref=e30]: "5"
+      - generic [ref=e31]:
+        - generic [ref=e32]: Creative
+        - generic [ref=e33] [cursor=pointer]:
+          - text: Bouquet Studio
+          - generic [ref=e35]: NEW
+    - generic [ref=e36]:
+      - generic [ref=e37]: М
+      - generic [ref=e38]:
+        - generic [ref=e39]: Maria Kostadinova
+        - generic [ref=e40]: Store Manager
+  - generic [ref=e41]:
+    - generic [ref=e42]:
+      - generic [ref=e43]:
+        - text: Dashboard
+        - emphasis [ref=e44]: — Today
+      - generic [ref=e45]:
+        - generic [ref=e46]: ⌕
+        - textbox "Search clients, orders, inventory…" [ref=e47]
+      - generic [ref=e48]: 20:12:22
+      - button "+ New Order" [ref=e49] [cursor=pointer]
+      - button "▶ Demo" [ref=e50] [cursor=pointer]
+      - generic [ref=e51] [cursor=pointer]: 🔔
+    - generic [ref=e54]:
+      - generic [ref=e55]:
+        - generic [ref=e56]:
+          - generic [ref=e57]: Revenue · April
+          - generic [ref=e58]: 12 840
+          - generic [ref=e59]: ▲ 18% vs last month
+        - generic [ref=e60]:
+          - generic [ref=e61]: Orders Today
+          - generic [ref=e62]: "11"
+          - generic [ref=e63]: ▲ 3 more than yesterday
+        - generic [ref=e64]:
+          - generic [ref=e65]: Active Clients
+          - generic [ref=e66]: "24"
+          - generic [ref=e67]: ▲ 2 new this week
+        - generic [ref=e68]:
+          - generic [ref=e69]: Deliveries Due
+          - generic [ref=e70]: "5"
+          - generic [ref=e71]: — 2 complete, 3 pending
+        - generic [ref=e72]:
+          - generic [ref=e73]: Avg. Order Value
+          - generic [ref=e74]: "87"
+          - generic [ref=e75]: ▲ 5% vs last week
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - generic [ref=e78]: Order Pipeline
+          - generic [ref=e79] [cursor=pointer]: View all →
+        - generic [ref=e80]:
+          - generic [ref=e81] [cursor=pointer]:
+            - generic [ref=e82]: "3"
+            - generic [ref=e83]: Pending
+          - generic [ref=e85] [cursor=pointer]:
+            - generic [ref=e86]: "2"
+            - generic [ref=e87]: Confirmed
+          - generic [ref=e89] [cursor=pointer]:
+            - generic [ref=e90]: "2"
+            - generic [ref=e91]: In Prep
+          - generic [ref=e93] [cursor=pointer]:
+            - generic [ref=e94]: "2"
+            - generic [ref=e95]: Delivery
+          - generic [ref=e97] [cursor=pointer]:
+            - generic [ref=e98]: "2"
+            - generic [ref=e99]: Completed
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - generic [ref=e104]: Recent Orders
+            - generic [ref=e105] [cursor=pointer]: All orders →
+          - table [ref=e107]:
+            - rowgroup [ref=e108]:
+              - row "Order ID Client Items Florist Status Total Date" [ref=e109]:
+                - columnheader "Order ID" [ref=e110]
+                - columnheader "Client" [ref=e111]
+                - columnheader "Items" [ref=e112]
+                - columnheader "Florist" [ref=e113]
+                - columnheader "Status" [ref=e114]
+                - columnheader "Total" [ref=e115]
+                - columnheader "Date" [ref=e116]
+            - rowgroup [ref=e117]:
+              - row "ORD-2848 Elena Vasileva White Lily Bouquet × 2, Eucalyptus Nadia K. PENDING 185 лв 2026-04-10" [ref=e118] [cursor=pointer]:
+                - cell "ORD-2848" [ref=e119]
+                - cell "Elena Vasileva" [ref=e120]
+                - cell "White Lily Bouquet × 2, Eucalyptus" [ref=e121]
+                - cell "Nadia K." [ref=e122]
+                - cell "PENDING" [ref=e123]:
+                  - generic [ref=e125]: PENDING
+                - cell "185 лв" [ref=e126]
+                - cell "2026-04-10" [ref=e127]
+              - row "ORD-2847 Sofia Marinova Garden Rose Bouquet, Baby's Breath Maria T. DELIVERED 120 лв 2026-04-10" [ref=e128] [cursor=pointer]:
+                - cell "ORD-2847" [ref=e129]
+                - cell "Sofia Marinova" [ref=e130]
+                - cell "Garden Rose Bouquet, Baby's Breath" [ref=e131]
+                - cell "Maria T." [ref=e132]
+                - cell "DELIVERED" [ref=e133]:
+                  - generic [ref=e135]: DELIVERED
+                - cell "120 лв" [ref=e136]
+                - cell "2026-04-10" [ref=e137]
+              - row "ORD-2846 Daniela Ivanova Monthly Subscription Box Nadia K. PREPARING 210 лв 2026-04-10" [ref=e138] [cursor=pointer]:
+                - cell "ORD-2846" [ref=e139]
+                - cell "Daniela Ivanova" [ref=e140]
+                - cell "Monthly Subscription Box" [ref=e141]
+                - cell "Nadia K." [ref=e142]
+                - cell "PREPARING" [ref=e143]:
+                  - generic [ref=e145]: PREPARING
+                - cell "210 лв" [ref=e146]
+                - cell "2026-04-10" [ref=e147]
+              - row "ORD-2845 Ivan Petrov Sunflower & Wildflower Mix Elena R. ON ROUTE 78 лв 2026-04-10" [ref=e148] [cursor=pointer]:
+                - cell "ORD-2845" [ref=e149]
+                - cell "Ivan Petrov" [ref=e150]
+                - cell "Sunflower & Wildflower Mix" [ref=e151]
+                - cell "Elena R." [ref=e152]
+                - cell "ON ROUTE" [ref=e153]:
+                  - generic [ref=e155]: ON ROUTE
+                - cell "78 лв" [ref=e156]
+                - cell "2026-04-10" [ref=e157]
+              - row "ORD-2844 Petar Angelov Red Rose Bouquet × 24 Maria T. CONFIRMED 145 лв 2026-04-10" [ref=e158] [cursor=pointer]:
+                - cell "ORD-2844" [ref=e159]
+                - cell "Petar Angelov" [ref=e160]
+                - cell "Red Rose Bouquet × 24" [ref=e161]
+                - cell "Maria T." [ref=e162]
+                - cell "CONFIRMED" [ref=e163]:
+                  - generic [ref=e165]: CONFIRMED
+                - cell "145 лв" [ref=e166]
+                - cell "2026-04-10" [ref=e167]
+              - row "ORD-2843 Maria Todorova Pastel Peony Arrangement Elena R. PENDING 95 лв 2026-04-10" [ref=e168] [cursor=pointer]:
+                - cell "ORD-2843" [ref=e169]
+                - cell "Maria Todorova" [ref=e170]
+                - cell "Pastel Peony Arrangement" [ref=e171]
+                - cell "Elena R." [ref=e172]
+                - cell "PENDING" [ref=e173]:
+                  - generic [ref=e175]: PENDING
+                - cell "95 лв" [ref=e176]
+                - cell "2026-04-10" [ref=e177]
+        - generic [ref=e178]:
+          - generic [ref=e180]: Live Activity
+          - generic [ref=e181]:
+            - generic [ref=e184]:
+              - generic [ref=e185]:
+                - strong [ref=e186]: "#ORD-2847"
+                - text: delivered successfully to Sofia M.
+              - generic [ref=e187]: 2 min ago
+            - generic [ref=e190]:
+              - generic [ref=e191]:
+                - text: New order
+                - strong [ref=e192]: "#ORD-2848"
+                - text: placed by Elena V.
+              - generic [ref=e193]: 14 min ago
+            - generic [ref=e196]:
+              - generic [ref=e197]:
+                - strong [ref=e198]: Lily Warehouse
+                - text: confirmed Tuesday supply
+              - generic [ref=e199]: 38 min ago
+            - generic [ref=e202]:
+              - generic [ref=e203]:
+                - strong [ref=e204]: Nadia K.
+                - text: "started prep on #ORD-2845"
+              - generic [ref=e205]: 1 hr ago
+            - generic [ref=e208]:
+              - generic [ref=e209]:
+                - text: Low stock alert —
+                - strong [ref=e210]: Garden Roses
+                - text: at 12 units
+              - generic [ref=e211]: 2 hrs ago
+      - generic [ref=e212]:
+        - generic [ref=e213]:
+          - generic [ref=e214]:
+            - generic [ref=e215]: Weekly Revenue
+            - generic [ref=e216]: Last 7 days
+          - generic [ref=e217]:
+            - generic [ref=e218]:
+              - 'generic "Mon: 980 лв" [ref=e220] [cursor=pointer]'
+              - 'generic "Tue: 1240 лв" [ref=e222] [cursor=pointer]'
+              - 'generic "Wed: 890 лв" [ref=e224] [cursor=pointer]'
+              - 'generic "Thu: 1560 лв" [ref=e226] [cursor=pointer]'
+              - 'generic "Fri: 1380 лв" [ref=e228] [cursor=pointer]'
+              - 'generic "Sat: 2100 лв" [ref=e230] [cursor=pointer]'
+              - 'generic "Sun: 1820 лв" [ref=e232] [cursor=pointer]'
+            - generic [ref=e233]:
+              - generic [ref=e234]: Mon
+              - generic [ref=e235]: Tue
+              - generic [ref=e236]: Wed
+              - generic [ref=e237]: Thu
+              - generic [ref=e238]: Fri
+              - generic [ref=e239]: Sat
+              - generic [ref=e240]: Sun
+        - generic [ref=e241]:
+          - generic [ref=e242]:
+            - generic [ref=e243]: Top Products
+            - generic [ref=e244]: This week
+          - table [ref=e246]:
+            - rowgroup [ref=e247]:
+              - row "# Product Sold Revenue" [ref=e248]:
+                - columnheader "#" [ref=e249]
+                - columnheader "Product" [ref=e250]
+                - columnheader "Sold" [ref=e251]
+                - columnheader "Revenue" [ref=e252]
+            - rowgroup [ref=e253]:
+              - row "1 Garden Rose Bouquet Roses 24 2880 лв" [ref=e254] [cursor=pointer]:
+                - cell "1" [ref=e255]
+                - cell "Garden Rose Bouquet Roses" [ref=e256]:
+                  - text: Garden Rose Bouquet
+                  - text: Roses
+                - cell "24" [ref=e257]
+                - cell "2880 лв" [ref=e258]
+              - row "2 Monthly Subscription Subscriptions 8 1680 лв" [ref=e259] [cursor=pointer]:
+                - cell "2" [ref=e260]
+                - cell "Monthly Subscription Subscriptions" [ref=e261]:
+                  - text: Monthly Subscription
+                  - text: Subscriptions
+                - cell "8" [ref=e262]
+                - cell "1680 лв" [ref=e263]
+              - row "3 Peony Arrangement Seasonal 14 1330 лв" [ref=e264] [cursor=pointer]:
+                - cell "3" [ref=e265]
+                - cell "Peony Arrangement Seasonal" [ref=e266]:
+                  - text: Peony Arrangement
+                  - text: Seasonal
+                - cell "14" [ref=e267]
+                - cell "1330 лв" [ref=e268]
+              - row "4 White Lily Classic Lilies 18 990 лв" [ref=e269] [cursor=pointer]:
+                - cell "4" [ref=e270]
+                - cell "White Lily Classic Lilies" [ref=e271]:
+                  - text: White Lily Classic
+                  - text: Lilies
+                - cell "18" [ref=e272]
+                - cell "990 лв" [ref=e273]
+              - row "5 Sunflower Mix Seasonal 20 780 лв" [ref=e274] [cursor=pointer]:
+                - cell "5" [ref=e275]
+                - cell "Sunflower Mix Seasonal" [ref=e276]:
+                  - text: Sunflower Mix
+                  - text: Seasonal
+                - cell "20" [ref=e277]
+                - cell "780 лв" [ref=e278]
+  - generic [ref=e279]:
+    - generic [ref=e280]: 🌹 New Order Incoming!
+    - generic [ref=e281]: Loading…
+    - generic [ref=e282]:
+      - button "✓ Accept" [ref=e283] [cursor=pointer]
+      - button "Dismiss" [ref=e284] [cursor=pointer]
+  - button "✕" [ref=e287] [cursor=pointer]

@@ -1,0 +1,45 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2] [cursor=pointer]: Skip ›
+  - button "↺ Replay"
+  - generic [ref=e7]:
+    - generic:
+      - generic: Est. Varna · Bulgaria
+      - generic:
+        - generic:
+          - generic: Flowers
+        - generic:
+          - generic: House
+      - generic: Custom Bouquets · Varna
+    - generic:
+      - generic:
+        - generic:
+          - img "Rose arrangement"
+        - generic:
+          - img "Tulips"
+        - generic:
+          - img "Red rose"
+        - generic:
+          - img "Nature flowers"
+        - generic:
+          - img "Poppies"
+      - generic:
+        - generic:
+          - text: Where every petal
+          - text: tells a story.
+        - generic: Handcrafted with love
+    - generic:
+      - generic: What We Offer
+      - list:
+        - listitem: Custom Bouquets
+        - listitem: Bridal Arrangements
+        - listitem: Online Ordering
+        - listitem: City-wide Delivery
+    - generic:
+      - generic:
+        - generic:
+          - text: Flowers
+          - text: House
+        - generic: Varna · Bulgaria
+        - generic:
+          - text: Bringing beauty to every occasion,
+          - text: one bloom at a time.
