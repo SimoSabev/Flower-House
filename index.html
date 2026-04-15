@@ -1416,14 +1416,14 @@ body {
   position: absolute;
   bottom: 0; left: 50%; transform: translateX(-50%);
   width: 550px; pointer-events: none;
-  z-index: 1580; /* Depth bucket for front tucking */
+  z-index: 900; /* Below modal (1000), above slide panel (800) */
   filter: drop-shadow(0 20px 40px rgba(122,78,115,0.35));
 }
 .stems-canvas {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   pointer-events: none;
-  z-index: 1000; /* Stems behind the vase and flowers */
+  z-index: 100; /* Stems behind the vase and flowers */
 }
 .stem {
   fill: none;
@@ -1456,7 +1456,7 @@ body {
   transform-origin: center bottom;
   animation: bloomIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
   transition: transform 0.15s, filter 0.15s, left 0.5s cubic-bezier(0.25, 1, 0.5, 1), top 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  z-index: 10;
+  z-index: 5;
   border-radius: 0;
   overflow: visible;
   border: none;
@@ -1471,12 +1471,12 @@ body {
 .placed-flower:hover {
   filter: drop-shadow(0 12px 24px rgba(122,78,115,0.5));
   transform: scale(1.08) rotate(var(--rot)) !important;
-  z-index: 20;
+  z-index: 10;
 }
 .placed-flower.dragging {
   cursor: grabbing;
   transition: transform 0.1s, filter 0.1s !important; /* disable left/top transitions when dragging */
-  z-index: 999 !important;
+  z-index: 50 !important;
   filter: drop-shadow(0 18px 36px rgba(122,78,115,0.6));
   transform: scale(1.15) rotate(var(--rot)) !important;
 }
@@ -1486,7 +1486,7 @@ body {
   position: fixed;
   width: 180px; height: 180px;
   object-fit: contain;
-  z-index: 9999;
+  z-index: 950;
   pointer-events: none;
   transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy fly */
   filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
@@ -1508,7 +1508,7 @@ body {
 .sparkle {
   position: absolute;
   pointer-events: none;
-  z-index: 30;
+  z-index: 15;
   font-size: 14px;
   animation: sparkleFly 0.7s ease forwards;
 }
@@ -3655,7 +3655,7 @@ function updateFlowerTransform(bf) {
     el.style.left = (bf.x - 130) + 'px';
     el.style.top  = (bf.y - 130) + 'px';
     el.style.setProperty('--rot', bf.rot + 'deg');
-    el.style.zIndex = Math.floor(bf.y) + 1000;
+    el.style.zIndex = Math.floor(bf.y / 10) + 905; /* Above wrapper front (900), below modal (1000) */
   }
   // Sync curved stem
   let path = document.getElementById('stem-' + bf.uid);
