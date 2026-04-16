@@ -3,32 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flowers House Varna — CRM</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Flowers House Varna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Mono:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.163.0/build/three.module.js"
+  }
+}
+</script>
 <style>
-:root {
-  /* ── Flowers House Palette · Blushing Bakery System ── */
-  --berry:       #7A4E73;   /* Berry Primary  */
-  --berry-dark:  #5C3457;   /* sidebar bg     */
-  --berry-mid:   #9B6B94;   /* hover accents  */
-  --berry-dim:   rgba(122,78,115,0.12);
-  --peach:       #F1BBA4;   /* Peach Brand    */
-  --peach-dim:   rgba(241,187,164,0.25);
-  --rose:        #F0A8C6;   /* Rose Soft      */
-  --rose-deep:   #C4607A;   /* Rose action    */
-  --rose-dim:    rgba(240,168,198,0.2);
-  --blush:       #FCEEF6;   /* Card Blush     */
-  --dough:       #FAF7F5;   /* Dough Base     */
-  --choco:       #303838;   /* Chocolate text */
 
-  /* ── Functional UI colours ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --berry:       #7A4E73;
+  --berry-dark:  #5C3457;
+  --berry-mid:   #9B6B94;
+  --berry-dim:   rgba(122,78,115,0.12);
+  --peach:       #F1BBA4;
+  --peach-dim:   rgba(241,187,164,0.25);
+  --rose:        #F0A8C6;
+  --rose-deep:   #C4607A;
+  --rose-dim:    rgba(240,168,198,0.2);
+  --blush:       #FCEEF6;
+  --dough:       #FAF7F5;
+  --choco:       #303838;
+  --muted:       #9e8a97;
+
   --bg:          #FAF7F5;
   --surface:     #FFFFFF;
   --card:        #FFFFFF;
   --card-hover:  #FDF5FB;
   --border:      #EDD8E8;
   --border-light:#F5ECF4;
-  --gold:        var(--berry);    /* alias – keeps old refs working */
+  --gold:        var(--berry);
   --gold-dim:    var(--berry-dim);
   --green:       #5A9E6A;
   --green-dim:   rgba(90,158,106,0.12);
@@ -45,15 +56,559 @@
   --sidebar-w:   230px;
 }
 
-* { margin:0; padding:0; box-sizing:border-box; }
-html, body { height:100%; overflow:hidden; }
-
+html, body { margin: 0; padding: 0; background: var(--dough); }
+html { scroll-behavior: smooth; }
 body {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--choco);
+  overflow-x: hidden;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   BRAND FILM — scroll-driven parallax hero
+   ═══════════════════════════════════════════════════════ */
+
+#brand-film-wrapper {
+  position: relative;
+  height: 760vh;           /* slower, more breathing room per scene */
+  background: var(--dough);
+}
+
+#brand-film {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  font-family: 'Cormorant Garamond', serif;
+  cursor: none;
+  color: var(--choco);
+  perspective: 1200px;
+}
+
+/* Three.js 3D canvas — sits behind 2D petals, drives the cinematic depth */
+#brand-film #three-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+/* Parallax depth — child transforms multiplied by data-depth at runtime */
+#brand-film [data-depth] {
+  will-change: transform;
+  transform: translate3d(0,0,0);
+  transition: none;
+}
+
+/* Lazy image placeholder */
+#brand-film .gallery-cell {
+  background: linear-gradient(135deg, rgba(122,78,115,0.25), rgba(196,96,122,0.35));
+}
+#brand-film .gallery-cell img {
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 1.2s ease, filter 1s ease;
+}
+#brand-film .gallery-cell.img-ready img {
+  opacity: 1;
+}
+
+/* noise texture */
+#brand-film::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: multiply;
+}
+
+#brand-film #petalCanvas {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+
+#brand-film #film-cursor {
+  position: fixed;
+  width: 9px; height: 9px;
+  background: var(--berry);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+#brand-film #vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(252,238,246,0.55) 100%);
+  pointer-events: none;
+  z-index: 4;
+}
+
+#brand-film #stage {
+  position: absolute; inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#brand-film .scene {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease-out;
+  will-change: opacity;
+}
+
+/* Scene 1 */
+#brand-film #scene-1 { background: var(--dough); }
+
+#brand-film .bloom-ring {
+  position: absolute;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  border: 1px solid var(--peach);
+  opacity: 0;
+  transform: scale(0.3);
+  will-change: transform, opacity;
+}
+#brand-film .bloom-ring:nth-child(2) { width: 200px; height: 200px; border-color: var(--rose); }
+#brand-film .bloom-ring:nth-child(3) { width: 80px;  height: 80px;  border-color: var(--berry); background: var(--blush); }
+
+#brand-film .opening-line {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--berry), transparent);
+}
+
+/* Scene 2 */
+#brand-film #scene-2 { background: var(--dough); }
+
+#brand-film .brand-pre {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(9px, 1.2vw, 12px);
+  letter-spacing: 0.6em;
+  color: var(--peach);
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(10px);
+}
+#brand-film .brand-title {
+  font-size: clamp(56px, 9.5vw, 116px);
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  color: var(--berry);
+  line-height: 0.88;
+  text-align: center;
+  overflow: hidden;
+}
+#brand-film .brand-title .word {
+  display: inline-block;
+  overflow: hidden;
+}
+#brand-film .brand-title .word span {
+  display: inline-block;
+  transform: translateY(110%);
+  will-change: transform;
+}
+#brand-film .brand-divider {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--peach), transparent);
+  margin: 26px auto;
+  opacity: 0;
+}
+#brand-film .brand-location {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(9px, 1.1vw, 11px);
+  letter-spacing: 0.65em;
+  color: var(--muted);
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* Scene 3 */
+#brand-film #scene-3 { overflow: hidden; background: #1a0f18; }
+
+#brand-film .gallery-grid {
+  position: absolute; inset: 0;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+}
+#brand-film .gallery-cell {
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  transform: scale(1.06);
+  will-change: transform, opacity;
+}
+#brand-film .gallery-cell img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: saturate(0.85) brightness(0.65);
+  transform: scale(1.1);
+  transition: transform 1.2s ease, filter 1s ease;
+}
+#brand-film .gallery-cell.loaded img {
+  transform: scale(1.0);
+  filter: saturate(1.0) brightness(0.72);
+}
+#brand-film .gallery-cell:nth-child(1) { grid-row: span 2; }
+#brand-film .gallery-cell:nth-child(1) img { object-position: center 30%; }
+
+#brand-film .gallery-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, rgba(122,78,115,0.18) 0%, transparent 55%);
+}
+#brand-film #scene-3::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 30%, rgba(26,15,24,0.55) 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+#brand-film .gallery-text {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  gap: 18px;
+  pointer-events: none;
+}
+#brand-film .gallery-tagline {
+  font-size: clamp(30px, 5.5vw, 68px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--dough);
+  letter-spacing: 0.04em;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  padding: 0 40px;
+  line-height: 1.15;
+  text-shadow: 0 2px 24px rgba(26,15,24,0.5);
+}
+#brand-film .gallery-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(9px, 1.1vw, 11px);
+  letter-spacing: 0.55em;
+  color: var(--rose);
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Scene 4 */
+#brand-film #scene-4 { background: var(--blush); }
+
+#brand-film .services-header {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(9px, 1vw, 11px);
+  letter-spacing: 0.7em;
+  color: var(--peach);
+  text-transform: uppercase;
+  opacity: 0;
+  margin-bottom: 52px;
+}
+#brand-film .services-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  text-align: center;
+}
+#brand-film .services-list li {
+  font-size: clamp(24px, 4.8vw, 60px);
+  font-weight: 300;
+  color: var(--berry);
+  letter-spacing: 0.1em;
+  padding: 10px 0;
+  opacity: 0;
+  transform: translateX(-28px);
+  position: relative;
+  overflow: hidden;
+}
+#brand-film .services-list li .accent {
+  color: var(--rose-deep);
+  font-style: italic;
+}
+#brand-film .services-list li::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  width: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--peach), transparent);
+  transform: translateX(-50%);
+  transition: width 0.7s ease;
+}
+#brand-film .services-list li.line-in::after { width: 100%; }
+
+/* Scene 5 */
+#brand-film #scene-5 { background: var(--dough); }
+
+#brand-film .final-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  text-align: center;
+}
+#brand-film .final-backdrop {
+  position: absolute;
+  width: min(560px, 80vw);
+  height: min(560px, 80vw);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--blush) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+#brand-film .final-diamond {
+  width: 7px; height: 7px;
+  background: var(--peach);
+  transform: rotate(45deg);
+  opacity: 0;
+  margin-bottom: 30px;
+  position: relative;
+  box-shadow: 0 0 12px var(--peach);
+}
+#brand-film .final-name {
+  font-size: clamp(44px, 7.8vw, 100px);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--berry);
+  opacity: 0;
+  transform: translateY(16px);
+  line-height: 0.9;
+  position: relative;
+}
+#brand-film .final-rule {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--peach), transparent);
+  margin: 28px auto;
+}
+#brand-film .final-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(9px, 1.1vw, 11px);
+  letter-spacing: 0.7em;
+  color: var(--rose-deep);
+  text-transform: uppercase;
+  opacity: 0;
+  margin-bottom: 48px;
+  position: relative;
+}
+#brand-film .final-tagline {
+  font-size: clamp(15px, 2.2vw, 26px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  opacity: 0;
+  transform: translateY(8px);
+  max-width: 520px;
+  line-height: 1.65;
+  position: relative;
+}
+
+/* Scroll progress bar */
+#brand-film #film-progress {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--berry), var(--rose), var(--peach));
+  width: 0;
+  z-index: 100;
+  box-shadow: 0 0 6px var(--rose);
+}
+
+/* Scroll hint */
+#brand-film #scroll-hint {
+  position: absolute;
+  bottom: 28px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: var(--muted);
+  text-transform: uppercase;
+  z-index: 100;
+  opacity: 0;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+#brand-film #scroll-hint .arrow {
+  width: 1px; height: 28px;
+  background: linear-gradient(to bottom, transparent, var(--berry));
+  animation: scrollArrow 1.6s ease-in-out infinite;
+}
+@keyframes scrollArrow {
+  0%, 100% { transform: translateY(0);   opacity: 0.4; }
+  50%      { transform: translateY(6px); opacity: 1;   }
+}
+
+/* Skip to CRM button (on final scene) */
+#brand-film #enter-btn {
+  position: absolute;
+  bottom: 52px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  color: var(--dough);
+  text-transform: uppercase;
+  text-decoration: none;
+  z-index: 100;
+  opacity: 0;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s, transform 0.3s;
+  border: 1px solid var(--berry);
+  background: var(--berry);
+  padding: 10px 26px;
+  pointer-events: none;
+  display: inline-block;
+}
+#brand-film #enter-btn.visible { pointer-events: all; }
+#brand-film #enter-btn:hover {
+  background: var(--rose-deep);
+  border-color: var(--rose-deep);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* Corner decorations */
+#brand-film .corner-deco {
+  position: absolute;
+  width: 56px; height: 56px;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+#brand-film .corner-deco.tl { top: 24px; left: 24px; border-top: 1px solid var(--peach); border-left: 1px solid var(--peach); }
+#brand-film .corner-deco.tr { top: 24px; right: 24px; border-top: 1px solid var(--peach); border-right: 1px solid var(--peach); }
+#brand-film .corner-deco.bl { bottom: 24px; left: 24px; border-bottom: 1px solid var(--peach); border-left: 1px solid var(--peach); }
+#brand-film .corner-deco.br { bottom: 24px; right: 24px; border-bottom: 1px solid var(--peach); border-right: 1px solid var(--peach); }
+
+/* Fallback for missing images */
+#brand-film .gallery-cell img.broken { display: none; }
+#brand-film .gallery-cell.no-img {
+  background: linear-gradient(135deg, var(--blush), var(--rose));
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   PAGE TRANSITION — cinematic hand-off into the dashboard
+   ═══════════════════════════════════════════════════════ */
+#page-transition {
+  position: fixed; inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+}
+#page-transition .curtain {
+  position: absolute;
+  left: 0; right: 0;
+  height: 52vh;
+  background: linear-gradient(180deg, var(--berry-dark) 0%, var(--berry) 55%, var(--rose-deep) 100%);
+  transform: scaleY(0);
+  transition: transform 0.85s cubic-bezier(0.86, 0, 0.07, 1);
+  will-change: transform;
+}
+#page-transition .curtain.top    { top: 0;    transform-origin: top;    }
+#page-transition .curtain.bottom { bottom: 0; transform-origin: bottom; background: linear-gradient(0deg, var(--berry-dark) 0%, var(--berry) 55%, var(--rose-deep) 100%); }
+
+#page-transition .curtain-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  color: var(--dough);
+  z-index: 2;
+}
+#page-transition .curtain-content .mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(44px, 7vw, 84px);
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-align: center;
+  line-height: 0.9;
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease;
+  opacity: 0;
+}
+#page-transition .curtain-content .mark em { color: var(--rose); font-style: italic; }
+#page-transition .curtain-content .sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+  color: rgba(252,238,246,0.7);
+  margin-top: 18px;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.1s;
+}
+
+#page-transition.closing .curtain  { transform: scaleY(1); }
+#page-transition.covered .curtain  { transform: scaleY(1); }
+#page-transition.covered .curtain-content,
+#page-transition.closing .curtain-content { opacity: 1; }
+#page-transition.covered .curtain-content .mark,
+#page-transition.closing .curtain-content .mark {
+  opacity: 1; transform: translateY(0) scale(1);
+}
+#page-transition.covered .curtain-content .sub,
+#page-transition.closing .curtain-content .sub { opacity: 1; }
+
+#page-transition.opening .curtain { transform: scaleY(0); transition: transform 0.9s cubic-bezier(0.22,1,0.36,1); }
+#page-transition.opening .curtain-content { opacity: 0; transition: opacity 0.25s ease; }
+
+/* CRM entry animation once the user has "entered" the dashboard */
+body.app-entered #crm-app > * {
+  animation: crm-enter 0.9s cubic-bezier(0.22,1,0.36,1) both;
+}
+body.app-entered #crm-app > aside.sidebar { animation-delay: 0.05s; }
+body.app-entered #crm-app > main          { animation-delay: 0.25s; }
+@keyframes crm-enter {
+  from { opacity: 0; transform: translateY(22px); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+}
+
+/* ═══════════════════════════════════════════════════════
+   CRM APP (scoped to #crm-app)
+   ═══════════════════════════════════════════════════════ */
+
+#crm-app {
   background: var(--bg);
   color: var(--text);
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;
   display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
 }
 
 /* ═══ SIDEBAR ═══ */
@@ -1813,10 +2368,125 @@ body {
   .modal-body .form-row { flex-direction: column; }
   .cc-action-btn { font-size: 9px; padding: 6px 4px; }
 }
+
 </style>
 </head>
 <body>
 
+
+<section id="brand-film-wrapper">
+  <div id="brand-film">
+    <canvas id="three-canvas"></canvas>
+    <canvas id="petalCanvas"></canvas>
+    <div id="vignette"></div>
+    <div id="film-cursor"></div>
+    <div id="film-progress"></div>
+
+    <div class="corner-deco tl" id="deco-tl"></div>
+    <div class="corner-deco tr" id="deco-tr"></div>
+    <div class="corner-deco bl" id="deco-bl"></div>
+    <div class="corner-deco br" id="deco-br"></div>
+
+    <div id="stage">
+
+      <div class="scene" id="scene-1">
+        <div class="bloom-ring" id="ring-1" data-depth="-0.35"></div>
+        <div class="bloom-ring" id="ring-2" data-depth="-0.20"></div>
+        <div class="bloom-ring" id="ring-3" data-depth="-0.08"></div>
+        <div class="opening-line" id="opening-line" data-depth="0.15"></div>
+      </div>
+
+      <div class="scene" id="scene-2">
+        <div class="brand-pre" id="brand-pre" data-depth="0.35">Est. Varna · Bulgaria</div>
+        <div style="height:22px"></div>
+        <div class="brand-title" id="brand-title" data-depth="0.10">
+          <div class="word"><span>Flowers</span></div>
+          &nbsp;
+          <div class="word"><span>House</span></div>
+        </div>
+        <div class="brand-divider" id="brand-divider" data-depth="0.22"></div>
+        <div class="brand-location" id="brand-location" data-depth="0.45">Custom Bouquets &nbsp;·&nbsp; Varna</div>
+      </div>
+
+      <div class="scene" id="scene-3">
+        <div class="gallery-grid" id="gallery-grid">
+          <div class="gallery-cell" id="gc-0" data-depth="-0.15">
+            <img data-src="images/buntysmum-rose-3036266_1920.png" alt="Rose arrangement"
+                 onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+            <div class="gallery-overlay"></div>
+          </div>
+          <div class="gallery-cell" id="gc-1" data-depth="-0.05">
+            <img data-src="images/trixieliko-tulip-2979748_1920.png" alt="Tulips"
+                 onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+            <div class="gallery-overlay"></div>
+          </div>
+          <div class="gallery-cell" id="gc-2" data-depth="-0.25">
+            <img data-src="images/erbs55-rose-3160075_1920.png" alt="Red rose"
+                 onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+            <div class="gallery-overlay"></div>
+          </div>
+          <div class="gallery-cell" id="gc-3" data-depth="-0.12">
+            <img data-src="images/garten-gg-nature-3699654_1920.png" alt="Nature flowers"
+                 onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+            <div class="gallery-overlay"></div>
+          </div>
+          <div class="gallery-cell" id="gc-4" data-depth="-0.18">
+            <img data-src="images/susannp4-poppy-1952024_1920.png" alt="Poppies"
+                 onerror="this.closest('.gallery-cell').classList.add('no-img'); this.classList.add('broken')">
+            <div class="gallery-overlay"></div>
+          </div>
+        </div>
+        <div class="gallery-text">
+          <div class="gallery-tagline" id="gallery-tagline" data-depth="0.4">Where every petal<br>tells a story.</div>
+          <div class="gallery-sub" id="gallery-sub" data-depth="0.6">Handcrafted with love</div>
+        </div>
+      </div>
+
+      <div class="scene" id="scene-4">
+        <div class="services-header" id="svc-header" data-depth="0.25">What We Offer</div>
+        <ul class="services-list">
+          <li id="svc-1" data-depth="0.40">Custom <span class="accent">Bouquets</span></li>
+          <li id="svc-2" data-depth="0.28">Bridal <span class="accent">Arrangements</span></li>
+          <li id="svc-3" data-depth="0.18">Online <span class="accent">Ordering</span></li>
+          <li id="svc-4" data-depth="0.10">City-wide <span class="accent">Delivery</span></li>
+        </ul>
+      </div>
+
+      <div class="scene" id="scene-5">
+        <div class="final-backdrop" id="final-backdrop" data-depth="-0.30"></div>
+        <div class="final-wrap">
+          <div class="final-diamond" id="final-diamond" data-depth="0.55"></div>
+          <div class="final-name" id="final-name" data-depth="0.12">
+            Flowers<br>House
+          </div>
+          <div class="final-rule" id="final-rule" data-depth="0.25"></div>
+          <div class="final-sub" id="final-sub" data-depth="0.35">Varna · Bulgaria</div>
+          <div class="final-tagline" id="final-tagline" data-depth="0.50">
+            Bringing beauty to every occasion,<br>one bloom at a time.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="scroll-hint">
+      <span>Scroll</span>
+      <div class="arrow"></div>
+    </div>
+    <a id="enter-btn" href="#crm-app">Enter ›</a>
+  </div>
+</section>
+
+<div id="page-transition" aria-hidden="true">
+  <div class="curtain top"></div>
+  <div class="curtain bottom"></div>
+  <div class="curtain-content">
+    <div class="mark">Flowers<br><em>House</em></div>
+    <div class="sub">Entering the dashboard</div>
+  </div>
+</div>
+
+<section id="crm-app">
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-brand">
@@ -2327,8 +2997,460 @@ body {
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+</section>
 
+<script type="module">
+import * as THREE from 'three';
+
+/* ═══════════════════════════════════════════════════════
+   BRAND FILM — scroll-driven parallax + 3D depth + lazy load
+   ═══════════════════════════════════════════════════════ */
+(function() {
+  const $ = id => document.getElementById(id);
+  const wrapper = $('brand-film-wrapper');
+  if (!wrapper) return;
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const range = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+  const easeInOut = t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2;
+  const srange = (t, a, b) => easeInOut(range(t, a, b));
+  const lerp = (a, b, k) => a + (b - a) * k;
+
+  /* ────────── 2D drifting petals (foreground) ────────── */
+  const canvas = $('petalCanvas');
+  const ctx = canvas.getContext('2d');
+  let petals = [], petalOpacity = 0;
+
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  class Petal {
+    constructor() { this.reset(true); }
+    reset(init = false) {
+      this.x = Math.random() * canvas.width;
+      this.y = init ? Math.random() * -canvas.height : -20;
+      this.size = Math.random() * 5 + 2;
+      this.speedY = Math.random() * 0.7 + 0.25;
+      this.speedX = (Math.random() - 0.5) * 0.4;
+      this.rotation = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.018;
+      this.baseAlpha = Math.random() * 0.35 + 0.12;
+      const palette = [[240,168,198],[241,187,164],[122,78,115],[196,96,122]];
+      this.rgb = palette[Math.floor(Math.random()*palette.length)];
+      this.sway = Math.random() * 1.8;
+      this.swaySpeed = Math.random() * 0.01 + 0.004;
+      this.t = Math.random() * Math.PI * 2;
+    }
+    update() {
+      this.t += this.swaySpeed;
+      this.x += this.speedX + Math.sin(this.t) * this.sway;
+      this.y += this.speedY;
+      this.rotation += this.rotSpeed;
+      if (this.y > canvas.height + 20) this.reset();
+    }
+    draw() {
+      const a = this.baseAlpha * petalOpacity;
+      if (a <= 0.01) return;
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+      ctx.globalAlpha = a;
+      ctx.fillStyle = `rgba(${this.rgb[0]},${this.rgb[1]},${this.rgb[2]},${a})`;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, this.size * 2.2, this.size, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+  petals = Array.from({length: 55}, () => new Petal());
+
+  /* ────────── 3D background (Three.js) ────────── */
+  const threeCanvas = $('three-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  const scene3d = new THREE.Scene();
+  scene3d.fog = new THREE.FogExp2(0xFCEEF6, 0.018);
+
+  const camera = new THREE.PerspectiveCamera(52, window.innerWidth/window.innerHeight, 0.1, 260);
+  camera.position.set(0, 0, 50);
+
+  const PARTICLES = 420;
+  const positions = new Float32Array(PARTICLES * 3);
+  const colors    = new Float32Array(PARTICLES * 3);
+  const sizes     = new Float32Array(PARTICLES);
+  const palette3  = [
+    [0.941, 0.659, 0.776], // rose
+    [0.945, 0.733, 0.643], // peach
+    [0.478, 0.306, 0.451], // berry
+    [0.769, 0.376, 0.478], // rose-deep
+    [0.988, 0.933, 0.965], // blush
+  ];
+  for (let i = 0; i < PARTICLES; i++) {
+    positions[i*3]   = (Math.random() - 0.5) * 110;
+    positions[i*3+1] = (Math.random() - 0.5) * 90;
+    positions[i*3+2] = Math.random() * -180 + 20;
+    const c = palette3[Math.floor(Math.random()*palette3.length)];
+    colors[i*3]   = c[0];
+    colors[i*3+1] = c[1];
+    colors[i*3+2] = c[2];
+    sizes[i] = 0.4 + Math.random() * 1.8;
+  }
+  const geom = new THREE.BufferGeometry();
+  geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geom.setAttribute('color',    new THREE.BufferAttribute(colors,    3));
+  geom.setAttribute('size',     new THREE.BufferAttribute(sizes,     1));
+
+  function glowTexture() {
+    const s = 128;
+    const cvs = document.createElement('canvas');
+    cvs.width = cvs.height = s;
+    const g = cvs.getContext('2d');
+    const grad = g.createRadialGradient(s/2, s/2, 0, s/2, s/2, s/2);
+    grad.addColorStop(0.00, 'rgba(255,255,255,1)');
+    grad.addColorStop(0.35, 'rgba(255,220,235,0.7)');
+    grad.addColorStop(1.00, 'rgba(255,220,235,0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, s, s);
+    const tex = new THREE.CanvasTexture(cvs);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  const pointsMat = new THREE.PointsMaterial({
+    size: 1.8,
+    map: glowTexture(),
+    vertexColors: true,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    sizeAttenuation: true,
+    opacity: 0.95,
+  });
+  const points = new THREE.Points(geom, pointsMat);
+  scene3d.add(points);
+
+  // Soft orb (bokeh bloom that grows into the final scene)
+  const orb = new THREE.Mesh(
+    new THREE.SphereGeometry(8, 32, 32),
+    new THREE.MeshBasicMaterial({
+      color: 0xF0A8C6, transparent: true, opacity: 0.15,
+      blending: THREE.AdditiveBlending, depthWrite: false,
+    })
+  );
+  orb.position.z = -40;
+  scene3d.add(orb);
+
+  function resizeThree() {
+    const w = wrapper.clientWidth;
+    const h = window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resizeThree();
+  window.addEventListener('resize', resizeThree);
+
+  /* ────────── Scene refs ────────── */
+  const scenes = [1,2,3,4,5].map(i => $('scene-' + i));
+  const rings = [$('ring-1'), $('ring-2'), $('ring-3')];
+  const openingLine = $('opening-line');
+
+  const brandPre   = $('brand-pre');
+  const brandTitle = $('brand-title');
+  const brandWords = document.querySelectorAll('#brand-title .word span');
+  const brandDiv   = $('brand-divider');
+  const brandLoc   = $('brand-location');
+
+  const galleryCells = document.querySelectorAll('#brand-film .gallery-cell');
+  const galleryTag   = $('gallery-tagline');
+  const gallerySub   = $('gallery-sub');
+
+  const svcHeader = $('svc-header');
+  const svcItems  = ['svc-1','svc-2','svc-3','svc-4'].map(id => $(id));
+
+  const finalBackdrop = $('final-backdrop');
+  const finalDiamond  = $('final-diamond');
+  const finalName     = $('final-name');
+  const finalRule     = $('final-rule');
+  const finalSub      = $('final-sub');
+  const finalTag      = $('final-tagline');
+
+  const corners    = ['deco-tl','deco-tr','deco-bl','deco-br'].map(id => $(id));
+  const scrollHint = $('scroll-hint');
+  const progressBar = $('film-progress');
+  const enterBtn   = $('enter-btn');
+  const threeEl    = $('three-canvas');
+
+  /* ────────── Lazy image loading ────────── */
+  const lazyImgs = document.querySelectorAll('#brand-film img[data-src]');
+  function loadImg(img) {
+    const src = img.getAttribute('data-src');
+    if (!src || img.src) return;
+    img.src = src;
+    img.removeAttribute('data-src');
+    const cell = img.closest('.gallery-cell');
+    img.addEventListener('load', () => cell.classList.add('img-ready','loaded'));
+    img.addEventListener('error', () => {
+      cell.classList.add('no-img');
+      img.classList.add('broken');
+    });
+  }
+
+  // IntersectionObserver with a generous root margin so images preload
+  // well before the gallery scene hits the viewport.
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { loadImg(e.target); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '300% 0px', threshold: 0.01 });
+    lazyImgs.forEach(img => io.observe(img));
+  }
+  // Also force-load once scroll progress reaches scene 3 edge, in case IO
+  // did not fire (sticky positioning can mask ordinary intersection).
+  function triggerLazyByProgress(t) {
+    if (t < 0.28) return;
+    lazyImgs.forEach(loadImg);
+  }
+
+  /* ────────── Scene progress ranges ────────── */
+  const SCENES = [
+    { from: 0.00, to: 0.18 },
+    { from: 0.18, to: 0.38 },
+    { from: 0.38, to: 0.60 },
+    { from: 0.60, to: 0.80 },
+    { from: 0.80, to: 1.00 },
+  ];
+  function sceneVisibility(gt, i) {
+    const { from, to } = SCENES[i];
+    const fade = 0.055;  // longer cross-fades between scenes
+    if (gt < from - fade) return 0;
+    if (gt > to   + fade) return 0;
+    if (gt < from) return easeInOut(range(gt, from - fade, from));
+    if (gt > to)   return 1 - easeInOut(range(gt, to, to + fade));
+    return 1;
+  }
+
+  // Parallax: Y offset derived from element.data-depth and local scene progress.
+  // localT=0.5 → 0 offset (element at rest at mid-scene); edges → ±depth*120px.
+  function parallaxY(el, localT) {
+    const d = parseFloat(el.dataset.depth || 0);
+    return d * (localT - 0.5) * 2 * 120;
+  }
+
+  function applyProgress(t) {
+    progressBar.style.width = (t * 100) + '%';
+
+    scenes.forEach((s, i) => {
+      s.style.opacity = sceneVisibility(t, i);
+    });
+
+    const cornerOp = srange(t, 0.16, 0.22) * (1 - srange(t, 0.98, 1.0));
+    corners.forEach(c => c.style.opacity = cornerOp);
+
+    petalOpacity = srange(t, 0.15, 0.28) * (1 - srange(t, 0.95, 1.0) * 0.4);
+    scrollHint.style.opacity = (1 - srange(t, 0.02, 0.08)).toFixed(3);
+    threeEl.style.opacity = Math.min(1, srange(t, 0.00, 0.10) + srange(t, 0.80, 1.0) * 0.6);
+
+    /* ── Scene 1 ── */
+    const t1 = range(t, SCENES[0].from, SCENES[0].to);
+    rings.forEach((r, i) => {
+      const rt = srange(t1, i * 0.12, 0.55 + i * 0.12);
+      r.style.opacity = rt;
+      r.style.transform = `translate3d(0, ${parallaxY(r, t1)}px, 0) scale(${0.3 + 0.7 * rt})`;
+    });
+    const lineT = srange(t1, 0.55, 1);
+    openingLine.style.width = `min(${440 * lineT}px, ${78 * lineT}vw)`;
+    openingLine.style.opacity = srange(t1, 0.55, 0.8);
+    openingLine.style.transform = `translate3d(0, ${parallaxY(openingLine, t1)}px, 0)`;
+
+    /* ── Scene 2 ── */
+    const t2 = range(t, SCENES[1].from, SCENES[1].to);
+    const pre2 = srange(t2, 0.05, 0.25);
+    brandPre.style.opacity = pre2;
+    brandPre.style.transform = `translate3d(0, ${parallaxY(brandPre, t2) + 10*(1-pre2)}px, 0)`;
+
+    brandWords.forEach((w, i) => {
+      const wt = srange(t2, 0.15 + i*0.10, 0.45 + i*0.10);
+      w.style.transform = `translateY(${(1-wt)*110}%)`;
+    });
+    brandTitle.style.transform = `translate3d(0, ${parallaxY(brandTitle, t2)}px, 0)`;
+
+    const divT = srange(t2, 0.50, 0.75);
+    brandDiv.style.width = `min(${200*divT}px, ${44*divT}vw)`;
+    brandDiv.style.opacity = divT;
+    brandDiv.style.transform = `translate3d(0, ${parallaxY(brandDiv, t2)}px, 0)`;
+
+    const locT = srange(t2, 0.65, 0.9);
+    brandLoc.style.opacity = locT;
+    brandLoc.style.transform = `translate3d(0, ${parallaxY(brandLoc, t2) + 8*(1-locT)}px, 0)`;
+
+    /* ── Scene 3 ── */
+    const t3 = range(t, SCENES[2].from, SCENES[2].to);
+    galleryCells.forEach((cell, i) => {
+      const ct = srange(t3, 0.05 + i*0.06, 0.35 + i*0.06);
+      cell.style.opacity = ct;
+      cell.style.transform = `translate3d(0, ${parallaxY(cell, t3)}px, 0) scale(${1.06 - 0.06*ct})`;
+    });
+    const tagT = srange(t3, 0.55, 0.8);
+    galleryTag.style.opacity = tagT;
+    galleryTag.style.transform = `translate3d(0, ${parallaxY(galleryTag, t3) + 20*(1-tagT)}px, 0)`;
+    const subT = srange(t3, 0.65, 0.9);
+    gallerySub.style.opacity = subT;
+    gallerySub.style.transform = `translate3d(0, ${parallaxY(gallerySub, t3) + 10*(1-subT)}px, 0)`;
+
+    triggerLazyByProgress(t);
+
+    /* ── Scene 4 ── */
+    const t4 = range(t, SCENES[3].from, SCENES[3].to);
+    svcHeader.style.opacity = srange(t4, 0.05, 0.25);
+    svcHeader.style.transform = `translate3d(0, ${parallaxY(svcHeader, t4)}px, 0)`;
+    svcItems.forEach((it, i) => {
+      const itT = srange(t4, 0.2 + i*0.12, 0.45 + i*0.12);
+      it.style.opacity = itT;
+      it.style.transform = `translate3d(${-28*(1-itT)}px, ${parallaxY(it, t4)}px, 0)`;
+      if (itT > 0.6) it.classList.add('line-in'); else it.classList.remove('line-in');
+    });
+
+    /* ── Scene 5 ── */
+    const t5 = range(t, SCENES[4].from, SCENES[4].to);
+    finalBackdrop.style.opacity = srange(t5, 0.0, 0.3);
+    finalBackdrop.style.transform =
+      `translate3d(0, ${parallaxY(finalBackdrop, t5)}px, 0) scale(${0.95 + 0.05 * srange(t5, 0, 0.5)})`;
+    finalDiamond.style.opacity = srange(t5, 0.1, 0.3);
+    finalDiamond.style.transform = `translate3d(0, ${parallaxY(finalDiamond, t5)}px, 0) rotate(45deg)`;
+    const nameT = srange(t5, 0.15, 0.5);
+    finalName.style.opacity = nameT;
+    finalName.style.transform = `translate3d(0, ${parallaxY(finalName, t5) + 16*(1-nameT)}px, 0)`;
+    const ruleT = srange(t5, 0.35, 0.65);
+    finalRule.style.width = `min(${230*ruleT}px, ${52*ruleT}vw)`;
+    finalRule.style.transform = `translate3d(0, ${parallaxY(finalRule, t5)}px, 0)`;
+    finalSub.style.opacity = srange(t5, 0.5, 0.75);
+    finalSub.style.transform = `translate3d(0, ${parallaxY(finalSub, t5)}px, 0)`;
+    const tagFT = srange(t5, 0.6, 0.85);
+    finalTag.style.opacity = tagFT;
+    finalTag.style.transform = `translate3d(0, ${parallaxY(finalTag, t5) + 8*(1-tagFT)}px, 0)`;
+    const enterT = srange(t5, 0.75, 0.95);
+    enterBtn.style.opacity = enterT;
+    if (enterT > 0.5) enterBtn.classList.add('visible'); else enterBtn.classList.remove('visible');
+
+    /* ── 3D camera drive ── */
+    camera.position.z = lerp(50, 12, t);
+    camera.position.x = Math.sin(t * Math.PI * 1.2) * 6;
+    camera.position.y = Math.cos(t * Math.PI * 2.0) * 3;
+    camera.lookAt(0, 0, -20);
+    points.rotation.y = t * Math.PI * 0.5;
+    points.rotation.x = Math.sin(t * Math.PI) * 0.25;
+    orb.position.z = lerp(-60, 15, t);
+    orb.scale.setScalar(0.5 + srange(t, 0.6, 1) * 2.5);
+    orb.material.opacity = 0.10 + srange(t, 0.7, 1) * 0.18;
+  }
+
+  /* ────────── Scroll hookup with smooth lerp ────────── */
+  let targetT = 0, currentT = 0, clock = 0;
+  let mouseX = 0, mouseY = 0;
+
+  function onScroll() {
+    const r = wrapper.getBoundingClientRect();
+    const scrolled = -r.top;
+    const maxScroll = wrapper.offsetHeight - window.innerHeight;
+    targetT = clamp(scrolled / maxScroll, 0, 1);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => { resizeThree(); onScroll(); });
+  onScroll();
+  currentT = targetT;   // no smoothing on first frame
+
+  const cursorEl = $('film-cursor');
+  document.addEventListener('mousemove', e => {
+    const r = wrapper.getBoundingClientRect();
+    const inFilm = e.clientY >= r.top && e.clientY <= r.bottom;
+    cursorEl.style.opacity = inFilm ? '1' : '0';
+    cursorEl.style.left = e.clientX + 'px';
+    cursorEl.style.top  = e.clientY + 'px';
+    mouseX = (e.clientX / window.innerWidth  - 0.5);
+    mouseY = (e.clientY / window.innerHeight - 0.5);
+  });
+
+  // Reduced-motion fallback: snap instead of lerp.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const lerpK = reduceMotion ? 1 : 0.055;   // slower, silkier catch-up
+
+  function frame() {
+    clock += 0.016;
+    currentT += (targetT - currentT) * lerpK;
+    if (Math.abs(targetT - currentT) < 1e-4) currentT = targetT;
+    applyProgress(currentT);
+
+    // 2D petals
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    petals.forEach(p => { p.update(); p.draw(); });
+
+    // 3D idle drift + mouse parallax
+    points.rotation.z = clock * 0.03;
+    orb.position.x = Math.sin(clock * 0.3) * 2 + mouseX * 3;
+    orb.position.y = Math.cos(clock * 0.4) * 1 + mouseY * 3;
+
+    // subtle camera sway from mouse
+    const baseX = Math.sin(currentT * Math.PI * 1.2) * 6;
+    const baseY = Math.cos(currentT * Math.PI * 2.0) * 3;
+    camera.position.x = baseX + mouseX * 2;
+    camera.position.y = baseY + mouseY * 1.5;
+
+    renderer.render(scene3d, camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  /* ────────── Cinematic page transition to dashboard ────────── */
+  const pageTrans = document.getElementById('page-transition');
+  const crmApp    = document.getElementById('crm-app');
+  let transitioning = false;
+
+  enterBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (transitioning) return;
+    transitioning = true;
+
+    pageTrans.style.pointerEvents = 'all';
+    pageTrans.classList.add('closing');
+
+    // Phase 1: curtains close (0.85s)
+    setTimeout(() => {
+      // Jump to dashboard while fully covered
+      const prevBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
+      crmApp.scrollIntoView({ block: 'start' });
+      document.body.classList.add('app-entered');
+      pageTrans.classList.remove('closing');
+      pageTrans.classList.add('covered');
+
+      // Phase 2: hold covered briefly, then open
+      setTimeout(() => {
+        pageTrans.classList.remove('covered');
+        pageTrans.classList.add('opening');
+
+        // Phase 3: cleanup after curtains retract
+        setTimeout(() => {
+          pageTrans.classList.remove('opening');
+          pageTrans.style.pointerEvents = 'none';
+          document.documentElement.style.scrollBehavior = prevBehavior || '';
+          transitioning = false;
+        }, 950);
+      }, 420);
+    }, 880);
+  });
+})();
+</script>
 <script>
+
+
 // ═══════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════
@@ -4404,6 +5526,7 @@ switchView = function(name, el) {
   if (name === 'studio') setTimeout(initBouquetStudio, 50);
   if (window.innerWidth <= 900) closeSidebar();
 };
+
 </script>
 </body>
 </html>
